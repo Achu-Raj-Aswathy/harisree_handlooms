@@ -1,0 +1,173 @@
+<body>
+  <div class="login-container">
+    <div class="login-form-box">
+      <div class="logo">
+        <a href="/" class="logo logo-dark d-inline-block align-items-center" >
+          <img src="assets/images/logo-lightt.png" alt="Site Logo" style="height: 60px; width: 80px; " class="mx-auto" />
+        </a>
+      </div>
+
+      <h2>Welcome Back!</h2>
+      <p>Let’s Login to Your Account</p>
+
+      <form id="signinForm">
+        <!-- Email Input -->
+        <div class="input-wrapper">
+          <input type="text" id="email" placeholder="Enter email" />
+          <span class="input-error-message" id="emailError"></span>
+        </div>
+
+        <!-- Password Input -->
+        <div class="input-wrapper password-wrapper">
+          <input type="password" id="password" placeholder="Enter password" />
+          <span class="toggle-eye" id="togglePassword"><i class="fa-solid fa-eye"></i></span>
+          <span class="input-error-message" id="passwordError"></span>
+        </div>
+
+        <button type="submit">LOGIN</button>
+
+        <div style="text-align: right; margin-bottom: 1rem;">
+          <a href="/forgot-password" style="color: #fff; text-decoration: underline; font-size: 0.9rem;">Forgot Password?</a>
+        </div>
+      </form>
+
+      <p class="register-text text-white">
+        Don’t have an account? <a href="/sign-up">Register now</a>
+      </p>
+    </div>
+  </div>
+
+
+
+   <script>
+document.getElementById("signinForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const emailError = document.getElementById("emailError");
+  const passwordError = document.getElementById("passwordError");
+
+  let valid = true;
+
+  // Reset error messages
+  emailError.textContent = "";
+  passwordError.textContent = "";
+
+  if (emailInput.value.trim() === "") {
+    emailError.textContent = "Email is required";
+    valid = false;
+  } else if (!emailInput.value.includes("@")) {
+    emailError.textContent = "Email must contain @";
+    valid = false;
+  }
+
+  if (passwordInput.value.trim() === "") {
+    passwordError.textContent = "Password is required";
+    valid = false;
+  }
+
+  if (valid) {
+    localStorage.setItem("userEmail", emailInput.value);
+    window.location.href = "/Useraccount"; // Simulate navigation
+  }
+});
+
+document.getElementById("togglePassword").addEventListener("click", function () {
+  const passwordInput = document.getElementById("password");
+  const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+  passwordInput.setAttribute("type", type);
+  this.textContent = type === "password" ? <i class="fa-solid fa-eye"></i> : <i class="fa-solid fa-eye-slash"></i>;
+});
+
+   </script> 
+</body>
+
+<style>
+    body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #111;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-form-box {
+  background-color: #222;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.input-wrapper {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.input-error-message {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #e91e63;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #d81b60;
+}
+
+.register-text a {
+  color: #4dd0e1;
+  text-decoration: underline;
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.login-container {
+  background-image: url('https://media.istockphoto.com/id/511945164/photo/vintage-manual-weaving-loom-with-unfinished-textile-work.jpg?s=612x612&w=0&k=20&c=wDfv0c-VNX1a1YpUutgNuiIdVBo7CRETdVjc0RIqPpE=');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  color: #fff;
+  padding: 2rem 0;
+}
+</style>

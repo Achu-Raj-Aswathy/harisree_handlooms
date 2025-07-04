@@ -6,7 +6,7 @@ const upload = require("../multer/multer");
 
 adminRouter.get("/login", isLogout, adminController.viewLogin); 
 adminRouter.get("/logout", isLogin, adminController.logoutAdmin);
-adminRouter.get("", adminController.viewDashboard);
+adminRouter.get("/", adminController.viewDashboard);
 
 
 
