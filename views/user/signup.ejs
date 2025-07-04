@@ -1,0 +1,189 @@
+<body>
+  <div class="signup-container">
+    <header class="navbar"></header>
+
+    <div class="login-form-box">
+      <div class="logo">
+        <a href="/" class="logo-dark d-inline-block">
+          <img
+            src="assets/images/logo-lightt.png"
+            alt="Site Logo"
+            style="height: 60px; width: 80px; display: block; margin: 0 auto;"
+          />
+        </a>
+        <p>Create your account to explore traditional elegance</p>
+      </div>
+
+      <form id="signupForm">
+        <!-- Username -->
+        <div class="input-wrapper">
+          <input type="text" name="username" placeholder="Enter username" />
+          <span class="input-error-message" id="usernameError"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="input-wrapper">
+          <input type="email" name="email" placeholder="Enter email" />
+          <span class="input-error-message" id="emailError"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="input-wrapper">
+          <input type="password" name="password" placeholder="Enter password" />
+          <span class="input-error-message" id="passwordError"></span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="input-wrapper">
+          <input type="password" name="confirmPassword" placeholder="Confirm password" />
+          <span class="input-error-message" id="confirmPasswordError"></span>
+        </div>
+
+        <button type="submit">Create Account</button>
+      </form>
+
+      <p class="login-text">
+        Already have an account? <a href="/sign-in">Back to Login</a>
+      </p>
+    </div>
+  </div>
+
+  <script> document.getElementById("signupForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const username = form.username.value.trim();
+  const email = form.email.value.trim();
+  const password = form.password.value;
+  const confirmPassword = form.confirmPassword.value;
+
+  // Clear previous errors
+  document.getElementById("usernameError").textContent = "";
+  document.getElementById("emailError").textContent = "";
+  document.getElementById("passwordError").textContent = "";
+  document.getElementById("confirmPasswordError").textContent = "";
+
+  let isValid = true;
+
+  if (!username) {
+    document.getElementById("usernameError").textContent = "Username is required";
+    isValid = false;
+  }
+
+  if (!email) {
+    document.getElementById("emailError").textContent = "Email is required";
+    isValid = false;
+  } else if (!email.includes("@")) {
+    document.getElementById("emailError").textContent = "Email must contain @";
+    isValid = false;
+  }
+
+  if (!password) {
+    document.getElementById("passwordError").textContent = "Password is required";
+    isValid = false;
+  }
+
+  if (!confirmPassword) {
+    document.getElementById("confirmPasswordError").textContent = "Please confirm your password";
+    isValid = false;
+  } else if (confirmPassword !== password) {
+    document.getElementById("confirmPasswordError").textContent = "Passwords do not match";
+    isValid = false;
+  }
+
+  if (isValid) {
+    localStorage.setItem("userEmail", email);
+    alert("Account created successfully!");
+    window.location.href = "/sign-in"; // Simulate navigation
+  }
+});
+</script>
+</body>
+<style>
+    body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #111;
+}
+
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-form-box {
+  background-color: #222;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.logo img {
+  display: block;
+  margin: 0 auto;
+}
+
+.input-wrapper {
+  margin-bottom: 1rem;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.input-error-message {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #e91e63;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #d81b60;
+}
+
+.login-text {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.login-text a {
+  color: #4dd0e1;
+  text-decoration: underline;
+}
+.signup-container {
+  background-image: url('https://shorturl.at/vUzLE'); /* make sure this path is correct in public folder */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  position: relative;
+  color: #fff;
+}
+
+</style>
