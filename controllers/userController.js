@@ -128,6 +128,128 @@ const signOut = async (req, res) => {
   }
 };
 
+const viewForgotPassword = async (req, res) => {
+  try {
+    res.render("user/forgotPassword", { message: "" });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewResetPassword = async (req, res) => {
+  const token = req.query.token;
+  console.log(token);
+
+  try {
+    res.render("user/resetPassword", { token, message: "" });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewShop = async (req, res) => {
+  try {
+    res.render("user/shop", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewProduct = async (req, res) => {
+  try {
+    res.render("user/product", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewCart = async (req, res) => {
+  try {
+    res.render("user/cart", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewCheckout = async (req, res) => {
+  try {
+    res.render("user/checkout", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewWishlist = async (req, res) => {
+  try {
+    res.render("user/wishList", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewAccount = async (req, res) => {
+  try {
+    res.render("user/account", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewContact = async (req, res) => {
+  try {
+    res.render("user/contact", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewOrderTracking = async (req, res) => {
+  try {
+    res.render("user/orderTracking", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewProductReturn = async (req, res) => {
+  try {
+    res.render("user/productReturn", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewPayment = async (req, res) => {
+  try {
+    res.render("user/phonepay", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const viewAddress = async (req, res) => {
+  try {
+    res.render("user/address", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+ 
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -135,5 +257,18 @@ module.exports = {
   signIn,
   signOut,
   signUp,
-
+  viewForgotPassword,
+  viewResetPassword,
+  viewShop,
+  viewProduct,
+  viewCart,
+  viewCheckout,
+  viewWishlist,
+  viewAccount,
+  viewContact,
+  viewOrderTracking,
+  viewProductReturn,
+  viewPayment,
+  viewAddress,
+  
 }

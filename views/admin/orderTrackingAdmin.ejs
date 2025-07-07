@@ -1,0 +1,94 @@
+ <%- include('./partials/header') %>
+ <!-- START Wrapper -->
+ <div class="wrapper">
+ <%- include('./partials/adminHeader') %>
+<%- include('./partials/sidebar') %>  
+  <style>
+    .status-badge {
+      font-size: 0.8rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .table td, .table th {
+      vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+      .table-responsive {
+        font-size: 0.85rem;
+      }
+    }
+
+
+   
+  </style>
+
+  <div class="page-content">
+
+               <!-- Start Container Fluid -->
+               <div class="container-fluid">
+  
+
+    <div class="table-responsive shadow-sm">
+      <table class="table table-bordered table-hover bg-white align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Courier</th>
+            <th>Tracking ID</th>
+            <th>Status</th>
+            <th>Last Updated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+         <tbody>
+  <%
+    const orders = [
+      { orderId: 'ORD1001', customerName: 'Lakshmi', customerPhone: '9876543210', productName: 'Cotton Saree', courier: 'DTDC', trackingId: 'DTDC123456789', status: 'Shipped', updatedAt: '2025-07-07' },
+      { orderId: 'ORD1002', customerName: 'Ravi', customerPhone: '9123456780', productName: 'Silk Dhoti', courier: 'Blue Dart', trackingId: 'BLUED456789012', status: 'Delivered', updatedAt: '2025-07-06' },
+      { orderId: 'ORD1003', customerName: 'Anjali', customerPhone: '9988776655', productName: 'Kurta Set', courier: 'India Post', trackingId: 'INDPST00112233', status: 'Out for Delivery', updatedAt: '2025-07-07' }
+    ];
+  %>
+
+  <% orders.forEach((order, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= order.orderId %></td>
+      <td><strong><%= order.customerName %></strong><br><small><%= order.customerPhone %></small></td>
+      <td><%= order.productName %></td>
+      <td><%= order.courier %></td>
+      <td><%= order.trackingId %></td>
+      <td>
+        <span class="status-badge
+          <% if(order.status === 'Shipped') { %> bg-warning
+          <% } else if(order.status === 'In Transit') { %> bg-info
+          <% } else if(order.status === 'Out for Delivery') { %> bg-primary
+          <% } else if(order.status === 'Delivered') { %> bg-success
+          <% } else { %> bg-secondary <% } %> text-white">
+          <%= order.status %>
+        </span>
+      </td>
+      <td><%= order.updatedAt %></td>
+      <td>
+        <a href="https://www.dtdc.in/tracking.asp" target="_blank" class="btn btn-sm btn-outline-primary">
+          Track
+        </a>
+      </td>
+    </tr>
+  <% }) %>
+</tbody>
+
+        </tbody>
+      </table>
+    </div>
+    
+  </div>
+  </div>
+  
+   <%- include('./partials/footer') %>
+  </div>

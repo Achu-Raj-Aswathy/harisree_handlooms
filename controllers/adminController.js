@@ -67,10 +67,209 @@ const viewDashboard = async (req, res) => {
   }
 };
 
+const viewAddCategory = async (req, res) => {
+  try {
+    res.render("admin/addCategory", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewListCategory = async (req, res) => {
+  try {
+    res.render("admin/listCategory", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewEditCategory = async (req, res) => {
+  try {
+    res.render("admin/editCategory", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewAddProduct = async (req, res) => {
+  try {
+    res.render("admin/addProduct", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewListProduct = async (req, res) => {
+  try {
+    res.render("admin/productList", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewEditProduct = async (req, res) => {
+  try {
+    res.render("admin/editProduct", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewProductDetails = async (req, res) => {
+  try {
+    res.render("admin/productDetails", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewAddCoupon = async (req, res) => {
+  try {
+    res.render("admin/couponsAdd", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewListCoupon = async (req, res) => {
+  try {
+    res.render("admin/couponsList", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewListOrder = async (req, res) => {
+  try {
+    res.render("admin/orderList", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewOrderDetails = async (req, res) => {
+  try {
+    res.render("admin/orderDetails", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewListUser = async (req, res) => {
+  try {
+    res.render("admin/userList", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewUserDetails = async (req, res) => {
+  try {
+    res.render("admin/customerDetails", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewInventory = async (req, res) => {
+  try {
+    res.render("admin/inventory", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewSalesReport = async (req, res) => {
+  try {
+    res.render("admin/reportAndAnalysis", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewAddOffers = async (req, res) => {
+  try {
+    res.render("admin/addOffers", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewListOffers = async (req, res) => {
+  try {
+    res.render("admin/listOffers", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewHomeEditor = async (req, res) => {
+  try {
+    res.render("admin/homeEditor", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewOrderTracking = async (req, res) => {
+  try {
+    res.render("admin/orderTrackingAdmin", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+const viewReturn = async (req, res) => {
+  try {
+    res.render("admin/returnView", {});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
 module.exports = {
     viewLogin,
     logoutAdmin,
     loginAdmin,
     viewDashboard,
+    viewAddCategory,
+    viewListCategory,
+    viewEditCategory,
+    viewAddProduct,
+    viewListProduct,
+    viewEditProduct,
+    viewProductDetails,
+    viewAddCoupon,
+    viewListCoupon,
+    viewListOrder,
+    viewOrderDetails,
+    viewListUser,
+    viewUserDetails,
+    viewInventory,
+    viewSalesReport,
+    viewAddOffers,
+    viewListOffers,
+    viewHomeEditor,
+    viewOrderTracking,
+    viewReturn,
 
 }

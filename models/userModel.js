@@ -10,6 +10,11 @@ const userSchema = mongoose.Schema(
     resetToken: { type: String, default: null },
     resetTokenExpiry: { type: Date, default: null },
     mobile: { type: Number, default: null },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
     address: [
       {
         billing: { type: String, default: null },

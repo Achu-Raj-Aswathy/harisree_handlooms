@@ -3,359 +3,590 @@
 
     <main class="main-wrapper">
         <!-- Start Slider Area -->
-        <div class="axil-main-slider-area main-slider-style-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="main-slider-content">
-                            <h1 class="title">Life is more than sunglasses and hit movies.</h1>
-                            <div class="shop-btn">
-                                <a href="shop.html" class="axil-btn btn-bg-primary"><i class="far fa-shopping-cart"></i> Check
-                                    it Out!</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="slide-thumb-area">
-                            <div class="main-thumb">
-                                <img src="assets/images/banner/women_sunglass.png" alt="Women's Product">
-                            </div>
-                            <div class="banner-product">
-                                <div class="product-details">
-                                    <h4 class="title"><a href="single-product-8.html">Ladies Stylish Sunglasses</a></h4>
-                                    <div class="price">$15.22 - $15.22</div>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                </div>
-                                <div class="plus-icon">
-                                    <i class="far fa-plus"></i>
-                                </div>
-                            </div>
-                            <ul class="shape-group">
-                                <li class="shape-1">
-                                    <svg width="717" height="569" viewBox="0 0 717 569" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M700.635 568.176C593.701 653.555 569.268 645.843 418.418 256.006C229.855 -231.289 -105.017 93.7591 62.1304 620.614" stroke="url(#paint0_linear_3774_13416)" stroke-width="32" stroke-linecap="round" />
-                                        <defs>
-                                            <linearGradient id="paint0_linear_3774_13416" x1="359.308" y1="-263.741" x2="-235.553" y2="631.772" gradientUnits="userSpaceOnUse">
-                                                <stop offset="0.258739" stop-color="#FAF1EE" />
-                                                <stop offset="1" stop-color="#FEEAE9" />
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                </li>
-                                <li class="shape-2">
-                                    <svg width="806" height="605" viewBox="0 0 806 605" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g clip-path="url(#clip0_1478_3882)">
-                                            <path d="M786.673 3C806.703 135.413 745.738 384.513 341.63 321.606C-163.504 242.971 -51.9045 685.856 476.273 802" stroke="url(#paint0_linear_1478_3882)" stroke-width="32" stroke-linecap="round" />
-                                        </g>
-                                        <defs>
-                                            <linearGradient id="paint0_linear_1478_3882" x1="-232.181" y1="-67.0641" x2="659.844" y2="1032.81" gradientUnits="userSpaceOnUse">
-                                                <stop offset="0.525282" stop-color="#FBE9E3" />
-                                                <stop offset="1" stop-color="#FFD3C5" />
-                                            </linearGradient>
-                                            <clipPath id="clip0_1478_3882">
-                                                <rect width="806" height="605" fill="white" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <%
+// Array of handloom images
+const handloomImages = [
+  "/assets/images/banner/handloom-hero.jpg",
+  "/assets/images/banner/handloom-hero1.jpg",
+  "/assets/images/banner/handloom-hero2.jpg",
+  "/assets/images/banner/handloom-hero3.jpg",
+  "/assets/images/banner/handloom-hero4.jpg",
+  "/assets/images/banner/handloom-hero5.jpg"
+];
+%>
+
+<div class="axil-main-slider-area main-slider-style-4 position-relative" id="handloomSlider" style="background-image: url('<%= handloomImages[0] %>'); background-size: cover; background-position: center; min-height: 90vh; display: flex; align-items: center; transition: background-image 1s ease-in-out;">
+  <!-- Dark Overlay -->
+  <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;"></div>
+
+  <!-- Content -->
+  <div class="container position-relative" style="z-index: 2;">
+    <div class="row">
+      <div class="col-md-7 col-lg-6 slider">
+        <div class="main-slider-content text-white p-4 rounded" style="background: rgba(0,0,0,0.3);">
+          <h1 class="title mb-4" style="font-size: 3.5rem; font-weight: bold; color: #fff;">Embrace the Craft of Kerala's Handlooms</h1>
+          <h4 class="mb-4" style="font-size: 1.6rem; font-weight: 500; color: #fff;">Authentic, handcrafted textiles that celebrate tradition.</h4>
+          <a href="/shop" class="axil-btn btn-bg-primary btn-lg"><i class="fal fa-shopping-cart me-2"></i> Shop Collection</a>
         </div>
+      </div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <div onclick="changeSlide(-1)" style="position: absolute; top: 90%; left: -30px; transform: translateY(-50%); font-size: 2rem; background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5;">‹</div>
+
+    <div onclick="changeSlide(1)" style="position: absolute; top: 90%; right: -15px; transform: translateY(-50%); font-size: 2rem; background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5;">›</div>
+  </div>
+</div>
+
+<!-- JS for Auto Slide -->
+<script>
+  const images = <%- JSON.stringify(handloomImages) %>;
+  let currentIndex = 0;
+
+  function showSlide(index) {
+    const slider = document.getElementById("handloomSlider");
+    if (slider) {
+      slider.style.backgroundImage = "url('" + images[index] + "')";
+    }
+  }
+
+  function changeSlide(direction) {
+    currentIndex = (currentIndex + direction + images.length) % images.length;
+    showSlide(currentIndex);
+  }
+
+  setInterval(() => {
+    changeSlide(1);
+  }, 10000); // 10 seconds
+</script>
+
         <!-- End Slider Area -->
         <!-- Start Categorie Area  -->
-        <div class="bg-color-white axil-section-gapcommon">
-            <div class="container">
-                <div class="slider-section-title section-title-border">
-                    <h2 class="title">Featured Categories</h2>
-                </div>
-                <div class="categrie-product-activation-4 slick-layout-wrapper--15 axil-slick-angle angle-top-slide">
-                    <div class="slick-single-layout">
-                        <div class="row row-cols-lg-5 row-cols-sm-3 row-cols-2">
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/women.png" alt="product categorie">
-                                        <h5 class="cat-title">Women's</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/men.png" alt="product categorie">
-                                        <h5 class="cat-title">Men's</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/kid.png" alt="product categorie">
-                                        <h5 class="cat-title">Kid's</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/baby.png" alt="product categorie">
-                                        <h5 class="cat-title">Baby</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/garden.png" alt="product categorie">
-                                        <h5 class="cat-title">Garden</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/beauty.png" alt="product categorie">
-                                        <h5 class="cat-title">Beauty</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/toy.png" alt="product categorie">
-                                        <h5 class="cat-title">Toys</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/phone.png" alt="product categorie">
-                                        <h5 class="cat-title">Phone</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/pet.png" alt="product categorie">
-                                        <h5 class="cat-title">Pets</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/cleaner.png" alt="product categorie">
-                                        <h5 class="cat-title">Cleaner</h5>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+       <!-- Start New Arrivals Product Area  -->
+        <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
+            <div class="container ml--xxl-0">
+                <div class="product-area pb--50">
+                    <div class="section-title-wrapper">
+                        <span class="title-highlighter highlighter-primary"><i class="fa-solid fa-basket-shopping"></i> This Week’s</span>
+                        <h2 class="title">New Arrivals</h2>
                     </div>
-                    <div class="slick-single-layout">
-                        <div class="row row-cols-lg-5 row-cols-sm-3 row-cols-2">
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/women.png" alt="product categorie">
-                                        <h5 class="cat-title">Women's</h5>
+                    <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/dhoti1.jpg" alt="Product Images">
+                                        <img class="hover-img" src="assets/images/handlooms/dhoti2.jpg" alt="Product Images">
                                     </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">20% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/men.png" alt="product categorie">
-                                        <h5 class="cat-title">Men's</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/kid.png" alt="product categorie">
-                                        <h5 class="cat-title">Kid's</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/baby.png" alt="product categorie">
-                                        <h5 class="cat-title">Baby</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/garden.png" alt="product categorie">
-                                        <h5 class="cat-title">Garden</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/beauty.png" alt="product categorie">
-                                        <h5 class="cat-title">Beauty</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/toy.png" alt="product categorie">
-                                        <h5 class="cat-title">Toys</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/phone.png" alt="product categorie">
-                                        <h5 class="cat-title">Phone</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/pet.png" alt="product categorie">
-                                        <h5 class="cat-title">Pets</h5>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="categrie-product categrie-product-4" data-sal="zoom-out" data-sal-delay="100" data-sal-duration="500">
-                                    <a href="shop-sidebar.html" class="cate-thumb">
-                                        <img src="assets/images/product/categories/cleaner.png" alt="product categorie">
-                                        <h5 class="cat-title">Cleaner</h5>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Categorie Area  -->
-        <div class="product-collection-area bg-lighter axil-section-gapcommon">
-            <div class="container">
-                <div class="section-title-border">
-                    <h2 class="title">Today’s Best Deals 💥</h2>
-                    <div class="view-btn"><a href="shop.html">View All Deals</a></div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-7">
-                        <div class="product-collection product-collection-two">
-                            <div class="collection-content">
-                                <h3 class="title">Decorative Plant <br> For Home</h3>
-                                <div class="price-warp">
-                                    <span class="price-text">Starting From</span>
-                                    <span class="price">$35.00</span>
-                                </div>
-                                <div class="shop-btn">
-                                    <a href="shop.html" class="axil-btn btn-bg-primary btn-size-md"><i class="far fa-shopping-cart"></i> View All Items</a>
-                                </div>
-                                <div class="plus-btn">
-                                    <a href="#" class="plus-icon"><i class="far fa-plus"></i></a>
-                                </div>
-                            </div>
-                            <div class="collection-thumbnail">
-                                <img src="assets/images/product/collection_5.jpg" alt="Mega Collection">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="product-collection-three">
-                                    <div class="collection-content">
-                                        <h6 class="title"><a href="shop.html">Ladies Short Sleeve Dress</a></h6>
-                                        <div class="price-warp">
-                                            <span class="price-text">Starting From</span>
-                                            <span class="price">$30.00</span>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Top Handle Handbag</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$80</span>
+                                            <span class="price current-price">$60</span>
                                         </div>
-                                    </div>
-                                    <div class="collection-thumbnail">
-                                        <img src="assets/images/product/collection_5.png" alt="Product">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="product-collection-three">
-                                    <div class="collection-content">
-                                        <h6 class="title"><a href="shop.html">Oil Soap Wood Home Cleaner</a></h6>
-                                        <div class="price-warp">
-                                            <span class="price-text">Starting From</span>
-                                            <span class="price">$15.22</span>
-                                        </div>
-                                    </div>
-                                    <div class="collection-thumbnail">
-                                        <img src="assets/images/product/collection_6.png" alt="Product">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="product-collection-three">
-                                    <div class="collection-content">
-                                        <h6 class="title"><a href="shop.html">Large Pendant Light Ceiling </a></h6>
-                                        <div class="price-warp">
-                                            <span class="price-text">Starting From</span>
-                                            <span class="price">$11.70</span>
-                                        </div>
-                                    </div>
-                                    <div class="collection-thumbnail">
-                                        <img src="assets/images/product/collection_7.png" alt="Product">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="product-collection-three">
-                                    <div class="collection-content">
-                                        <h6 class="title"><a href="shop.html">Iphone New Model</a></h6>
-                                        <div class="price-warp">
-                                            <span class="price-text">Starting From</span>
-                                            <span class="price">$499.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="collection-thumbnail">
-                                        <img src="assets/images/product/collection_8.png" alt="Product">
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/dhoti3.jpg" alt="Product Images">
+                                        <img class="hover-img" src="assets/images/handlooms/dhoti4.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Leather Bag For Men</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$40</span>
+                                            <span class="price current-price">$40</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="300" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">15% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$30</span>
+                                            <span class="price current-price">$24</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu2.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">30% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Men's Winter Jacket</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$50</span>
+                                            <span class="price current-price">$40</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu3.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$60</span>
+                                            <span class="price current-price">$50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu4.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">15% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$30</span>
+                                            <span class="price current-price">$24</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                    
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/kasavu-saree.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$60</span>
+                                            <span class="price current-price">$50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
                     </div>
                 </div>
             </div>
         </div>
+        <!-- End New Arrivals Product Area  -->
+        
+    <div class="product-collection-area bg-lighter axil-section-gapcommon">
+  <div class="container">
+    <div class="section-title-border d-flex justify-content-between align-items-center">
+      <h2 class="title">Today’s Best Deals 💥</h2>
+      <div class="view-btn"><a href="shop.ejs">View All Deals</a></div>
+    </div>
+
+
+      <!-- Right 4 Products -->
+      <div class="row align-items-stretch">
+  <!-- LEFT SIDE IMAGE -->
+  <div class="col-xl-7 d-flex">
+    <div class="product-collection product-collection-two w-100">
+      <div class="collection-thumbnail h-100">
+        <img src="assets/images/handlooms/sarees11.jpg" alt="Main Banner" class="w-100 h-100 object-cover rounded">
+      </div>
+     
+       
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE PRODUCT CARDS -->
+  <div class="col-xl-5">
+    <div class="row g-4">
+      <!-- CARD 1 -->
+      <div class="col-md-6">
+        <div class="deal-card">
+          <img src="assets/images/handlooms/sarees.png" class="deal-img" alt="Product 1" />
+          <h5 class="deal-title">Ladies Short Sleeve Dress</h5>
+          <p class="deal-price">₹999</p>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="col-md-6">
+        <div class="deal-card">
+          <img src="assets/images/handlooms/sarees1.jpg" class="deal-img" alt="Product 2" />
+          <h5 class="deal-title">Oil Soap Wood Cleaner</h5>
+          <p class="deal-price">₹299</p>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="col-md-6">
+        <div class="deal-card">
+          <img src="assets/images/handlooms/sarees2.jpg" class="deal-img" alt="Product 3" />
+          <h5 class="deal-title">Pendant Light Ceiling</h5>
+          <p class="deal-price">₹499</p>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="col-md-6">
+        <div class="deal-card">
+          <img src="assets/images/handlooms/sarees3.jpg" class="deal-img" alt="Product 4" />
+          <h5 class="deal-title">Iphone New Model</h5>
+          <p class="deal-price">₹49,999</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+       <!-- Start Offer Product Area  -->
+        <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
+            <div class="container ml--xxl-0">
+                <div class="product-area pb--50">
+                    <div class="section-title-wrapper">
+                        <span class="title-highlighter highlighter-primary"><i class="fa-solid fa-basket-shopping"></i> This Month’s</span>
+                        <h2 class="title"> Offers Area</h2>
+                    </div>
+                    <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/sarees28.jpg" alt="Product Images">
+                                        <img class="hover-img" src="assets/images/handlooms/sarees29.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">20% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Top Handle Handbag</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$80</span>
+                                            <span class="price current-price">$60</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/sarees27.jpg" alt="Product Images">
+                                        <img class="hover-img" src="assets/images/handlooms/sarees26.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Leather Bag For Men</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$40</span>
+                                            <span class="price current-price">$40</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="300" data-sal-duration="1500" src="assets/images/handlooms/sarees25.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">15% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$30</span>
+                                            <span class="price current-price">$24</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/sarees23.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$60</span>
+                                            <span class="price current-price">$50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/sarees23.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$60</span>
+                                            <span class="price current-price">$50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/sarees22.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="label-block label-right">
+                                        <div class="product-badget">15% OFF</div>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$30</span>
+                                            <span class="price current-price">$24</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/sarees1.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$60</span>
+                                            <span class="price current-price">$50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                        <div class="slick-single-layout">
+                            <div class="axil-product product-style-four">
+                                <div class="thumbnail">
+                                    <a href="single-product.html">
+                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/sarees1.jpg" alt="Product Images">
+                                    </a>
+                                    <div class="product-hover-action">
+                                        <ul class="cart-action">
+                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <div class="inner">
+                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
+                                        <div class="product-price-variant">
+                                            <span class="price old-price">$60</span>
+                                            <span class="price current-price">$50</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End .slick-single-layout -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Offer Product Area  -->
         <!-- Start Expolre Product Area  -->
         <div class="axil-product-area bg-color-white section-gap-80-35">
             <div class="container">
                 <div class="section-title-border">
                     <h2 class="title">Explore Our Products 💥</h2>
-                    <div class="view-btn"><a href="shop.html">View All Products</a></div>
+                    <div class="view-btn"><a href="shop.ejs">View All Products</a></div>
                 </div>
                 <div class="row">
                     <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-26.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees4.jpg" alt="Product Images">
                                 </a>
                                 <div class="label-block label-left">
                                     <div class="product-badget sale">Sale</div>
@@ -411,7 +642,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-27.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees5.jpg" alt="Product Images">
                                 </a>
                                 <div class="label-block label-left">
                                     <div class="product-badget">20% OFF</div>
@@ -467,7 +698,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-28.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees6jpg.jpg" alt="Product Images">
                                 </a>
                                 <div class="label-block label-left">
                                     <div class="product-badget">TOP SELLING</div>
@@ -523,7 +754,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-29.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees7.jpg" alt="Product Images">
                                 </a>
                                 <div class="label-block label-left">
                                     <div class="product-badget sold-out">SOLD OUT</div>
@@ -579,7 +810,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-30.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees8.jpg" alt="Product Images">
                                 </a>
                                 <div class="product-hover-action">
                                     <ul class="cart-action">
@@ -631,7 +862,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-31.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees9.jpg" alt="Product Images">
                                 </a>
                                 <div class="product-hover-action">
                                     <ul class="cart-action">
@@ -683,7 +914,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-32.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees10.jpg" alt="Product Images">
                                 </a>
                                 <div class="product-hover-action">
                                     <ul class="cart-action">
@@ -735,7 +966,7 @@
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
                                 <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-33.png" alt="Product Images">
+                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees11.jpg" alt="Product Images">
                                 </a>
                                 <div class="product-hover-action">
                                     <ul class="cart-action">
@@ -787,881 +1018,465 @@
             </div>
         </div>
         <!-- End Expolre Product Area  -->
-        <div class="axil-testimoial-area-two axil-section-gapBottom">
-            <div class="container">
-                <div class="testimonial-container-box">
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <div class="testimonial-video-box">
-                                <div class="thumbnail">
-                                    <img src="assets/images/testimonial/image-4.png" alt="Image">
-                                </div>
-                                <div class="play-btn">
-                                    <a class="popup-youtube" href="https://www.youtube.com/watch?v=1iIZeIy7TqM"><i class="fas fa-play"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-5">
-                            <div class="testimonial-style-three-wrapper">
-                                <div class="heading-title">
-                                    <h2 class="title">Our Users <br>Feedback</h2>
-                                </div>
-                                <div class="testimonial-slick-activation-three">
-                                    <div class="slick-single-layout testimonial-style-three">
-                                        <p>It`s no secret testimonials are the driving force behind purchasing decisions. They are such a great way to create immediate trust with prospective clients.</p>
-                                        <div class="author-info">
-                                            <h6 class="author-name">Wade Warren</h6>
-                                            <span class="author-desg">Head of Marketing</span>
-                                        </div>
-                                    </div>
-                                    <div class="slick-single-layout testimonial-style-three">
-                                        <p>It`s no secret testimonials are the driving force behind purchasing decisions. They are such a great way to create immediate trust with prospective clients.</p>
-                                        <div class="author-info">
-                                            <h6 class="author-name">Wade Warren</h6>
-                                            <span class="author-desg">Head of Marketing</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-custom-nav">
-                                    <div class="row align-items-center">
-                                        <div class="col-6">
-                                            <div class="slick-slide-count"></div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="slide-custom-nav">
-                                                <button class="prev-custom-nav"><i class="fal fa-angle-left"></i>Prev</button>
-                                                <button class="next-custom-nav">Next <i class="fal fa-angle-right"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+       <div class="axil-product-review-area axil-section-gapBottom">
+  <div class="container">
+    <div class="heading-title text-center mb-5">
+      <h2 class="title">Product Review Videos 🎥</h2>
+      <p class="subtitle">See our products in action from real customers</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Video 1 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <img src="assets/images/testimonial/image-4.png" alt="Video 1">
+            <a href="https://www.youtube.com/watch?v=1iIZeIy7TqM" class="video-play-btn popup-youtube">
+              <i class="fas fa-play"></i>
+            </a>
+          </div>
+          <h6 class="video-title text-center mt-2">Saree Drape Demo</h6>
         </div>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <img src="assets/images/testimonial/image-4.png" alt="Video 2">
+            <a href="https://www.youtube.com/watch?v=2Xc9gXyf2G4" class="video-play-btn popup-youtube">
+              <i class="fas fa-play"></i>
+            </a>
+          </div>
+          <h6 class="video-title text-center mt-2">Handloom Process</h6>
+        </div>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <img src="assets/images/testimonial/image-4.png" alt="Video 3">
+            <a href="https://www.youtube.com/watch?v=VYOjWnS4cMY" class="video-play-btn popup-youtube">
+              <i class="fas fa-play"></i>
+            </a>
+          </div>
+          <h6 class="video-title text-center mt-2">Customer Review</h6>
+        </div>
+      </div>
+
+      <!-- Video 4 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <img src="assets/images/testimonial/image-4.png" alt="Video 4">
+            <a href="https://www.youtube.com/watch?v=3fumBcKC6RE" class="video-play-btn popup-youtube">
+              <i class="fas fa-play"></i>
+            </a>
+          </div>
+          <h6 class="video-title text-center mt-2">Dupatta Styling Tips</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
         <div class="product-collection-area bg-lighter axil-section-gapcommon">
-            <div class="container">
-                <div class="section-title-border">
-                    <h2 class="title">Our Mega Collections 💥</h2>
-                </div>
-                <div class="row">
-                    <div class="col-xl-7">
-                        <div class="product-collection">
-                            <div class="collection-content">
-                                <h3 class="title">Explore The <br> Sunglass</h3>
-                                <p>The Bouguessa FW21 collection is.</p>
-                                <div class="price-warp">
-                                    <span class="price-text">Starting From</span>
-                                    <span class="price">$178.00</span>
-                                </div>
-                                <div class="shop-btn">
-                                    <a href="shop.html" class="axil-btn btn-bg-primary btn-size-md"><i class="far fa-shopping-cart"></i> SHOP BRAND</a>
-                                </div>
-                                <div class="plus-btn">
-                                    <a href="#" class="plus-icon"><i class="far fa-plus"></i></a>
-                                </div>
-                            </div>
-                            <div class="collection-thumbnail">
-                                <img src="assets/images/product/collection_1.jpg" alt="Mega Collection">
-                                <div class="label-block label-right">
-                                    <div class="product-badget">Sunglass</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-lg-6">
-                        <div class="product-collection">
-                            <div class="collection-content">
-                                <h3 class="title">Inspire <br> Creativity</h3>
-                                <p>The Bouguessa FW21 collection is.</p>
-                                <div class="price-warp">
-                                    <span class="price-text">Starting From</span>
-                                    <span class="price">$69.00</span>
-                                </div>
-                                <div class="shop-btn">
-                                    <a href="shop.html" class="axil-btn btn-bg-primary btn-size-md"><i class="far fa-shopping-cart"></i> SHOP BRAND</a>
-                                </div>
-                            </div>
-                            <div class="collection-thumbnail">
-                                <img src="assets/images/product/collection_2.jpg" alt="Mega Collection">
-                                <div class="label-block label-right">
-                                    <div class="product-badget">Sale</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-lg-6">
-                        <div class="product-collection">
-                            <div class="collection-content">
-                                <h3 class="title">Trade
-                                    <br> Benifits
-                                </h3>
-                                <p>The Bouguessa FW21 collection is.</p>
-                                <div class="price-warp">
-                                    <span class="price-text">Starting From</span>
-                                    <span class="price">$159.00</span>
-                                </div>
-                                <div class="shop-btn">
-                                    <a href="shop.html" class="axil-btn btn-bg-primary btn-size-md"><i class="far fa-shopping-cart"></i> SHOP BRAND</a>
-                                </div>
-                            </div>
-                            <div class="collection-thumbnail">
-                                <img src="assets/images/product/collection_3.jpg" alt="Mega Collection">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-7">
-                        <div class="product-collection">
-                            <div class="collection-content">
-                                <h3 class="title">Find A Great
-                                    <br> Deal
-                                </h3>
-                                <p>The Bouguessa FW21 collection is.</p>
-                                <div class="price-warp">
-                                    <span class="price-text">Starting From</span>
-                                    <span class="price">$299.00</span>
-                                </div>
-                                <div class="shop-btn">
-                                    <a href="shop.html" class="axil-btn btn-bg-primary btn-size-md"><i class="far fa-shopping-cart"></i> SHOP BRAND</a>
-                                </div>
-                            </div>
-                            <div class="collection-thumbnail">
-                                <img src="assets/images/product/collection_4.jpg" alt="Mega Collection">
-                                <div class="label-block label-right">
-                                    <div class="product-badget">Jacket</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="section-title-border text-center mb-5">
+      <h2 class="title">Our Mega Collections 💥</h2>
+    </div>
+
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees12.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+      <!-- Card 2 -->
+     <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees13.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+      <!-- Card 3 -->
+    <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees14.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+      <!-- Card 4 -->
+      <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees15.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+ <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees16.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+
+ <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees17.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+
+ <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees18.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+ <div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees19.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<div class="col-md-4 col-lg-4">
+  <div class="product-card">
+    <img src="assets/images/handlooms/sarees20.jpg" alt="Explore The Sunglass" class="product-image">
+    <div class="product-details">
+      <span class="badge">Sunglass</span>
+      <h5 class="title">Explore The Sunglass</h5>
+      <p class="desc">The Bouguessa FW21 collection is.</p>
+      <div class="price-box">
+        <span class="price-label">Starting From</span>
+        <span class="price">₹178.00</span>
+      </div>
+      <a href="shop.html" class="shop-btn">
+        <i class="far fa-shopping-cart"></i> SHOP BRAND
+      </a>
+    </div>
+  </div>
+</div>
+
+
+    </div>
+  </div>
+</div>
+
         <!-- Start Expolre Product Area  -->
-        <div class="axil-new-arrivals-product-area fullwidth-container flash-sale-area section-gap-80-35">
-            <div class="container ml--xxl-0">
-                <div class="section-title-border slider-section-title">
-                    <h2 class="title">Recently Viewed 💥</h2>
-                </div>
-                <div class="recently-viwed-activation slick-layout-wrapper--15 axil-slick-angle angle-top-slide">
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-26.png" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget sale">Sale</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Kalrez® Spectrum™ 6375</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$30.00</span>
-                                        <span class="price current-price">$17.84</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-27.png" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget">20% OFF</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Calvin Klein womens Solid Sheath With Chiffon Bell Sleeves Dress</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$100.00</span>
-                                        <span class="price current-price">$78.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-28.png" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget">TOP SELLING</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Gildan Men's Ultra Cotton T-Shirt, Style G2000,</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$20.00</span>
-                                        <span class="price current-price">$17.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-29.png" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget sold-out">SOLD OUT</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Essentials Men's Regular-Fit Short-Sleeve Crewneck T-Shirt</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$12.00</span>
-                                        <span class="price current-price">$5.22</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-30.png" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">2.4G Remote Control Rc BB-8 Droid Football Robot</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">1,300</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$100.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-31.png" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Perfume Nat White Chocolate Flavor WONF (BD-10914)</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">2,300</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$14.81</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-32.png" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Women's Winter Mid Length Thick Warm Faux Lamb Wool.</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">50</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$59.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/product/fashion/product-33.png" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <h5 class="title"><a href="single-product-8.html">Ion8 One Touch Sport / Bike Water Bottle - Leakproof</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">652</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$29.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      
         <!-- End Expolre Product Area  -->
-        <div class="sale-banner-area">
-            <div class="container">
-                <div class="sale-banner-thumb">
-                    <a href="shop.html"><img src="assets/images/banner/sale_banner.png" alt="Sale Banner"></a>
-                </div>
-            </div>
-        </div>
+        
         <!-- Start Expolre Product Area  -->
         <div class="axil-product-area bg-color-white axil-section-gapcommon">
-            <div class="container">
-                <div class="section-title-border slider-section-title">
-                    <h2 class="title">Popular Weekly Deals 💥</h2>
-                </div>
-                <div class="popular-product-activation slick-layout-wrapper slick-layout-wrapper--15 axil-slick-angle angle-top-slide">
-                    <div class="slick-single-layout">
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-34.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Manhattan Toy Wee Baby Stella Peach 12" Soft Baby Doll</a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">1540</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$59.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget sold-out">SOLD OUT</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-35.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Business Women Suit Set 3 Pieces Notch Lapel Single Breasted Vest </a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">563</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$99.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">TOP SELLING</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-36.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Skechers Men's Energy Afterburn Lace-Up Sneaker</a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">1,235</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$70.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">20% OFF</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-37.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Men’s Suit Separates with Performance Stretch Fabric</a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">226</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$159.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget sale">SALE</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slick-single-layout">
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-34.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Manhattan Toy Wee Baby Stella Peach 12" Soft Baby Doll</a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">1540</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$59.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget sold-out">SOLD OUT</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-35.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Business Women Suit Set 3 Pieces Notch Lapel Single Breasted Vest </a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">563</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$99.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">TOP SELLING</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-36.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Skechers Men's Energy Afterburn Lace-Up Sneaker</a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">1,235</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$70.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">20% OFF</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="axil-product product-style-eight product-list-style-3">
-                                    <div class="thumbnail">
-                                        <a href="single-product-8.html">
-                                            <img class="main-img" src="assets/images/product/fashion/product-37.png" alt="Product Images">
-                                        </a>
-                                    </div>
-                                    <div class="product-content">
-                                        <div class="inner">
-                                            <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-                                            <div class="color-variant-wrapper">
-                                                <ul class="color-variant">
-                                                    <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-02"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-03"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-04"><span><span class="color"></span></span>
-                                                    </li>
-                                                    <li class="color-extra-05"><span><span class="color"></span></span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h5 class="title"><a href="single-product-8.html">Men’s Suit Separates with Performance Stretch Fabric</a></h5>
-                                            <div class="product-rating">
-                                                <span class="icon">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                                <span class="rating-number">226</span>
-                                            </div>
-                                            <div class="product-price-variant">
-                                                <span class="price-text">Price</span>
-                                                <span class="price current-price">$159.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget sale">SALE</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="container">
+    <div class="section-title-border slider-section-title">
+      <h2 class="title">Popular Weekly Deals 💥</h2>
+    </div>
+
+    <div class="row">
+      <!-- Product 1 -->
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="axil-product product-style-eight product-list-style-3">
+          <div class="thumbnail fixed-thumbnail">
+            <a href="single-product-8.html">
+              <img class="main-img" src="assets/images/handlooms/sarees21.jpg" alt="Saree 21">
+            </a>
+          </div>
+          <div class="product-content">
+            <div class="inner">
+              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
+              <h5 class="title"><a href="#">Soft Handloom Saree</a></h5>
+              <div class="product-rating">
+                <span class="icon">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </span>
+                <span class="rating-number">1540</span>
+              </div>
+              <div class="product-price-variant">
+                <span class="price-text">Price</span>
+                <span class="price current-price">₹1999</span>
+              </div>
             </div>
+          </div>
+          <div class="label-block label-right">
+            <div class="product-badget sold-out">SOLD OUT</div>
+          </div>
         </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="axil-product product-style-eight product-list-style-3">
+          <div class="thumbnail fixed-thumbnail">
+            <a href="single-product-8.html">
+              <img class="main-img" src="assets/images/handlooms/sarees22.jpg" alt="Saree 22">
+            </a>
+          </div>
+          <div class="product-content">
+            <div class="inner">
+              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
+              <h5 class="title"><a href="#">Elegant Golden Saree</a></h5>
+              <div class="product-rating">
+                <span class="icon">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </span>
+                <span class="rating-number">1540</span>
+              </div>
+              <div class="product-price-variant">
+                <span class="price-text">Price</span>
+                <span class="price current-price">₹1799</span>
+              </div>
+            </div>
+          </div>
+          <div class="label-block label-right">
+            <div class="product-badget sold-out">SOLD OUT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="axil-product product-style-eight product-list-style-3">
+          <div class="thumbnail fixed-thumbnail">
+            <a href="single-product-8.html">
+              <img class="main-img" src="assets/images/handlooms/sarees23.jpg" alt="Saree 23">
+            </a>
+          </div>
+          <div class="product-content">
+            <div class="inner">
+              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
+              <h5 class="title"><a href="#">Traditional Kerala Set Saree</a></h5>
+              <div class="product-rating">
+                <span class="icon">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </span>
+                <span class="rating-number">1540</span>
+              </div>
+              <div class="product-price-variant">
+                <span class="price-text">Price</span>
+                <span class="price current-price">₹1599</span>
+              </div>
+            </div>
+          </div>
+          <div class="label-block label-right">
+            <div class="product-badget sold-out">SOLD OUT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="axil-product product-style-eight product-list-style-3">
+          <div class="thumbnail fixed-thumbnail">
+            <a href="single-product-8.html">
+              <img class="main-img" src="assets/images/handlooms/sarees26.jpg" alt="Saree 24">
+            </a>
+          </div>
+          <div class="product-content">
+            <div class="inner">
+              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
+              <h5 class="title"><a href="#">Designer Red Border Saree</a></h5>
+              <div class="product-rating">
+                <span class="icon">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </span>
+                <span class="rating-number">1540</span>
+              </div>
+              <div class="product-price-variant">
+                <span class="price-text">Price</span>
+                <span class="price current-price">₹2099</span>
+              </div>
+            </div>
+          </div>
+          <div class="label-block label-right">
+            <div class="product-badget sold-out">SOLD OUT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="axil-product product-style-eight product-list-style-3">
+          <div class="thumbnail fixed-thumbnail">
+            <a href="single-product-8.html">
+              <img class="main-img" src="assets/images/handlooms/sarees25.jpg" alt="Saree 25">
+            </a>
+          </div>
+          <div class="product-content">
+            <div class="inner">
+              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
+              <h5 class="title"><a href="#">Casual Cotton Saree</a></h5>
+              <div class="product-rating">
+                <span class="icon">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </span>
+                <span class="rating-number">1540</span>
+              </div>
+              <div class="product-price-variant">
+                <span class="price-text">Price</span>
+                <span class="price current-price">₹1399</span>
+              </div>
+            </div>
+          </div>
+          <div class="label-block label-right">
+            <div class="product-badget sold-out">SOLD OUT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="axil-product product-style-eight product-list-style-3">
+          <div class="thumbnail fixed-thumbnail">
+            <a href="single-product-8.html">
+              <img class="main-img" src="assets/images/handlooms/sarees26.jpg" alt="Saree 26">
+            </a>
+          </div>
+          <div class="product-content">
+            <div class="inner">
+              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
+              <h5 class="title"><a href="#">Colorful Pallu Saree</a></h5>
+              <div class="product-rating">
+                <span class="icon">
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </span>
+                <span class="rating-number">1540</span>
+              </div>
+              <div class="product-price-variant">
+                <span class="price-text">Price</span>
+                <span class="price current-price">₹1699</span>
+              </div>
+            </div>
+          </div>
+          <div class="label-block label-right">
+            <div class="product-badget sold-out">SOLD OUT</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
         <!-- End Expolre Product Area  -->
         <div class="delivery-poster-area">
             <div class="container">
@@ -1693,7 +1508,153 @@
                 </div>
             </div>
         </div>
+<style>
+    .collection-thumbnail img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.product-collection-three {
+  margin-bottom: 20px;
+}
+.collection-thumbnail img,
+.object-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
 
+.product-collection-two {
+  height: 100%;
+}
+
+.product-collection-three {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  height: 100%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.price {
+  font-weight: bold;
+  color: #d21e2b;
+}
+
+.collection-thumbnail {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-image {
+  width: 100%;
+  height: auto;               /* Auto height keeps aspect ratio */
+  display: block;
+  max-height: 300px;          /* Limit height but don't crop */
+  object-fit: contain;        /* Don't crop image */
+  padding: 10px;
+  background: #f8f8f8;
+}
+
+.product-details {
+  padding: 15px;
+  text-align: left;
+}
+
+.product-details .badge {
+  background-color: #333;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.product-details .title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0 5px;
+}
+
+.product-details .desc {
+  font-size: 14px;
+  color: #777;
+}
+
+.price-box {
+  margin-top: 10px;
+}
+
+.price-label {
+  display: block;
+  font-size: 13px;
+  color: #555;
+}
+
+.price {
+  font-size: 16px;
+  color: crimson;
+  font-weight: bold;
+}
+
+.shop-btn {
+  display: inline-block;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.shop-btn i {
+  margin-right: 5px;
+}
+
+  
+    #handloomSlider {
+  min-height: 90vh !important;
+}
+
+@media (max-width: 576px) {
+  #handloomSlider {
+    min-height: 40vh !important;
+  }
+
+  #handloomSlider .main-slider-content h1 {
+    font-size: 1.5rem !important;
+  }
+
+  #handloomSlider .main-slider-content h4 {
+    font-size: 1rem !important;
+  }
+
+  #handloomSlider .axil-btn {
+    padding: 6px 12px !important;
+    font-size: 0.9rem !important;
+  }
+
+  #handloomSlider .main-slider-content {
+    padding: 10px !important;
+  }
+}
+
+ 
+</style>
     </main>
 
 <%- include('./partials/footer') %>

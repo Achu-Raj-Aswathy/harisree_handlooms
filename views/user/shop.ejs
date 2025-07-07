@@ -1,0 +1,135 @@
+<%- include('./partials/header') %>
+<%- include('./partials/userHeader') %>
+
+<!-- ✅ AOS CSS (place after your existing CSS link) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+
+<div class="main-wrapper">
+  <div class="axil-shop-area axil-section-gap bg-color-white">
+    <div class="container">
+      <!-- Filters -->
+      <div class="row align-items-end mb-4">
+        <div class="col-lg-9 mb-3 mb-lg-0">
+          <label for="categorySelect" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
+            🧵 Choose Category
+          </label>
+          <select id="categorySelect" class="form-select shadow-sm" onchange="handleCategoryChange(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
+            <option value="">All Categories</option>
+            <option value="Saree">Saree</option>
+            <option value="SetSaree">Set Saree</option>
+            <option value="SetMund">Set Mundu</option>
+            <option value="Dhoti">Dhoti</option>
+          </select>
+        </div>
+
+        <div class="col-lg-3">
+          <label for="priceSelect" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
+            💰 Price Range
+          </label>
+          <select id="priceSelect" class="form-select shadow-sm" onchange="handlePriceFilter(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
+            <option value="">All Prices</option>
+            <option value="0 - 100">₹0 - ₹100</option>
+            <option value="100 - 500">₹100 - ₹500</option>
+            <option value="500 - 1000">₹500 - ₹1000</option>
+            <option value="1000 - 1500">₹1000 - ₹1500</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="row gx-4 gy-4" id="productGrid">
+        <!-- Products will be rendered here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const allProducts = [
+    { id: 1, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees1.jpg", price: 399, oldPrice: 499, discount: "20% OFF" },
+    { id: 2, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees2.jpg", price: 999, oldPrice: 1499 },
+    { id: 3, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees3.jpg", price: 450, oldPrice: 600, discount: "25% OFF" },
+    { id: 4, name: "Guys Bomber Jacket", image: "/assets/images/handlooms/sarees4.jpg", price: 700, oldPrice: 1000 },
+    { id: 5, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees5.jpg", price: 380, oldPrice: 499 },
+    { id: 6, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees7.jpg", price: 1500, oldPrice: 2000, discount: "5% OFF" },
+    { id: 7, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees8.jpg", price: 600, oldPrice: 800 },
+    { id: 8, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees9.jpg", price: 300, oldPrice: 390 },
+    { id: 9, name: "Zone Headphone", image: "/assets/images/handlooms/sarees11.jpg", price: 45, oldPrice: 60, discount: "30% OFF" },
+    { id: 10, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees12.jpg", price: 700, oldPrice: 1000 }
+  ];
+
+  let filtered = [...allProducts];
+
+  function renderProducts(products) {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = "";
+
+    if (products.length === 0) {
+      grid.innerHTML = `<div class="text-center"><p>No products in this range.</p></div>`;
+      return;
+    }
+
+    products.forEach(product => {
+      const html = `
+        <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-6" data-aos="fade-up" data-aos-duration="800">
+          <div class="axil-product product-style-one has-color-pick">
+            <div class="thumbnail position-relative" style="width: 100%; height: 460px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+              <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+              ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
+            </div>
+            <div class="product-content text-center mt-2">
+              <h5 class="title">${product.name}</h5>
+              <div class="product-price-variant">
+                ${product.oldPrice ? `<span class="price old-price" style="text-decoration: line-through; margin-right: 8px; color: #888;">₹${product.oldPrice}</span>` : ""}
+                <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
+              </div>
+              <a href="/product/${product.id}" class="axil-btn mt-2 btn btn-warning text-white fw-semibold">View Details</a>
+            </div>
+          </div>
+        </div>`;
+      grid.innerHTML += html;
+    });
+
+    // Reinitialize AOS after DOM update
+    AOS.init();
+  }
+
+  function handlePriceFilter(value) {
+    let min = 0, max = Infinity;
+    if (value === "0 - 100") [min, max] = [0, 100];
+    else if (value === "100 - 500") [min, max] = [100, 500];
+    else if (value === "500 - 1000") [min, max] = [500, 1000];
+    else if (value === "1000 - 1500") [min, max] = [1000, 1500];
+    filtered = allProducts.filter(p => p.price >= min && p.price <= max);
+    renderProducts(filtered);
+  }
+
+  function handleCategoryChange(value) {
+    if (value === "Saree") window.location.href = "/category/sarees";
+    else if (value === "SetSaree") window.location.href = "/category/setsaree";
+    else if (value === "SetMund") window.location.href = "/category/setmund";
+    else if (value === "Dhoti") window.location.href = "/category/dhoti";
+  }
+
+  // Initial render
+  renderProducts(filtered);
+</script>
+
+<!-- ✅ AOS Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, once: true });
+</script>
+
+
+<script>
+  function handleCategoryChange(category) {
+    if (category) {
+      window.location.href = `/shop?category=${encodeURIComponent(category)}`;
+    } else {
+      window.location.href = `/shop`;
+    }
+  }
+</script>
+
+<%- include('./partials/footer') %>

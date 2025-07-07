@@ -1,0 +1,95 @@
+<%- include('./partials/header') %>
+
+
+<div class="wrapper">
+  <%- include('./partials/adminHeader') %>
+  <%- include('./partials/sidebar') %>
+
+  
+<div class="page-content">
+
+               <!-- Start Container Fluid -->
+               <div class="container-fluid">
+
+    <div class="table-responsive shadow-sm">
+      <table class="table table-bordered table-hover bg-white">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Customer</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+         <%
+  const returnRequests = [
+    {
+      id: 1,
+      orderId: 'ORD001',
+      productName: 'Cotton Saree',
+      customerName: 'Lakshmi',
+      phone: '9876543210',
+      reason: 'Wrong size',
+      status: 'Pending',
+      date: '2025-07-07'
+    },
+    {
+      id: 2,
+      orderId: 'ORD002',
+      productName: 'Silk Dhoti',
+      customerName: 'Ravi',
+      phone: '9123456780',
+      reason: 'Color mismatch',
+      status: 'Approved',
+      date: '2025-07-06'
+    }
+  ];
+%>
+
+<% returnRequests.forEach((request, index) => { %>
+  <tr>
+    <td><%= index + 1 %></td>
+    <td><%= request.orderId %></td>
+    <td><%= request.productName %></td>
+    <td><%= request.customerName %> <br/><small><%= request.phone %></small></td>
+    <td><%= request.reason %></td>
+    <td>
+      <span class="badge 
+        <% if(request.status === 'Pending') { %> bg-warning 
+           <% } else if(request.status === 'Approved') { %> bg-success 
+           <% } else if(request.status === 'Rejected') { %> bg-danger 
+           <% } else { %> bg-secondary <% } %>">
+        <%= request.status %>
+      </span>
+    </td>
+    <td><%= request.date %></td>
+    <td>
+      <form action="#" method="POST" class="d-flex gap-2">
+        <select name="status" class="form-select form-select-sm" required>
+          <option value="" disabled selected>Change Status</option>
+          <option value="Approved">Approve</option>
+          <option value="Rejected">Reject</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+        <button class="btn btn-sm btn-primary">Update</button>
+      </form>
+    </td>
+  </tr>
+<% }) %>
+
+        </tbody>
+      </table>
+    
+
+    <p class="text-muted mt-3" style="font-size: 0.9rem;">Total Requests: <%= returnRequests.length %></p>
+  </div>
+  </div>
+  </div>
+  <%- include('./partials/footer') %>
+</div>
