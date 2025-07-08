@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Users = require("../models/userModel");
+const { countries } = require('countries-list');
 
 const viewHomepage = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ const viewSignin = async (req, res) => {
     res.set("Pragma", "no-cache");
     res.set("Expires", "0");
 
-    res.render("user/signin", { message: "" });
+    res.render("user/signin", { message: "", messageType:"" });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -85,14 +86,14 @@ const signIn = async (req, res) => {
     const user = await Users.findOne({ email });
     if (!user)
       return res.render("user/signin", {
-        message: "Invalid credentials",
+        message: "Username or Password does not match",
         messageType: "danger",
       });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.render("user/signin", {
-        message: "Invalid credentials",
+        message: "Username or Password does not match",
         messageType: "danger",
       });
 
@@ -103,14 +104,7 @@ const signIn = async (req, res) => {
     req.session.token = token;
     req.session.user = user._id;
 
-    const redirectUrl = req.session?.originalUrl || "/";
-    if (req.session) delete req.session.originalUrl;
-
-    return res.json({
-      success: true,
-      message: "Login successful",
-      redirect: redirectUrl,
-    });
+    res.redirect("/");
     
   } catch (error) {
     console.error(error);
@@ -264,6 +258,17 @@ const viewTermsofService = async (req, res) => {
   }
 };
  
+const getApiCountries = async (req, res) => {
+  const countryList = Object.values(countries).map(c => c.name).sort();
+  // Remove "India" if present and sort the rest
+  const india = "India";
+  const otherCountries = countryList.filter(name => name !== india).sort();
+
+  // Put India at the top
+  const finalList = [india, ...otherCountries];
+
+  res.json(finalList);
+};
 
 module.exports = {
   viewHomepage,
@@ -287,5 +292,6 @@ module.exports = {
   viewAddress,
   viewPrivacyPolicy,
   viewTermsofService,
-  
+  getApiCountries,
+
 }

@@ -10,21 +10,27 @@
       <h2>Welcome Back!</h2>
       <p>Let’s Login to Your Account</p>
 
-      <form id="signinForm">
+      <form id="signinForm" action="/signin" method="post">
         <!-- Email Input -->
         <div class="input-wrapper">
-          <input type="text" id="email" placeholder="Enter email" />
+          <input type="text" id="email" name="email" placeholder="Enter email" />
           <span class="input-error-message" id="emailError"></span>
         </div>
 
         <!-- Password Input -->
         <div class="input-wrapper password-wrapper">
-          <input type="password" id="password" placeholder="Enter password" />
+          <input type="password" id="password" name="password" placeholder="Enter password" />
           <span class="toggle-eye" id="togglePassword"><i class="fa-solid fa-eye"></i></span>
           <span class="input-error-message" id="passwordError"></span>
         </div>
 
         <button type="submit">LOGIN</button>
+
+        <% if (message) { %>
+                                        <div class="alert alert-<%= messageType === 'success' ? 'success' : 'danger' %>" role="alert">
+                                          <%= message %>
+                                        </div>
+                                    <% } %>
 
         <div style="text-align: right; margin-bottom: 1rem;">
           <a href="/forgot-password" style="color: #fff; text-decoration: underline; font-size: 0.9rem;">Forgot Password?</a>
@@ -39,7 +45,7 @@
 
 
 
-   <script>
+   <!-- <script>
 document.getElementById("signinForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -80,7 +86,7 @@ document.getElementById("togglePassword").addEventListener("click", function () 
   this.textContent = type === "password" ? <i class="fa-solid fa-eye"></i> : <i class="fa-solid fa-eye-slash"></i>;
 });
 
-   </script> 
+   </script>  -->
 </body>
 
 <style>

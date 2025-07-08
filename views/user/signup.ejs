@@ -14,11 +14,11 @@
         <p>Create your account to explore traditional elegance</p>
       </div>
 
-      <form id="signupForm">
+        <form id="signupForm" action="/signup" method="POST">
         <!-- Username -->
         <div class="input-wrapper">
-          <input type="text" name="username" placeholder="Enter username" />
-          <span class="input-error-message" id="usernameError"></span>
+          <input type="text" name="name" placeholder="Enter name" />
+          <span class="input-error-message" id="nameError"></span>
         </div>
 
         <!-- Email -->
@@ -48,25 +48,25 @@
     </div>
   </div>
 
-  <script> document.getElementById("signupForm").addEventListener("submit", function (e) {
+  <!-- <script> document.getElementById("signupForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const form = e.target;
-  const username = form.username.value.trim();
+  const name = form.name.value.trim();
   const email = form.email.value.trim();
   const password = form.password.value;
   const confirmPassword = form.confirmPassword.value;
 
   // Clear previous errors
-  document.getElementById("usernameError").textContent = "";
+  document.getElementById("nameError").textContent = "";
   document.getElementById("emailError").textContent = "";
   document.getElementById("passwordError").textContent = "";
   document.getElementById("confirmPasswordError").textContent = "";
 
   let isValid = true;
 
-  if (!username) {
-    document.getElementById("usernameError").textContent = "Username is required";
+  if (!name) {
+    document.getElementById("nameError").textContent = "Name is required";
     isValid = false;
   }
 
@@ -94,10 +94,10 @@
   if (isValid) {
     localStorage.setItem("userEmail", email);
     alert("Account created successfully!");
-    window.location.href = "/sign-in"; // Simulate navigation
+    window.location.href = "/signin"; // Simulate navigation
   }
 });
-</script>
+</script> -->
 </body>
 <style>
     body {
