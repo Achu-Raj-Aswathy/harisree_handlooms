@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const fs = require("fs");
 const path = require("path");
 const Users = require("../models/userModel");
+const Categories = require("../models/categoryModel");
 
 const viewLogin = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ const logoutAdmin = async (req, res) => {
 const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password)
+    console.log(email, password);
     const admin = await Users.findOne({ email, role: "admin" });
     if (!admin) {
       return res.render("admin/login", {
@@ -50,7 +51,7 @@ const loginAdmin = async (req, res) => {
 
     req.session.token = token;
     req.session.admin = admin._id;
-    
+
     res.redirect("/admin/");
   } catch (error) {
     console.error(error);
@@ -69,7 +70,27 @@ const viewDashboard = async (req, res) => {
 
 const viewAddCategory = async (req, res) => {
   try {
-    res.render("admin/addCategory", {});
+    const lastCategory = await Categories.findOne({})
+      .sort({ createdAt: -1 })
+      .select("categoryId");
+    console.log("last", lastCategory);
+
+    let nextCategoryId;
+
+    if (lastCategory && lastCategory.categoryId) {
+      // Extract numeric part (e.g., from 'INV00123')
+      const lastSeq = parseInt(
+        lastCategory.categoryId.replace("CatID-", ""),
+        10
+      );
+      const newSeq = lastSeq + 1;
+      nextCategoryId = `CatID-${String(newSeq).padStart(5, "0")}`;
+    } else {
+      // Default to INV00001 if no flights exist
+      nextCategoryId = "CatID-00001";
+    }
+
+    res.render("admin/addCategory", { categoryId: nextCategoryId });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -246,30 +267,56 @@ const viewReturn = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };
-module.exports = {
-    viewLogin,
-    logoutAdmin,
-    loginAdmin,
-    viewDashboard,
-    viewAddCategory,
-    viewListCategory,
-    viewEditCategory,
-    viewAddProduct,
-    viewListProduct,
-    viewEditProduct,
-    viewProductDetails,
-    viewAddCoupon,
-    viewListCoupon,
-    viewListOrder,
-    viewOrderDetails,
-    viewListUser,
-    viewUserDetails,
-    viewInventory,
-    viewSalesReport,
-    viewAddOffers,
-    viewListOffers,
-    viewHomeEditor,
-    viewOrderTracking,
-    viewReturn,
 
+const addCategory = async (req, res) => {
+  try {
+    const { categoryId, categoryName, description } = req.body;
+
+    // Collect uploaded file paths
+    const thumbnails = req.files.map(file => `/uploads/${file.filename}`);
+
+    // Save to DB
+    const newCategory = new Categories({
+      categoryId,
+      name: categoryName,
+      description,
+      images: thumbnails, // Store image paths array
+    });
+
+    await newCategory.save();
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error saving category:", error);
+    res.json({ success: false, message: error.message });
+  }
 }
+
+module.exports = {
+  viewLogin,
+  logoutAdmin,
+  loginAdmin,
+  viewDashboard,
+  viewAddCategory,
+  viewListCategory,
+  viewEditCategory,
+  viewAddProduct,
+  viewListProduct,
+  viewEditProduct,
+  viewProductDetails,
+  viewAddCoupon,
+  viewListCoupon,
+  viewListOrder,
+  viewOrderDetails,
+  viewListUser,
+  viewUserDetails,
+  viewInventory,
+  viewSalesReport,
+  viewAddOffers,
+  viewListOffers,
+  viewHomeEditor,
+  viewOrderTracking,
+  viewReturn,
+
+  addCategory,
+
+};

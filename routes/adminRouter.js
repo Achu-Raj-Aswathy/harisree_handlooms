@@ -29,7 +29,7 @@ adminRouter.get("/order-tracking",adminController.viewOrderTracking);
 adminRouter.get("/view-return", adminController.viewReturn);
 
 
-
 adminRouter.post('/login', adminController.loginAdmin);
+adminRouter.post('/add-category', upload.array("thumbnail[]", 5), adminController.addCategory)
 
 module.exports = adminRouter;
