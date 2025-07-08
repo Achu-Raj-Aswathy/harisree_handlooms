@@ -21,9 +21,8 @@ userRouter.get("/order-tracking", userController.viewOrderTracking);
 userRouter.get("/product-return", userController.viewProductReturn);
 userRouter.get("/payment", userController.viewPayment);
 userRouter.get("/address",userController.viewAddress);
-
-
-
+userRouter.get("/privacy-policy", userController.viewPrivacyPolicy);
+userRouter.get("/terms-of-service",userController.viewTermsofService);
 
 userRouter.post("/signin", userController.signIn);
 userRouter.post("/signup", userController.signUp);

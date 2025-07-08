@@ -247,7 +247,22 @@ const viewAddress = async (req, res) => {
     res.render("error", { error });
   }
 };
-
+const viewPrivacyPolicy = async (req, res) => {
+  try {
+    res.render("user/privacypolicy", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+const viewTermsofService = async (req, res) => {
+  try {
+    res.render("user/termsofService", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
  
 
 module.exports = {
@@ -270,5 +285,7 @@ module.exports = {
   viewProductReturn,
   viewPayment,
   viewAddress,
+  viewPrivacyPolicy,
+  viewTermsofService,
   
 }
