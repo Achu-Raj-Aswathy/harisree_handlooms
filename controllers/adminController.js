@@ -99,7 +99,8 @@ console.log("last", nextCategoryId);
 
 const viewListCategory = async (req, res) => {
   try {
-    res.render("admin/listCategory", {});
+    const categories = await Categories.find();
+    res.render("admin/listCategory", {categories});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
