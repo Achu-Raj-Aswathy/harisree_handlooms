@@ -9,7 +9,7 @@ userRouter.use(async(req, res, next) => {
       
       if (req.session.user) {
           try {
-            res.locals.user = await Users.findById(req.session.userId); 
+            res.locals.user = await Users.findById(req.session.user); 
           } catch (error) {
               console.error('Error fetching user details:', error);
               res.locals.user = null;
