@@ -89,7 +89,7 @@ const viewAddCategory = async (req, res) => {
       // Default to INV00001 if no flights exist
       nextCategoryId = "CatID-00001";
     }
-
+console.log("last", nextCategoryId);
     res.render("admin/addCategory", { categoryId: nextCategoryId });
   } catch (error) {
     console.log(error);

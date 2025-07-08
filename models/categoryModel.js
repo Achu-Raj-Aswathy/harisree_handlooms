@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const categorySchema = mongoose.Schema(
   {
-    categoryId: { type: String, unique: true },
+    categoryId: { type: String, unique: true ,required:true },
     name: { type: String, required: true },
     description: { type: String, required: true },
     images: [
