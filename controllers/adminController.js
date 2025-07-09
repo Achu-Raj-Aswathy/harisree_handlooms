@@ -170,9 +170,9 @@ const viewListProduct = async (req, res) => {
 }
 
 const viewEditProduct = async (req, res) => {
-  const productId = req.params.id;
+  const productId = req.query.id;
   try {
-    const product = await Products.findById(productId);
+    const product = await Products.findById(productId).populate("categoryId");
     if(!product){
       return res.status(404).send("Product not found");
     }
@@ -184,8 +184,13 @@ const viewEditProduct = async (req, res) => {
 };
 
 const viewProductDetails = async (req, res) => {
+  const productId = req.query.id;
   try {
-    res.render("admin/productDetails", {});
+    const product = await Products.findById(productId);
+    if(!product){
+      return res.status(404).send("Product not found");
+    }
+    res.render("admin/productDetails", { product });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -391,6 +396,30 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+const deleteProduct = async (req, res) => {
+    try {
+    const product = await Products.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Optional: Delete images from filesystem if stored locally
+    product.images.forEach(image => {
+      const filePath = path.join(__dirname, "../public/uploads", image);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
+
+    await Products.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -417,7 +446,7 @@ module.exports = {
   viewOrderTracking,
   viewReturn,
   deleteCategory,
-
+  deleteProduct,
   addCategory,
   addProduct,
 
