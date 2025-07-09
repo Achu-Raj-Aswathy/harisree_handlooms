@@ -1,331 +1,236 @@
 <%- include('./partials/header') %>
-     <div class="wrapper">
+<div class="wrapper">
+  <%- include('./partials/adminHeader') %>
+  <%- include('./partials/sidebar') %>
 
+  <div class="page-content">
+    <div class="container-xxl">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12">
+          <form id="CategoryForm" action="/admin/add-product" method="post" enctype="multipart/form-data">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Add Product Photo</h4>
+              </div>
+              <div class="card-body">
+                <input type="file" name="thumbnail[]" class="filepond" multiple
+                  data-max-file-size="3MB" data-max-files="5"
+                  accept="image/png, image/jpeg, image/gif" />
+                <small class="text-muted fs-13 d-block mt-2">
+                  1600 x 1200 (4:3) recommended. PNG and JPG files are allowed.
+                </small>
+              </div>
+            </div>
 
-          <%- include('./partials/adminHeader') %>
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Product Information</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="productId" class="form-label">Product ID</label>
+                      <input type="text" id="productId" name="productId" class="form-control" disabled
+                        value="<%= nextProductId %>">
+                      <input type="hidden" name="productId" value="<%= nextProductId %>">
+                    </div>
+                  </div>
 
-               <%- include('./partials/sidebar') %>
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="categoryId" class="form-label">Select Category</label>
+                      <select id="categoryId" name="categoryId" class="form-select" required>
+                        <option value="">-- Choose a Category --</option>
+                        <% categories.forEach(function(category) { %>
+                          <option value="<%= category.categoryId %>"><%= category.name %></option>
+                        <% }); %>
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
+                <div class="row">
+                  <div class="col-lg-8">
+                    <div class="mb-3">
+                      <label for="product-name" class="form-label">Product Name</label>
+                      <input type="text" name="productName" id="product-name" class="form-control"
+                        placeholder="Item Name">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="hsnCode" class="form-label">HSN Code</label>
+                      <input type="text" name="hsnCode" id="hsnCode" class="form-control" placeholder="HSN Code">
+                    </div>
+                  </div>
+                </div>
 
-                    <!-- ========== App Menu End ========== -->
+                <div class="row mb-3">
+                  <div class="col-lg-4">
+                    <label for="specification" class="form-label">Specifications</label>
+                    <select class="form-control" name="specification" id="specification">
+                      <option value="Not Applicable">Not Applicable</option>
+                      <option value="With Blouse">With Blouse</option>
+                      <option value="Without Blouse">Without Blouse</option>
+                    </select>
+                  </div>
 
-                    <!-- ==================================================== -->
-                    <!-- Start right Content here -->
-                    <!-- ==================================================== -->
-                    <div class="page-content">
+                  <div class="col-lg-4">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select class="form-control" name="gender" id="gender">
+                      <option value="">Select Gender</option>
+                      <option value="Men">Men</option>
+                      <option value="Women">Women</option>
+                      <option value="Boys">Boys</option>
+                      <option value="Girls">Girls</option>
+                      <option value="Unisex">Unisex</option>
+                    </select>
+                  </div>
 
-                         <!-- Start Container Fluid -->
-                         <div class="container-xxl">
+                  <div class="col-lg-4">
+                    <label for="size" class="form-label">Size</label>
+                    <select class="form-control" name="size" id="size">
+                      <option value="Free Size">Free Size</option>
+                      <option value="2 Meters">2 Meters</option>
+                      <option value="4 Meters">4 Meters</option>
+                      <option value="6.25 Meters">6.25 Meters</option>
+                    </select>
+                  </div>
+                </div>
 
-                              <div class="row">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="skuId" class="form-label">SKU ID</label>
+                      <input type="text" name="skuId" id="skuId" class="form-control" placeholder="">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="stock" class="form-label">Total Stock</label>
+                      <input type="text" name="stock" id="stock" class="form-control" placeholder="">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="lowStockAlert" class="form-label">Low Stock Alert</label>
+                      <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" placeholder="">
+                    </div>
+                  </div>
+                </div>
 
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description</label>
+                      <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
+                        placeholder="Short description about the product"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                                   <div class="col-xl-12 col-lg-12 ">
-                                        <!-- <div class="card">
-                                   <div class="card-header">
-                                        <h4 class="card-title">Add Product Photo</h4>
-                                   </div>
-                                   <div class="card-body">
-                                       
-                                        <form action="https://techzaa.in/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews" data-upload-preview-template="#uploadPreviewTemplate">
-                                             <div class="fallback">
-                                                  <input name="file" type="file" multiple />
-                                             </div>
-                                             <div class="dz-message needsclick">
-                                                  <i class="bx bx-cloud-upload fs-48 text-primary"></i>
-                                                  <h3 class="mt-4">Drop your images here, or <span class="text-primary">click to browse</span></h3>
-                                                  <span class="text-muted fs-13">
-                                                       1600 x 1200 (4:3) recommended. PNG, JPG and GIF files are allowed
-                                                  </span>
-                                             </div>
-                                        </form>
-                                   </div>
-                              </div> -->
-                                        <div class="card">
-                                             <div class="card-header">
-                                                  <h4 class="card-title">Add Product Photo</h4>
-                                             </div>
-                                             <div class="card-body">
-                                                  <!-- File Upload -->
-                                                  <input type="file" name="thumbnail[]" class="filepond" multiple
-                                                       data-max-file-size="3MB" data-max-files="5"
-                                                       accept="image/png, image/jpeg, image/gif" />
-                                                  <small class="text-muted fs-13 d-block mt-2">
-                                                       1600 x 1200 (4:3) recommended. PNG and JPG files are allowed.
-                                                  </small>
-                                             </div>
-                                        </div>
-                                        <div class="card">
-                                             <div class="card-header">
-                                                  <h4 class="card-title">Product Information</h4>
-                                             </div>
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Pricing Details</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <label for="price" class="form-label">Price</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text fs-15">Rs: </span>
+                      <input type="number" name="price" id="price" class="form-control" placeholder="000">
+                    </div>
+                  </div>
 
-                                             <div class="card-body">
-                                                  <div class="row">
-                                                       <div class="col-lg-6">
-                                                            <div class="mb-3">
-                                                                 <label for="categoryId" class="form-label">Product
-                                                                      ID</label>
-                                                                 <input type="text" id="categoryId" name="categoryId"
-                                                                      class="form-control" disabled
-                                                                      value="<%= nextProductId %>">
-                                                                 <input type="hidden" name="categoryId"
-                                                                      value="<%= nextProductId %>">
-                                                            </div>
-                                                       </div>
+                  <div class="col-lg-6">
+                    <label for="discount" class="form-label">Discount</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text fs-20"><i class='bx bxs-discount'></i></span>
+                      <input type="number" name="discount" id="discount" class="form-control" placeholder="000">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-<div class="col-lg-6">
-  <div class="mb-3">
-    <label for="categoryId" class="form-label">Select Category</label>
-    <select id="categoryId" name="categoryId" class="form-select" required>
-      <option value="">-- Choose a Category --</option>
-      <% categories.forEach(function(category) { %>
-        <option value="<%= category.categoryId %>"><%= category.name %> </option>
-      <% }); %>
-    </select>
+            <div class="p-3 bg-light mb-3 rounded">
+              <div class="row justify-content-end g-2">
+                <div class="col-lg-2">
+                  <button type="submit" class="btn btn-outline-secondary w-100">Create Product</button>
+                </div>
+                <div class="col-lg-2">
+                  <button type="reset" class="btn btn-primary w-100">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <%- include('./partials/footer') %>
   </div>
 </div>
 
-                                                  </div>
-                                                  <div class="row">
-                                                       <div class="col-lg-8">
-                                                            <form>
-                                                                 <div class="mb-3">
-                                                                      <label for="product-name"
-                                                                           class="form-label">Product Name</label>
-                                                                      <input type="text" id="product-name"
-                                                                           class="form-control"
-                                                                           placeholder="Items Name">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                       <div class="col-lg-4">
-                                                            <form>
-                                                                 <div class="mb-3">
-                                                                      <label for="product-brand" class="form-label">HSN
-                                                                           Code</label>
-                                                                      <input type="text" id="product-brand"
-                                                                           class="form-control"
-                                                                           placeholder="Brand Name">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                  </div>
-                                                  <div class="row  mb-3">
+<!-- ✅ FilePond Styles -->
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
 
-                                                       <div class="col-lg-4">
-                                                            <form>
-                                                                 <label for="gender"
-                                                                      class="form-label">Specifications</label>
-                                                                 <select class="form-control" id="gender" data-choices
-                                                                      data-choices-groups
-                                                                      data-placeholder="Select Gender">
-                                                                      <option value="Women">Not Applicable</option>
-                                                                      <option value="">With Blouse</option>
-                                                                      <option value="Men">Without Blouse</option>
+<!-- ✅ FilePond Scripts -->
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
 
+<script>
+  FilePond.registerPlugin(FilePondPluginImagePreview);
 
-                                                                 </select>
-                                                            </form>
-                                                       </div>
+  const pond = FilePond.create(document.querySelector('.filepond'), {
+    allowMultiple: true,
+    maxFiles: 5,
+    imagePreviewHeight: 170,
+    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+    labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+  });
 
-                                                       <div class="col-lg-4">
-                                                            <form>
-                                                                 <label for="gender" class="form-label">Gender</label>
-                                                                 <select class="form-control" id="gender" data-choices
-                                                                      data-choices-groups
-                                                                      data-placeholder="Select Gender">
-                                                                      <option value="">Select Gender</option>
-                                                                      <option value="Men">Men</option>
-                                                                      <option value="Women">Women</option>
-                                                                      <option value="Other">Boys</option>
-                                                                      <option value="Other">Girls</option>
-                                                                      <option value="Other">Unisex</option>
-                                                                 </select>
-                                                            </form>
-                                                       </div>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("CategoryForm");
 
-                                                       <div class="col-lg-4">
-                                                            <form>
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
 
-                                                                 <label for="gender" class="form-label">Size</label>
-                                                                 <select class="form-control" id="gender" data-choices
-                                                                      data-choices-groups
-                                                                      data-placeholder="Select Gender">
-                                                                      <option value="">Free Size</option>
-                                                                      <option value="Men">2 Meters</option>
-                                                                      <option value="Women">4 Meters</option>
-                                                                      <option value="Other">6.25 Meters</option>
-                                                                 </select>
-                                                            </form>
-                                                       </div>
-                                                  </div>
-                                                  <div class="row">
-                                                       <div class="col-lg-4">
-                                                            <form>
-                                                                 <div class="mb-3">
-                                                                      <label for="product-weight" class="form-label">SKU
-                                                                           ID</label>
-                                                                      <input type="text" id="product-weight"
-                                                                           class="form-control" placeholder="">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                       <div class="col-lg-4">
-                                                            <form>
-                                                                 <div class="mb-3">
-                                                                      <label for="product-weight"
-                                                                           class="form-label">Total Stock</label>
-                                                                      <input type="text" id="product-weight"
-                                                                           class="form-control" placeholder="">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
+      // Add FilePond files
+      pond.getFiles().forEach(fileItem => {
+        formData.append("thumbnail[]", fileItem.file);
+      });
 
-                                                       <div class="col-lg-4">
-                                                            <form>
-                                                                 <div class="mb-3">
-                                                                      <label for="product-weight" class="form-label">Low
-                                                                           Stock Alert</label>
-                                                                      <input type="text" id="product-weight"
-                                                                           class="form-control" placeholder="">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                  </div>
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Success:", data);
+          alert("Product added successfully!");
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("Failed to add product.");
+        });
+    });
+  });
+</script>
 
+<style>
+  .filepond--item {
+    width: calc(25% - 0.5em);
+  }
 
-
-                                                  <div class="row">
-                                                       <div class="col-lg-12">
-                                                            <div class="mb-3">
-                                                                 <label for="description"
-                                                                      class="form-label">Description</label>
-                                                                 <textarea class="form-control bg-light-subtle"
-                                                                      id="description" rows="7"
-                                                                      placeholder="Short description about the product"></textarea>
-                                                            </div>
-                                                       </div>
-                                                  </div>
-
-                                             </div>
-                                        </div>
-                                        <div class="card">
-                                             <div class="card-header">
-                                                  <h4 class="card-title">Pricing Details</h4>
-                                             </div>
-                                             <div class="card-body">
-                                                  <div class="row">
-                                                       <div class="col-lg-6">
-                                                            <form>
-                                                                 <label for="product-price"
-                                                                      class="form-label">Price</label>
-                                                                 <div class="input-group mb-3">
-                                                                      <span class="input-group-text fs-20"><i
-                                                                                class='bx bx-dollar'></i></span>
-                                                                      <input type="number" id="product-price"
-                                                                           class="form-control" placeholder="000">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                       <div class="col-lg-6">
-                                                            <form>
-                                                                 <label for="product-discount"
-                                                                      class="form-label">Discount</label>
-                                                                 <div class="input-group mb-3">
-                                                                      <span class="input-group-text fs-20"><i
-                                                                                class='bx bxs-discount'></i></span>
-                                                                      <input type="number" id="product-discount"
-                                                                           class="form-control" placeholder="000">
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                       <div class="col-lg-4">
-                                                            <!-- <form>
-                                                       <label for="product-tex" class="form-label">Tex</label>
-                                                       <div class="input-group mb-3">
-                                                            <span class="input-group-text fs-20"><i class='bx bxs-file-txt'></i></span>
-                                                            <input type="number" id="product-tex" class="form-control" placeholder="000">
-                                                       </div>
-                                                  </form> -->
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="p-3 bg-light mb-3 rounded">
-                                             <div class="row justify-content-end g-2">
-                                                  <div class="col-lg-2">
-                                                       <a href="#!" class="btn btn-outline-secondary w-100">Create
-                                                            Product</a>
-                                                  </div>
-                                                  <div class="col-lg-2">
-                                                       <a href="#!" class="btn btn-primary w-100">Cancel</a>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-
-                         <%- include('./partials/footer') %>
-
-                    </div>
-
-
-     </div>
-     <!-- ✅ FilePond Styles -->
-     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
-     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-          rel="stylesheet" />
-
-     <!-- ✅ FilePond Scripts -->
-     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-
-     <script>
-          // Register plugin
-          FilePond.registerPlugin(FilePondPluginImagePreview);
-
-          // Initialize FilePond
-          FilePond.create(document.querySelector('.filepond'), {
-               allowMultiple: true,
-               maxFiles: 5,
-               allowImagePreview: true,
-               imagePreviewHeight: 170,
-               acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
-               labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
-          });
-     </script>
-
-     <!-- ✅ Custom Preview Grid Styling -->
-     <style>
-          .filepond--item {
-               width: calc(25% - 0.5em);
-               /* 4 per row */
-          }
-
-          .filepond--list {
-               display: flex;
-               flex-wrap: wrap;
-               gap: 0.5em;
-          }
-     </style>
-
-     <script>
-          // On document ready
-          document.addEventListener("DOMContentLoaded", function () {
-               const form = document.getElementById("CategoryForm");
-
-               form.addEventListener("submit", function (e) {
-                    e.preventDefault();
-
-                    const formData = new FormData(form);
-
-                    // Append FilePond files manually
-                    const pondFiles = FilePond.find(document.querySelector('.filepond')).getFiles();
-                    pondFiles.forEach((file, index) => {
-                         formData.append("thumbnail[]", file.file);
-                    });
-               })
-          })
-     </script>
+  .filepond--list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+</style>
