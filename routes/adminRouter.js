@@ -27,7 +27,6 @@ adminRouter.get("/add-offers", adminController.viewAddOffers);
 adminRouter.get("/list-offers", adminController.viewListOffers);
 adminRouter.get("/order-tracking",adminController.viewOrderTracking);
 adminRouter.get("/view-return", adminController.viewReturn);
-adminRouter.post('/edit-category', upload.array("thumbnail[]",5),adminController.editCategory);
 adminRouter.get('/products/by-category/:categoryId',adminController.viewProductsByCategory);
 
 
@@ -42,6 +41,6 @@ adminRouter.delete('/delete-product/:id', adminController.deleteProduct);
 adminRouter.post('/login', adminController.loginAdmin);
 adminRouter.post('/add-category', upload.array("thumbnail[]", 5), adminController.addCategory);
 adminRouter.post('/add-product', upload.array("thumbnail[]", 5), adminController.addProduct)
-adminRouter.post("/edit-category", upload.array("thumbnail[]", 5), adminController.updateCategory);
+adminRouter.post('/edit-category', upload.array("thumbnail[]",5),adminController.editCategory);
 
 module.exports = adminRouter;
