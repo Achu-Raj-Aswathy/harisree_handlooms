@@ -110,11 +110,13 @@ const viewListCategory = async (req, res) => {
 
 const viewEditCategory = async (req, res) => {
   const categoryId = req.params.id;
+  
   try {
     const category = await Categories.findById(categoryId);
     if(!category){
       return res.status(404).send("Category not found");
     }
+    console.log(category);
     res.render("admin/editCategory", {category});
   } catch (error) {
     console.log(error);
