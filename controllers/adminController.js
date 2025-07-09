@@ -334,8 +334,8 @@ const addCategory = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { productId, productName, description, categoryId, price, totalStock, lowStockAlert, gender, hsnCode, skuId, specifications, size, discount } = req.body;
-
+    const { productId, productName, description, categoryId, price, stock, lowStockAlert, gender, hsnCode, skuId, specification, size, discount } = req.body;
+    console.log(req.body)
     // Collect uploaded file paths
     const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
 
@@ -347,17 +347,18 @@ const addProduct = async (req, res) => {
       description,
       price,
       discount,
-      stock: totalStock,
+      stock,
       lowStockLimit: lowStockAlert,
       gender,
       hsnCode,
-      specifications,
+      specifications: specification,
       skuId,
       size,
       images: thumbnails, // Store image paths array
     });
 
     await newProduct.save();
+    console.log(newProduct, "newProduct")
     res.json({ success: true });
   } catch (error) {
     console.error("Error saving product:", error);
