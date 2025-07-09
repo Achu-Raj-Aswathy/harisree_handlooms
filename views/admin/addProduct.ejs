@@ -42,9 +42,9 @@
                       <label for="categoryId" class="form-label">Select Category</label>
                       <select id="categoryId" name="categoryId" class="form-select" required>
                         <option value="">-- Choose a Category --</option>
-                        <% categories.forEach(function(category) { %>
-                          <option value="<%= category.categoryId %>"><%= category.name %></option>
-                        <% }); %>
+                        <% categories.forEach(category => { %>
+    <option value="<%= category._id %>"><%= category.name %></option>
+  <% }) %>
                       </select>
                     </div>
                   </div>
@@ -92,9 +92,9 @@
                     <label for="size" class="form-label">Size</label>
                     <select class="form-control" name="size" id="size">
                       <option value="Free Size">Free Size</option>
-                      <option value="2 Meters">2 Meters</option>
-                      <option value="4 Meters">4 Meters</option>
-                      <option value="6.25 Meters">6.25 Meters</option>
+                      <option value="2 meters">2 Meters</option>
+                      <option value="4 meters">4 Meters</option>
+                      <option value="6.25 meters">6.25 Meters</option>
                     </select>
                   </div>
                 </div>
@@ -213,7 +213,8 @@
         .then(response => response.json())
         .then(data => {
           console.log("Success:", data);
-          alert("Product added successfully!");
+          alert("Product added successfully!" );
+          window.location.href="/admin/list-product";
         })
         .catch(error => {
           console.error("Error:", error);
