@@ -42,6 +42,6 @@ adminRouter.delete('/delete-product/:id', adminController.deleteProduct);
 adminRouter.post('/login', adminController.loginAdmin);
 adminRouter.post('/add-category', upload.array("thumbnail[]", 5), adminController.addCategory);
 adminRouter.post('/add-product', upload.array("thumbnail[]", 5), adminController.addProduct)
-
+adminRouter.post("/edit-category", upload.array("thumbnail[]", 5), adminController.updateCategory);
 
 module.exports = adminRouter;
