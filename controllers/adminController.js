@@ -109,7 +109,7 @@ const viewListCategory = async (req, res) => {
 };
 
 const viewEditCategory = async (req, res) => {
-  const categoryId = req.params.id;
+  const categoryId = req.query.id;
   
   try {
     const category = await Categories.findById(categoryId);
