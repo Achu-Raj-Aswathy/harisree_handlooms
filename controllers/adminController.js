@@ -372,6 +372,11 @@ const addProduct = async (req, res) => {
   }
 };
 
+const fs = require("fs");
+const path = require("path");
+const Categories = require("../models/Categories");
+const Products = require("../models/Products");
+
 const deleteCategory = async (req, res) => {
   try {
     const category = await Categories.findById(req.params.id);
@@ -379,7 +384,23 @@ const deleteCategory = async (req, res) => {
       return res.status(404).json({ success: false, message: "Category not found" });
     }
 
-    // Optional: Delete images from filesystem if stored locally
+    // 1. Find products linked to this category
+    const products = await Products.find({ categoryId: category._id });
+
+    // 2. Loop through products and delete their images
+    for (const product of products) {
+      product.images.forEach(image => {
+        const filePath = path.join(__dirname, "../public/uploads", image);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+
+      // 3. Delete the product from DB
+      await Products.findByIdAndDelete(product._id);
+    }
+
+    // 4. Delete category images from filesystem
     category.images.forEach(image => {
       const filePath = path.join(__dirname, "../public/uploads", image);
       if (fs.existsSync(filePath)) {
@@ -387,9 +408,11 @@ const deleteCategory = async (req, res) => {
       }
     });
 
+    // 5. Delete the category itself
     await Categories.findByIdAndDelete(req.params.id);
 
-    res.json({ success: true, message: "Category deleted successfully" });
+    res.json({ success: true, message: "Category and related products deleted successfully" });
+
   } catch (err) {
     console.error("Delete error:", err);
     res.status(500).json({ success: false, message: "Server error" });
