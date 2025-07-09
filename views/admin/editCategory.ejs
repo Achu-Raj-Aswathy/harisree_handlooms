@@ -19,23 +19,26 @@
 
                          <div class="col-xl-12 col-lg-12 ">
                               <div class="card">
-                                   <div class="card-header">
-                                        <h4 class="card-title">Add Thumbnail Photo</h4>
-                                   </div>
-                                   <div class="card-body">
-                                        <!-- File Upload -->
-                                        <form action="https://techzaa.in/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews" data-upload-preview-template="#uploadPreviewTemplate">
-                                             <div class="fallback">
-                                                  <input name="file" type="file" multiple />
-                                             </div>
-                                             <div class="dz-message needsclick">
-                                                  <i class="bx bx-cloud-upload fs-48 text-primary"></i>
-                                                  <h3 class="mt-4">Drop your images here, or <span class="text-primary">click to browse</span></h3>
-                                                  <span class="text-muted fs-13">
-                                                       1600 x 1200 (4:3) recommended. PNG, JPG and GIF files are allowed
-                                                  </span>
-                                             </div>
-                                        </form>
+                                  
+                                  
+              <div class="card-header">
+                <h4 class="card-title">Add Thumbnail Photo</h4>
+              </div>
+              <div class="card-body">
+                <!-- File Upload -->
+                <input type="file" 
+                       name="thumbnail[]" 
+                       class="filepond"
+                       multiple 
+                       data-max-file-size="3MB"
+                       data-max-files="5"
+                       accept="image/png, image/jpeg, image/gif" />
+                <small class="text-muted fs-13 d-block mt-2">
+                  1600 x 1200 (4:3) recommended. PNG and JPG  files are allowed.
+                </small>
+              </div>
+            </div>
+
                                    </div>
                               </div>
 
@@ -108,16 +111,69 @@
                          </div>
                     </div>
 
-               </div>
+              
                <!-- End Container Fluid -->
 
              
 
-          </div>
+          
           <!-- ==================================================== -->
           <!-- End Page Content -->
           <!-- ==================================================== -->
 <%- include('./partials/footer') %>
 
      </div>
-    
+    <!-- ✅ FilePond Styles -->
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+
+<!-- ✅ FilePond Scripts -->
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+
+<script>
+  // Register plugin
+  FilePond.registerPlugin(FilePondPluginImagePreview);
+
+  // Initialize FilePond
+  FilePond.create(document.querySelector('.filepond'), {
+    allowMultiple: true,
+    maxFiles: 5,
+    allowImagePreview: true,
+    imagePreviewHeight: 170,
+    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+    labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+  });
+</script>
+
+<!-- ✅ Custom Preview Grid Styling -->
+<style>
+  .filepond--item {
+    width: calc(25% - 0.5em); /* 4 per row */
+  }
+
+  .filepond--list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+</style>
+
+     <script>
+  // On document ready
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("CategoryForm");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      // Append FilePond files manually
+      const pondFiles = FilePond.find(document.querySelector('.filepond')).getFiles();
+      pondFiles.forEach((file, index) => {
+        formData.append("thumbnail[]", file.file);
+      });
+    })
+  })
+      </script>
