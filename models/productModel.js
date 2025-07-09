@@ -3,11 +3,31 @@ const mongoose = require("mongoose");
 const productSchema = mongoose.Schema(
   {
     productId: { type: String, unique: true, required: true },
-    name: { type: String, required: true },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Categories",
       required: true,
+    },
+    name: { type: String, required: true },
+    hsnCode: { type: String, required: true },
+    price: { type: Number, required: true },
+    discount: { type: Number, required: false },
+    description: { type: String, required: true },
+    stock: { type: Number, default: 0 },
+    lowStockLimit: { type: Number, default: 0 },
+    skuId: { type: String, required: true },
+    isAvailable: { type: Boolean, default: true },
+    specifications: {
+      type: String,
+      enum: ["Not Applicable", "With Blouse", "Without Blouse"],
+    },
+    gender: {
+      type: String,
+      enum: ["Women", "Men", "Girls", "Boys", "Unisex"],
+    },
+    size: {
+      type: String,
+      enum: ["Free Size", "2 meters", "4 meters", "6.25 meters"],
     },
     images: [
       {
@@ -15,16 +35,6 @@ const productSchema = mongoose.Schema(
         required: true,
       },
     ],
-    price: { type: Number, required: true },
-    description: { type: String, required: true },
-    stock: { type: Number, default: 0 },
-    lowStockLimit: { type: Number, default: 0 },
-    isAvailable: { type: Boolean, default: true },
-    gender: {
-      type: String,
-      enum: ["Women", "Men", "Girls", "Boys", "Unisex"],
-    },
-    hsnCode: { type: String },
   },
   { timestamps: true }
 );
