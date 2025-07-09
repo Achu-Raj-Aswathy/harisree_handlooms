@@ -64,19 +64,19 @@
                             <h4 class="card-title">Date Schedule</h4>
                         </div>
                         <div class="card-body">
-                            <form>
-                                <div class="mb-3">
-                                     <label for="start-date" class="form-label text-dark">Start Date</label>
-                                     <input type="text" id="start-date" class="form-control flatpickr-input active" placeholder="dd-mm-yyyy" readonly="readonly">
-                                </div>
-                           </form>
-                           <form>
-                                <div class="mb-3">
-                                     <label for="end-date" class="form-label text-dark">End Date</label>
-                                     <input type="text" id="end-date" class="form-control flatpickr-input active" placeholder="dd-mm-yyyy" readonly="readonly">
-                                </div>
-                           </form>
-                        </div>
+  <form id="dateForm">
+    <div class="mb-3">
+      <label for="start-date" class="form-label text-dark">Start Date</label>
+      <input type="text" id="start-date" class="form-control" placeholder="dd-mm-yyyy" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label for="end-date" class="form-label text-dark">End Date</label>
+      <input type="text" id="end-date" class="form-control" placeholder="dd-mm-yyyy" readonly>
+    </div>
+  </form>
+</div>
+
                     </div>
                 </div>
 
@@ -93,50 +93,34 @@
                                         <input type="text" id="coupons-code" name="coupons-code" class="form-control" placeholder="Code enter">
                                    </div>
                                 </div>
-                                <div class="col-lg-6">
-                                    <form>
-                                        <label for="product-categories" class="form-label">Discount Products</label>
-                                        <select class="form-control" id="product-categories" data-choices data-choices-groups data-placeholder="Select Categories" name="choices-single-groups">
-                                             <option value="">Choose a categories</option>
-                                             <option value="Fashion">Fashion</option>
-                                             <option value="Electronics">Electronics</option>
-                                             <option value="Footwear">Footwear</option>
-                                             <option value="Sportswear">Sportswear</option>
-                                             <option value="Watches">Watches</option>
-                                             <option value="Furniture">Furniture</option>
-                                             <option value="Appliances">Appliances</option>
-                                             <option value="Headphones">Headphones</option>
-                                             <option value="Other Accessories">Other Accessories</option>
-                                        </select>
-                                   </form>
-                                </div>
-                                <div class="col-lg-6">
-                                    <form>
-                                        <label for="choices-country" class="form-label">Discount Country</label>
-                                        <select class="form-control" id="choices-country" data-choices data-choices-groups data-placeholder="Select Country" name="choices-country">
-                                             <option value="">Choose a country</option>
-                                             <optgroup label="">
-                                                  <option value="">United Kingdom</option>
-                                                  <option value="Fran">France</option>
-                                                  <option value="Netherlands">Netherlands</option>
-                                                  <option value="U.S.A">U.S.A</option>
-                                                  <option value="Denmark">Denmark</option>
-                                                  <option value="Canada">Canada</option>
-                                                  <option value="Australia">Australia</option>
-                                                  <option value="India">India</option>
-                                                  <option value="Germany">Germany</option>
-                                                  <option value="Spain">Spain</option>
-                                                  <option value="United Arab Emirates">United Arab Emirates</option>
-                                             </optgroup>
-                                        </select>
-                                   </form>
-                                </div>
-                                <div class="col-lg-6">
+                                 <div class="col-lg-6">
+  <div class="mb-3">
+    <label for="categoryId" class="form-label">Select Category</label>
+    <select id="categoryId" name="categoryId" class="form-select" required>
+      <option value="">-- Choose a Category --</option>
+      <% categories.forEach(category => { %>
+        <option value="<%= category._id %>"><%= category.name %></option>
+      <% }) %>
+    </select>
+  </div>
+</div>
+
+<div class="col-lg-6">
+  <div class="mb-3">
+    <label for="product-categories" class="form-label">Discount Products</label>
+    <select class="form-control" id="product-categories" name="choices-single-groups">
+      <!-- Options will be loaded dynamically -->
+    </select>
+  </div>
+</div>
+
+                            
+                                <!-- <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="coupons-limits" class="form-label">Coupons Limits</label>
                                         <input type="number" id="coupons-limits" name="coupons-limits" class="form-control" placeholder="limits nu">
                                    </div>
-                                </div>
+                                </div> -->
                             </div>
                             <h4 class="card-title mb-3 mt-2">Coupons Types</h4>
                             <div class="row mb-3">
@@ -198,4 +182,43 @@
     <!-- Vendor Javascript (Require in all Page) -->
     <%- include('./partials/footer') %>
 
-</body>
+<script>
+  flatpickr("#start-date", {
+    dateFormat: "d-m-Y"
+  });
+
+  flatpickr("#end-date", {
+    dateFormat: "d-m-Y"
+  });
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  document.getElementById('categoryId').addEventListener('change', function () {
+    const categoryId = this.value;
+    const productSelect = document.getElementById('product-categories');
+
+    // Clear current options
+    productSelect.innerHTML = '<option value="">Loading...</option>';
+
+    if (categoryId) {
+      fetch(`/admin/products/by-category/${categoryId}`)
+        .then(res => res.json())
+        .then(data => {
+          productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+          data.products.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product._id;
+            option.textContent = product.name;
+            productSelect.appendChild(option);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          productSelect.innerHTML = '<option value="">Error loading products</option>';
+        });
+    } else {
+      productSelect.innerHTML = '<option value="">-- Select Category First --</option>';
+    }
+  });
+</script>

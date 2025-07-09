@@ -176,7 +176,8 @@ const viewEditProduct = async (req, res) => {
     if(!product){
       return res.status(404).send("Product not found");
     }
-    res.render("admin/editProduct", { product });
+    const categories = await Categories.find({}).select("name"); // only fetch name and _id
+    res.render("admin/editProduct", { product,categories });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -199,7 +200,8 @@ const viewProductDetails = async (req, res) => {
 
 const viewAddCoupon = async (req, res) => {
   try {
-    res.render("admin/couponsAdd", {});
+     const categories = await Categories.find({}).select("name");
+    res.render("admin/couponsAdd", {categories});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -438,6 +440,60 @@ const deleteProduct = async (req, res) => {
   }
 }
 
+const editCategory= async (req, res) => {
+  try {
+    const { categoryId, categoryName, description } = req.body;
+
+    const category = await Category.findOne({ categoryId });
+
+    if (!category) {
+      return res.status(404).send('Category not found');
+    }
+
+    // Update text fields
+    category.name = categoryName;
+    category.description = description;
+
+    // Update image files only if new ones uploaded
+    const imageUpdates = {};
+    req.files.forEach(file => {
+      const fieldName = file.fieldname; // e.g. sliderImage1
+      const index = parseInt(fieldName.replace('sliderImage', '')) - 1;
+
+      if (!isNaN(index)) {
+        imageUpdates[index] = '/uploads/category/' + file.filename;
+      }
+    });
+
+    // Update only uploaded images in their positions
+    const updatedImages = [...category.images]; // Copy existing images
+    Object.entries(imageUpdates).forEach(([index, path]) => {
+      updatedImages[index] = path;
+    });
+
+    category.images = updatedImages;
+
+    await category.save();
+
+    res.json({ message: 'Category updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+
+
+
+const viewProductsByCategory = async (req, res) => {
+  try {
+    const products = await Products.find({ categoryId: req.params.categoryId });
+    res.json({ products });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+};
+
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -467,5 +523,7 @@ module.exports = {
   deleteProduct,
   addCategory,
   addProduct,
+  editCategory,
+  viewProductsByCategory,
 
 };

@@ -53,7 +53,7 @@
                                                   <form>
                                                        <div class="mb-3">
                                                             <label for="product-id" class="form-label">Category ID</label>
-                                                            <input type="text" id="product-id" class="form-control" placeholder="#******" value="FS16276">
+                                                            <input type="text" id="product-id" class="form-control" name="categoryId" value="<%= category.categoryId %>">
                                                        </div>
 
                                                   </form>
@@ -62,7 +62,7 @@
                                                   <form>
                                                        <div class="mb-3">
                                                             <label for="category-title" class="form-label">Category Title</label>
-                                                            <input type="text" id="category-title" class="form-control" placeholder="Enter Title" value="Fashion Men , Women & Kid's">
+                                                            <input type="text" id="category-title" class="form-control" name="categoryName" value="<%= category.name %>">
                                                        </div>
                                                   </form>
                                              </div>
@@ -91,7 +91,8 @@
                                              <div class="col-lg-12">
                                                   <div class="mb-0">
                                                        <label for="description" class="form-label">Description</label>
-                                                       <textarea class="form-control bg-light-subtle" id="description" rows="7" placeholder="Type description">Aurora Fashion has once again captivated fashion enthusiasts with its latest collection, seamlessly blending elegance with comfort in a range of exquisite designs.</textarea>
+                                                       <textarea class="form-control bg-light-subtle" id="description" rows="7" name="description" value="<%= category.description %>" ><%= category.description %></textarea>
+
                                                   </div>
                                              </div>
                                         </div>

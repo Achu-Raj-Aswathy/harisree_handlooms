@@ -28,170 +28,171 @@
                                    <div class="card-header">
                                         <h4 class="card-title">Add Product Photo</h4>
                                    </div>
-                                   <div class="card-body">
-                                        <!-- File Upload -->
-                                        <form action="https://techzaa.in/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews" data-upload-preview-template="#uploadPreviewTemplate">
-                                             <div class="fallback">
-                                                  <input name="file" type="file" multiple />
-                                             </div>
-                                             <div class="dz-message needsclick">
-                                                  <i class="bx bx-cloud-upload fs-48 text-primary"></i>
-                                                  <h3 class="mt-4">Drop your images here, or <span class="text-primary">click to browse</span></h3>
-                                                  <span class="text-muted fs-13">
-                                                       1600 x 1200 (4:3) recommended. PNG, JPG and GIF files are allowed
-                                                  </span>
-                                             </div>
-                                        </form>
-                                   </div>
-                              </div>
-                              <div class="card">
-                                   <div class="card-header">
-                                        <h4 class="card-title">Product Information</h4>
-                                   </div>
-                                   <div class="card-body">
-                                        <div class="row">
-                                             <div class="col-lg-6">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-name" class="form-label">Product Name</label>
-                                                            <input type="text" id="product-name" class="form-control" placeholder="Items Name" value="Men Black Slim Fit T-shirt">
-                                                       </div>
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-6">
-                                                  <form>
-                                                       <label for="product-categories" class="form-label">Product Categories</label>
-                                                       <select class="form-control" id="product-categories" data-choices data-choices-groups data-placeholder="Select Categories" name="choices-single-groups">
-                                                            <option value="">Choose a categories</option>
-                                                            <option value="Fashion" selected>Fashion</option>
-                                                            <option value="Electronics">Electronics</option>
-                                                            <option value="Footwear">Footwear</option>
-                                                            <option value="Sportswear">Sportswear</option>
-                                                            <option value="Watches">Watches</option>
-                                                            <option value="Furniture">Furniture</option>
-                                                            <option value="Appliances">Appliances</option>
-                                                            <option value="Headphones">Headphones</option>
-                                                            <option value="Other Accessories">Other Accessories</option>
-                                                       </select>
-                                                  </form>
-                                             </div>
-                                        </div>
-                                        <div class="row">
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-brand" class="form-label">Brand</label>
-                                                            <input type="text" id="product-brand" class="form-control" placeholder="Brand Name" value="Larkon Fashion">
-                                                       </div>
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-weight" class="form-label">Weight</label>
-                                                            <input type="text" id="product-weight" class="form-control" placeholder="In gm & kg" value="300gm">
-                                                       </div>
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <label for="gender" class="form-label">Gender</label>
-                                                       <select class="form-control" id="gender" data-choices data-choices-groups data-placeholder="Select Gender">
-                                                            <option value="">Select Gender</option>
-                                                            <option value="Men" selected>Men</option>
-                                                            <option value="Women">Women</option>
-                                                            <option value="Other">Other</option>
-                                                       </select>
-                                                  </form>
-                                             </div>
-                                        </div>
-                                      
-                                        <div class="row">
-                                             <div class="col-lg-12">
-                                                  <div class="mb-3">
-                                                       <label for="description" class="form-label">Description</label>
-                                                       <textarea class="form-control bg-light-subtle" id="description" rows="7" placeholder="Short description about the product">Top in sweatshirt fabric made from a cotton blend with a soft brushed inside. Relaxed fit with dropped shoulders, long sleeves and ribbing around the neckline, cuffs and hem. Small metal text applique.</textarea>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="row">
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-id" class="form-label">Tag Number</label>
-                                                            <input type="number" id="product-id" class="form-control" placeholder="#******" value="36294007">
-                                                       </div>
-
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-stock" class="form-label">Stock</label>
-                                                            <input type="number" id="product-stock" class="form-control" placeholder="Quantity" value="465">
-                                                       </div>
-
-                                                  </form>
-                                             </div>
-                                            
-                                        </div>
-                                   </div>
-                              </div>
-                              <div class="card">
-                                   <div class="card-header">
-                                        <h4 class="card-title">Pricing Details</h4>
-                                   </div>
-                                   <div class="card-body">
-                                        <div class="row">
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <label for="product-price" class="form-label">Price</label>
-                                                       <div class="input-group mb-3">
-                                                            <span class="input-group-text fs-20"><i class='bx bx-dollar'></i></span>
-                                                            <input type="number" id="product-price" class="form-control" placeholder="000" value="80">
-                                                       </div>
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <label for="product-discount" class="form-label">Discount</label>
-                                                       <div class="input-group mb-3">
-                                                            <span class="input-group-text fs-20"><i class='bx bxs-discount'></i></span>
-                                                            <input type="number" id="product-discount" class="form-control" placeholder="000" value="30">
-                                                       </div>
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-4">
-                                                  <form>
-                                                       <label for="product-tex" class="form-label">Tex</label>
-                                                       <div class="input-group mb-3">
-                                                            <span class="input-group-text fs-20"><i class='bx bxs-file-txt'></i></span>
-                                                            <input type="number" id="product-tex" class="form-control" placeholder="000" value="3">
-                                                       </div>
-                                                  </form>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                              <div class="p-3 bg-light mb-3 rounded">
-                                   <div class="row justify-content-end g-2">
-                                        <div class="col-lg-2">
-                                             <a href="#!" class="btn btn-outline-secondary w-100">Reset</a>
-                                        </div>
-                                        <div class="col-lg-2">
-                                             <a href="#!" class="btn btn-primary w-100">Save</a>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
+                                    <div class="card-body">
+                <input type="file" name="thumbnail[]" class="filepond" multiple
+                  data-max-file-size="3MB" data-max-files="5"
+                  accept="image/png, image/jpeg, image/gif" />
+                <small class="text-muted fs-13 d-block mt-2">
+                  1600 x 1200 (4:3) recommended. PNG and JPG files are allowed.
+                </small>
+              </div>
+            </div>
+                            
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Product Information</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="productId" class="form-label">Product ID</label>
+                      <input type="text" id="productId" name="productId" class="form-control" disabled
+                        value="<%= product.productId %>">
+                      <input type="hidden" name="productId" value="<%= product.productId %>">
                     </div>
+                  </div>
 
-               </div>
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="categoryId" class="form-label">Select Category</label>
+                      <select id="categoryId" name="categoryId" class="form-select" required>
+                        <option value="">-- Choose a Category --</option>
+                        <% categories.forEach(category => { %>
+    <option value="<%= category._id %>"><%= category.name %></option>
+  <% }) %>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-8">
+                    <div class="mb-3">
+                      <label for="product-name" class="form-label">Product Name</label>
+                      <input type="text" name="productName" id="product-name" class="form-control"
+                        value="<%= product.name %>">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="hsnCode" class="form-label">HSN Code</label>
+                      <input type="text" name="hsnCode" id="hsnCode" class="form-control" value="<%= product.hsnCode %>">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+  <div class="col-lg-4">
+    <label for="specification" class="form-label">Specifications</label>
+    <select class="form-control" name="specification" id="specification">
+      <option value="Not Applicable" <%= product.specification === 'Not Applicable' ? 'selected' : '' %>>Not Applicable</option>
+      <option value="With Blouse" <%= product.specification === 'With Blouse' ? 'selected' : '' %>>With Blouse</option>
+      <option value="Without Blouse" <%= product.specification === 'Without Blouse' ? 'selected' : '' %>>Without Blouse</option>
+    </select>
+  </div>
+
+  <div class="col-lg-4">
+    <label for="gender" class="form-label">Gender</label>
+    <select class="form-control" name="gender" id="gender">
+      <option value="" <%= !product.gender ? 'selected' : '' %>>Select Gender</option>
+      <option value="Men" <%= product.gender === 'Men' ? 'selected' : '' %>>Men</option>
+      <option value="Women" <%= product.gender === 'Women' ? 'selected' : '' %>>Women</option>
+      <option value="Boys" <%= product.gender === 'Boys' ? 'selected' : '' %>>Boys</option>
+      <option value="Girls" <%= product.gender === 'Girls' ? 'selected' : '' %>>Girls</option>
+      <option value="Unisex" <%= product.gender === 'Unisex' ? 'selected' : '' %>>Unisex</option>
+    </select>
+  </div>
+
+  <div class="col-lg-4">
+    <label for="size" class="form-label">Size</label>
+    <select class="form-control" name="size" id="size">
+      <option value="Free Size" <%= product.size === 'Free Size' ? 'selected' : '' %>>Free Size</option>
+      <option value="2 meters" <%= product.size === '2 meters' ? 'selected' : '' %>>2 Meters</option>
+      <option value="4 meters" <%= product.size === '4 meters' ? 'selected' : '' %>>4 Meters</option>
+      <option value="6.25 meters" <%= product.size === '6.25 meters' ? 'selected' : '' %>>6.25 Meters</option>
+    </select>
+  </div>
+</div>
+
+
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="skuId" class="form-label">SKU ID</label>
+                      <input type="text" name="skuId" id="skuId" class="form-control" value="<%= product.skuId %>">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="stock" class="form-label">Total Stock</label>
+                      <input type="text" name="stock" id="stock" class="form-control" value="<%= product.stock %>">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="lowStockAlert" class="form-label">Low Stock Alert</label>
+                      <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" value="<%= product.lowStockAlert %>">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description</label>
+                      <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
+                        placeholder="Short description about the product"  value="<%= product.description %>"> <%= product.description %></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Pricing Details</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <label for="price" class="form-label">Price</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text fs-15">Rs: </span>
+                      <input type="number" name="price" id="price" class="form-control" value="<%= product.price %>">
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6">
+                    <label for="discount" class="form-label">Discount Price</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text fs-20"><i class='bx bxs-discount'></i></span>
+                      <input type="number" name="discount" id="discount" class="form-control" value="<%= product.discount %>">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-light mb-3 rounded">
+              <div class="row justify-content-end g-2">
+                <div class="col-lg-2">
+                  <button type="submit" class="btn btn-outline-secondary w-100">Create Product</button>
+                </div>
+                <div class="col-lg-2">
+                  <button type="reset" class="btn btn-primary w-100">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
                <!-- End Container Fluid -->
 
              
 
-          </div>
+         
           <!-- ==================================================== -->
           <!-- End Page Content -->
           <!-- ==================================================== -->
@@ -199,4 +200,49 @@
  
  
  <%- include('./partials/footer') %>
+  </div>
 </div>
+
+<!-- ✅ FilePond Styles -->
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+
+<!-- ✅ FilePond Scripts -->
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+
+<script>
+  FilePond.registerPlugin(FilePondPluginImagePreview);
+
+  const pond = FilePond.create(document.querySelector('.filepond'), {
+    allowMultiple: true,
+    maxFiles: 5,
+    imagePreviewHeight: 170,
+    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+    labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+  });
+   document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("CategoryForm");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      // Add FilePond files
+      pond.getFiles().forEach(fileItem => {
+        formData.append("thumbnail[]", fileItem.file);
+      });
+     });
+  });
+      </script>
+      <style>
+  .filepond--item {
+    width: calc(25% - 0.5em);
+  }
+
+  .filepond--list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+</style>

@@ -27,6 +27,11 @@ adminRouter.get("/add-offers", adminController.viewAddOffers);
 adminRouter.get("/list-offers", adminController.viewListOffers);
 adminRouter.get("/order-tracking",adminController.viewOrderTracking);
 adminRouter.get("/view-return", adminController.viewReturn);
+adminRouter.post('/edit-category', upload.array("thumbnail[]",5),adminController.editCategory);
+adminRouter.get('/products/by-category/:categoryId',adminController.viewProductsByCategory);
+
+
+
 
 
 adminRouter.delete("/delete-category/:id", adminController.deleteCategory);
