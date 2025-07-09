@@ -12,8 +12,8 @@ adminRouter.get("/list-category",  adminController.viewListCategory);
 adminRouter.get("/edit-category",  adminController.viewEditCategory);
 adminRouter.get("/add-product", adminController.viewAddProduct);
 adminRouter.get("/list-product",  adminController.viewListProduct);
-adminRouter.get("/edit-product/:id",  adminController.viewEditProduct);
-adminRouter.get("/product", adminController.viewProductDetails);
+adminRouter.get("/edit-product",  adminController.viewEditProduct);
+adminRouter.get("/product-details", adminController.viewProductDetails);
 adminRouter.get("/add-coupon",  adminController.viewAddCoupon);
 adminRouter.get("/list-coupon", adminController.viewListCoupon);
 adminRouter.get("/list-order",  adminController.viewListOrder);
@@ -27,8 +27,10 @@ adminRouter.get("/add-offers", adminController.viewAddOffers);
 adminRouter.get("/list-offers", adminController.viewListOffers);
 adminRouter.get("/order-tracking",adminController.viewOrderTracking);
 adminRouter.get("/view-return", adminController.viewReturn);
-adminRouter.delete("/delete-category/:id", adminController.deleteCategory);
 
+
+adminRouter.delete("/delete-category/:id", adminController.deleteCategory);
+adminRouter.delete('/delete-product/:id', adminController.deleteProduct);
 
 
 
