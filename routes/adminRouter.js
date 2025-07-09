@@ -9,7 +9,7 @@ adminRouter.get("/login", isLogout, adminController.viewLogin);
 adminRouter.get("/logout", isLogin, adminController.logoutAdmin);
 adminRouter.get("/add-category",  adminController.viewAddCategory);
 adminRouter.get("/list-category",  adminController.viewListCategory);
-adminRouter.get("/edit-category/:id",  adminController.viewEditCategory);
+adminRouter.get("/edit-category",  adminController.viewEditCategory);
 adminRouter.get("/add-product", adminController.viewAddProduct);
 adminRouter.get("/list-product",  adminController.viewListProduct);
 adminRouter.get("/edit-product/:id",  adminController.viewEditProduct);
