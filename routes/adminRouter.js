@@ -27,6 +27,9 @@ adminRouter.get("/add-offers", adminController.viewAddOffers);
 adminRouter.get("/list-offers", adminController.viewListOffers);
 adminRouter.get("/order-tracking",adminController.viewOrderTracking);
 adminRouter.get("/view-return", adminController.viewReturn);
+adminRouter.delete("/delete-category/:id", adminController.deleteCategory);
+
+
 
 
 adminRouter.post('/login', adminController.loginAdmin);

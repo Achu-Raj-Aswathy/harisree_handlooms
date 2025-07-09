@@ -361,6 +361,30 @@ const addProduct = async (req, res) => {
   }
 };
 
+const deleteCategory = async (req, res) => {
+  try {
+    const category = await Categories.findById(req.params.id);
+    if (!category) {
+      return res.status(404).json({ success: false, message: "Category not found" });
+    }
+
+    // Optional: Delete images from filesystem if stored locally
+    category.images.forEach(image => {
+      const filePath = path.join(__dirname, "../public/uploads", image);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
+
+    await Categories.findByIdAndDelete(req.params.id);
+
+    res.json({ success: true, message: "Category deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -386,6 +410,7 @@ module.exports = {
   viewHomeEditor,
   viewOrderTracking,
   viewReturn,
+  deleteCategory,
 
   addCategory,
   addProduct,
