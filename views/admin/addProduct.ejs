@@ -55,13 +55,13 @@
                     <div class="mb-3">
                       <label for="product-name" class="form-label">Product Name</label>
                       <input type="text" name="productName" id="product-name" class="form-control"
-                        placeholder="Item Name">
+                        placeholder="Item Name" required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
                       <label for="hsnCode" class="form-label">HSN Code</label>
-                      <input type="text" name="hsnCode" id="hsnCode" class="form-control" placeholder="HSN Code">
+                      <input type="text" name="hsnCode" id="hsnCode" class="form-control" placeholder="HSN Code"  required>
                     </div>
                   </div>
                 </div>
@@ -69,7 +69,7 @@
                 <div class="row mb-3">
                   <div class="col-lg-4">
                     <label for="specification" class="form-label">Specifications</label>
-                    <select class="form-control" name="specification" id="specification">
+                    <select class="form-control" name="specification" id="specification"  required>
                       <option value="Not Applicable">Not Applicable</option>
                       <option value="With Blouse">With Blouse</option>
                       <option value="Without Blouse">Without Blouse</option>
@@ -78,7 +78,7 @@
 
                   <div class="col-lg-4">
                     <label for="gender" class="form-label">Gender</label>
-                    <select class="form-control" name="gender" id="gender">
+                    <select class="form-control" name="gender" id="gender"  required>
                       <option value="">Select Gender</option>
                       <option value="Men">Men</option>
                       <option value="Women">Women</option>
@@ -90,7 +90,7 @@
 
                   <div class="col-lg-4">
                     <label for="size" class="form-label">Size</label>
-                    <select class="form-control" name="size" id="size">
+                    <select class="form-control" name="size" id="size"  required>
                       <option value="Free Size">Free Size</option>
                       <option value="2 meters">2 Meters</option>
                       <option value="4 meters">4 Meters</option>
@@ -103,19 +103,19 @@
                   <div class="col-lg-4">
                     <div class="mb-3">
                       <label for="skuId" class="form-label">SKU ID</label>
-                      <input type="text" name="skuId" id="skuId" class="form-control" placeholder="">
+                      <input type="text" name="skuId" id="skuId" class="form-control" placeholder="SKU id"  required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
                       <label for="stock" class="form-label">Total Stock</label>
-                      <input type="text" name="stock" id="stock" class="form-control" placeholder="">
+                      <input type="text" name="stock" id="stock" class="form-control" placeholder="stock"  required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
                       <label for="lowStockAlert" class="form-label">Low Stock Alert</label>
-                      <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" placeholder="">
+                      <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" placeholder="low stock"  required>
                     </div>
                   </div>
                 </div>
@@ -125,7 +125,7 @@
                     <div class="mb-3">
                       <label for="description" class="form-label">Description</label>
                       <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
-                        placeholder="Short description about the product"></textarea>
+                        placeholder="Short description about the product"  required></textarea>
                     </div>
                   </div>
                 </div>
@@ -142,12 +142,12 @@
                     <label for="price" class="form-label">Price</label>
                     <div class="input-group mb-3">
                       <span class="input-group-text fs-15">Rs: </span>
-                      <input type="number" name="price" id="price" class="form-control" placeholder="000">
+                      <input type="number" name="price" id="price" class="form-control" placeholder="000"  required>
                     </div>
                   </div>
 
                   <div class="col-lg-6">
-                    <label for="discount" class="form-label">Discount</label>
+                    <label for="discount" class="form-label">Discount Price</label>
                     <div class="input-group mb-3">
                       <span class="input-group-text fs-20"><i class='bx bxs-discount'></i></span>
                       <input type="number" name="discount" id="discount" class="form-control" placeholder="000">

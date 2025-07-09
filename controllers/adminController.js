@@ -372,11 +372,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-const fs = require("fs");
-const path = require("path");
-const Categories = require("../models/Categories");
-const Products = require("../models/Products");
-
 const deleteCategory = async (req, res) => {
   try {
     const category = await Categories.findById(req.params.id);
