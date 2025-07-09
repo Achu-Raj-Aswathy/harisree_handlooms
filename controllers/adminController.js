@@ -150,7 +150,7 @@ const viewAddProduct = async (req, res) => {
     const categories = await Categories.find({}).select("name"); // only fetch name and _id
 
     res.render("admin/addProduct", {
-      nextProductId,
+      productId: nextProductId,
       categories,
     });
   } catch (error) {
@@ -334,7 +334,7 @@ const addCategory = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { productId, productName, description, categoryId, price, stock, lowStockLimit, gender, hsnCode } = req.body;
+    const { productId, productName, description, categoryId, price, totalStock, lowStockAlert, gender, hsnCode, skuId, specifications, size, discount } = req.body;
 
     // Collect uploaded file paths
     const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
@@ -346,10 +346,14 @@ const addProduct = async (req, res) => {
       name: productName,
       description,
       price,
-      stock,
-      lowStockLimit,
+      discount,
+      stock: totalStock,
+      lowStockLimit: lowStockAlert,
       gender,
       hsnCode,
+      specifications,
+      skuId,
+      size,
       images: thumbnails, // Store image paths array
     });
 
