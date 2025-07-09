@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const Users = require("../models/userModel");
 const Categories = require("../models/categoryModel");
+const Products = require("../models/productModel");
 
 const viewLogin = async (req, res) => {
   try {
@@ -89,7 +90,7 @@ const viewAddCategory = async (req, res) => {
       // Default to INV00001 if no flights exist
       nextCategoryId = "CatID-00001";
     }
-console.log("last", nextCategoryId);
+    console.log("last", nextCategoryId);
     res.render("admin/addCategory", { categoryId: nextCategoryId });
   } catch (error) {
     console.log(error);
@@ -100,7 +101,7 @@ console.log("last", nextCategoryId);
 const viewListCategory = async (req, res) => {
   try {
     const categories = await Categories.find();
-    res.render("admin/listCategory", {categories});
+    res.render("admin/listCategory", { categories });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -108,8 +109,13 @@ const viewListCategory = async (req, res) => {
 };
 
 const viewEditCategory = async (req, res) => {
+  const categoryId = req.params.id;
   try {
-    res.render("admin/editCategory", {});
+    const category = await Categories.findById(categoryId);
+    if(!category){
+      return res.status(404).send("Category not found");
+    }
+    res.render("admin/editCategory", {category});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -118,7 +124,33 @@ const viewEditCategory = async (req, res) => {
 
 const viewAddProduct = async (req, res) => {
   try {
-    res.render("admin/addProduct", {});
+        const lastProduct = await Products.findOne({})
+      .sort({ createdAt: -1 })
+      .select("productId");
+    console.log("last", lastProduct);
+
+    let nextProductId;
+
+    if (lastProduct && lastProduct.productId) {
+      // Extract numeric part (e.g., from 'INV00123')
+      const lastSeq = parseInt(
+        lastProduct.productId.replace("PID-", ""),
+        10
+      );
+      const newSeq = lastSeq + 1;
+      nextProductId = `PID-${String(newSeq).padStart(5, "0")}`;
+    } else {
+      // Default to INV00001 if no flights exist
+      nextProductId = "PID-00001";
+    }
+    console.log("last", nextProductId);
+
+    const categories = await Categories.find({}).select("name"); // only fetch name and _id
+
+    res.render("admin/addProduct", {
+      nextProductId,
+      categories,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -127,7 +159,8 @@ const viewAddProduct = async (req, res) => {
 
 const viewListProduct = async (req, res) => {
   try {
-    res.render("admin/productList", {});
+    const products = await Products.find();
+    res.render("admin/productList", {products});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -135,8 +168,13 @@ const viewListProduct = async (req, res) => {
 };
 
 const viewEditProduct = async (req, res) => {
+  const productId = req.params.id;
   try {
-    res.render("admin/editProduct", {});
+    const product = await Products.findById(productId);
+    if(!product){
+      return res.status(404).send("Product not found");
+    }
+    res.render("admin/editProduct", { product });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -274,7 +312,7 @@ const addCategory = async (req, res) => {
     const { categoryId, categoryName, description } = req.body;
 
     // Collect uploaded file paths
-    const thumbnails = req.files.map(file => `/uploads/${file.filename}`);
+    const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
 
     // Save to DB
     const newCategory = new Categories({
@@ -290,7 +328,36 @@ const addCategory = async (req, res) => {
     console.error("Error saving category:", error);
     res.json({ success: false, message: error.message });
   }
-}
+};
+
+const addProduct = async (req, res) => {
+  try {
+    const { productId, productName, description, categoryId, price, stock, lowStockLimit, gender, hsnCode } = req.body;
+
+    // Collect uploaded file paths
+    const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
+
+    // Save to DB
+    const newProduct = new Products({
+      productId,
+      categoryId,
+      name: productName,
+      description,
+      price,
+      stock,
+      lowStockLimit,
+      gender,
+      hsnCode,
+      images: thumbnails, // Store image paths array
+    });
+
+    await newProduct.save();
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error saving product:", error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 module.exports = {
   viewLogin,
@@ -319,5 +386,6 @@ module.exports = {
   viewReturn,
 
   addCategory,
+  addProduct,
 
 };

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema(
   {
-    productId: { type: String, unique: true },
+    productId: { type: String, unique: true, required: true },
     name: { type: String, required: true },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -29,11 +29,11 @@ const productSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-productSchema.pre("save", async function (next) {
-  if (!this.productId) {
-    const randomNumbers = Math.floor(1000 + Math.random() * 9000); // Ensures a 4-digit number
-    this.productId = `PID-${randomNumbers}`;
-  }
-});
+// productSchema.pre("save", async function (next) {
+//   if (!this.productId) {
+//     const randomNumbers = Math.floor(1000 + Math.random() * 9000); // Ensures a 4-digit number
+//     this.productId = `PID-${randomNumbers}`;
+//   }
+// });
 
 module.exports = mongoose.model("Products", productSchema);
