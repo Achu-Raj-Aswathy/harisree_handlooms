@@ -8,7 +8,8 @@ const Categories = require("../models/categoryModel");
 const Products = require("../models/productModel");
 const UserHome = require("../models/userHomeModel");
 const Coupons = require("../models/couponModel");
-const Orders = require("../models/orderModel")
+const Orders = require("../models/orderModel");
+const Offers = require("../models/offerModel");
 
 const viewLogin = async (req, res) => {
   try {
