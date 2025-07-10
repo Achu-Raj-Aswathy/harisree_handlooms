@@ -343,6 +343,20 @@ const addCategory = async (req, res) => {
   }
 };
 
+
+const viewEditCoupon = async (req, res) => {
+ const couponId=req.query.id;
+  try {
+    const coupon=await Coupons.findById(couponId);
+     const categories = await Categories.find({}).select("name"); // only fetch name and _id
+    res.render("admin/editCoupon", {categories,coupon});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+
 const addProduct = async (req, res) => {
   try {
     const {
@@ -629,4 +643,5 @@ module.exports = {
   viewProductsByCategory,
   updateSlider,
   addCoupon,
+  viewEditCoupon,
 };

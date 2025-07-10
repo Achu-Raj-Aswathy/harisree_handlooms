@@ -28,6 +28,7 @@ adminRouter.get("/list-offers", adminController.viewListOffers);
 adminRouter.get("/order-tracking",adminController.viewOrderTracking);
 adminRouter.get("/view-return", adminController.viewReturn);
 adminRouter.get('/products/by-category/:categoryId',adminController.viewProductsByCategory);
+adminRouter.get("/edit-coupon",adminController.viewEditCoupon);
 
 
 
