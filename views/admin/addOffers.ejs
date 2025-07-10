@@ -1,118 +1,82 @@
 <%- include('./partials/header') %>
 
-<div class="wrapper">
-  <%- include('./partials/adminHeader') %>
-  <%- include('./partials/sidebar') %>
+  <div class="wrapper">
+    <%- include('./partials/adminHeader') %>
+      <%- include('./partials/sidebar') %>
 
-  <!-- 🟨 MAIN CONTENT AREA -->
-  <div class="content container mb-5" style="max-width: 700px;">
-    <h2 class="mb-4 text-center text-danger fw-bold">🎁 Add New Offer</h2>
+        <!-- 🟨 MAIN CONTENT AREA -->
+        <div class="content container mb-5" style="max-width: 700px;">
+          <h2 class="mb-4 text-center text-danger fw-bold">🎁 Add New Offer</h2>
 
-    <form action="/admin/offers/add" method="POST" enctype="multipart/form-data">
-      <!-- Title -->
-      <div class="mb-3">
-        <label for="title" class="form-label fw-semibold">Offer Title</label>
-        <input
-          type="text"
-          class="form-control"
-          id="title"
-          name="title"
-          placeholder="e.g., Onam Special - 30% OFF"
-          required
-        />
-      </div>
+          <form action="/admin/offers/add" method="POST" enctype="multipart/form-data">
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label fw-semibold">Offer Title</label>
+              <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Onam Special - 30% OFF"
+                required />
+            </div>
 
-      <!-- Description -->
-      <div class="mb-3">
-        <label for="description" class="form-label fw-semibold">Offer Description</label>
-        <textarea
-          class="form-control"
-          id="description"
-          name="description"
-          rows="3"
-          placeholder="Details about the offer..."
-          required
-        ></textarea>
-      </div>
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label fw-semibold">Offer Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3"
+                placeholder="Details about the offer..." required></textarea>
+            </div>
 
-      <!-- Start Date -->
-      <div class="mb-3">
-        <label for="startDate" class="form-label fw-semibold">Start Date</label>
-        <input
-          type="date"
-          class="form-control"
-          id="startDate"
-          name="startDate"
-          required
-        />
-      </div>
+            <!-- Start Date -->
+            <div class="mb-3">
+              <label for="startDate" class="form-label fw-semibold">Start Date</label>
+              <input type="date" class="form-control" id="startDate" name="startDate" required />
+            </div>
 
-      <!-- End Date -->
-      <div class="mb-3">
-        <label for="endDate" class="form-label fw-semibold">End Date</label>
-        <input
-          type="date"
-          class="form-control"
-          id="endDate"
-          name="endDate"
-          required
-        />
-      </div>
+            <!-- End Date -->
+            <div class="mb-3">
+              <label for="endDate" class="form-label fw-semibold">End Date</label>
+              <input type="date" class="form-control" id="endDate" name="endDate" required />
+            </div>
 
-      <!-- Discount -->
-      <div class="mb-3">
-        <label for="discount" class="form-label fw-semibold">Discount (%)</label>
-        <input
-          type="number"
-          class="form-control"
-          id="discount"
-          name="discount"
-          placeholder="e.g., 20"
-          min="1"
-          max="90"
-          required
-        />
-      </div>
+            <!-- Discount -->
+            <div class="mb-3">
+              <label for="discount" class="form-label fw-semibold">Discount (%)</label>
+              <input type="number" class="form-control" id="discount" name="discount" placeholder="e.g., 20" min="1"
+                max="90" required />
+            </div>
 
-      <!-- Image Upload -->
-      <div class="mb-3">
-        <label for="offerImage" class="form-label fw-semibold">Offer Image</label>
-        <input
-          type="file"
-          class="form-control"
-          id="offerImage"
-          name="image"
-          accept="image/*"
-          onchange="previewImage(event)"
-          required
-        />
-      </div>
+            <!-- Image Upload -->
+            <div class="mb-3">
+              <label for="offerImage" class="form-label fw-semibold">Offer Image</label>
+              <input type="file" class="form-control" id="offerImage" name="image" accept="image/*"
+                onchange="previewImage(event)" required />
+            </div>
 
-      <!-- Image Preview -->
-      <div class="mb-3 text-center">
-        <img
-          id="imagePreview"
-          src=""
-          alt="Image Preview"
-          style="max-width: 300px; max-height: 200px; display: none; border: 1px solid #ddd; padding: 5px;"
-        />
-      </div>
+            <!-- Image Preview -->
+            <div class="mb-3 text-center">
+              <img id="imagePreview" src="" alt="Image Preview"
+                style="max-width: 300px; max-height: 200px; display: none; border: 1px solid #ddd; padding: 5px;" />
+            </div>
 
-      <button type="submit" class="btn btn-success w-100 fw-bold">
-        ➕ Add Offer
-      </button>
-    </form>
+            <button type="submit" class="btn btn-success w-100 fw-bold">
+              ➕ Add Offer
+            </button>
+          </form>
    
-  </div> <!-- ✅ Close content container -->
- <%- include('./partials/footer') %>
-</div> <!-- ✅ Close wrapper -->
+  
+        </div>
+  </div>
+  
+ <!-- <%- include('./partials/footer') %> -->
+
+  </div>
+  
 
 
 
-<script>
-  function previewImage(event) {
-    const output = document.getElementById('imagePreview');
-    output.src = URL.createObjectURL(event.target.files[0]);
-    output.style.display = 'block';
-  }
-</script>
+    
+
+  <script>
+    function previewImage(event) {
+      const output = document.getElementById('imagePreview');
+      output.src = URL.createObjectURL(event.target.files[0]);
+      output.style.display = 'block';
+    }
+  </script>

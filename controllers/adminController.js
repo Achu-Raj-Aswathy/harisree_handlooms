@@ -666,6 +666,41 @@ const editCoupon = async (req, res) => {
 };
 
 
+
+const deleteCoupon = async (req, res) => {
+  try {
+    await Coupons.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting coupon:", err);
+    res.status(500).json({ success: false, message: "Failed to delete coupon" });
+  }
+};
+
+
+const addOffer = async (req, res) => {
+  try {
+    const { title, description, startDate, endDate, discount } = req.body;
+    const image = req.file ? req.file.filename : null;
+
+    const newOffer = new Offer({
+      title,
+      description,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      discount,
+      image
+    });
+
+    await newOffer.save();
+
+    res.redirect('/admin/offers/list'); // change to wherever your list view is
+  } catch (error) {
+    console.error("Error adding offer:", error);
+    res.status(500).send("Failed to add offer");
+  }
+};
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -702,5 +737,6 @@ module.exports = {
   updateOfferTagline,
   viewEditCoupon,
   editCoupon,
-  
+  deleteCoupon,
+  addOffer,
 };
