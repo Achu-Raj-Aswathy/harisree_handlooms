@@ -6,6 +6,8 @@ const path = require("path");
 const Users = require("../models/userModel");
 const Categories = require("../models/categoryModel");
 const Products = require("../models/productModel");
+const UserHome = require("../models/userHomeModel");
+const Coupons = require("../models/couponModel");
 
 const viewLogin = async (req, res) => {
   try {
@@ -110,14 +112,14 @@ const viewListCategory = async (req, res) => {
 
 const viewEditCategory = async (req, res) => {
   const categoryId = req.query.id;
-  
+
   try {
     const category = await Categories.findById(categoryId);
-    if(!category){
+    if (!category) {
       return res.status(404).send("Category not found");
     }
     console.log(category);
-    res.render("admin/editCategory", {category});
+    res.render("admin/editCategory", { category });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -126,7 +128,7 @@ const viewEditCategory = async (req, res) => {
 
 const viewAddProduct = async (req, res) => {
   try {
-        const lastProduct = await Products.findOne({})
+    const lastProduct = await Products.findOne({})
       .sort({ createdAt: -1 })
       .select("productId");
     console.log("last", lastProduct);
@@ -135,10 +137,7 @@ const viewAddProduct = async (req, res) => {
 
     if (lastProduct && lastProduct.productId) {
       // Extract numeric part (e.g., from 'INV00123')
-      const lastSeq = parseInt(
-        lastProduct.productId.replace("PID-", ""),
-        10
-      );
+      const lastSeq = parseInt(lastProduct.productId.replace("PID-", ""), 10);
       const newSeq = lastSeq + 1;
       nextProductId = `PID-${String(newSeq).padStart(5, "0")}`;
     } else {
@@ -162,22 +161,22 @@ const viewAddProduct = async (req, res) => {
 const viewListProduct = async (req, res) => {
   try {
     const products = await Products.find().populate("categoryId");
-    res.render("admin/productList", {products});
+    res.render("admin/productList", { products });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
-}
+};
 
 const viewEditProduct = async (req, res) => {
   const productId = req.query.id;
   try {
     const product = await Products.findById(productId).populate("categoryId");
-    if(!product){
+    if (!product) {
       return res.status(404).send("Product not found");
     }
     const categories = await Categories.find({}).select("name"); // only fetch name and _id
-    res.render("admin/editProduct", { product,categories });
+    res.render("admin/editProduct", { product, categories });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -188,7 +187,7 @@ const viewProductDetails = async (req, res) => {
   const productId = req.query.id;
   try {
     const product = await Products.findById(productId);
-    if(!product){
+    if (!product) {
       return res.status(404).send("Product not found");
     }
     res.render("admin/productDetails", { product });
@@ -200,8 +199,8 @@ const viewProductDetails = async (req, res) => {
 
 const viewAddCoupon = async (req, res) => {
   try {
-     const categories = await Categories.find({}).select("name");
-    res.render("admin/couponsAdd", {categories});
+    const categories = await Categories.find({}).select("name");
+    res.render("admin/couponsAdd", { categories });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -291,7 +290,11 @@ const viewListOffers = async (req, res) => {
 
 const viewHomeEditor = async (req, res) => {
   try {
-    res.render("admin/homeEditor", {});
+    const homeEditArr = await UserHome.find().sort({ _id: -1 }).limit(1);
+    const homeEdits = homeEditArr[0] || null;
+
+    console.log("homeEdits:", homeEdits.sliderImages[0].slider1);
+    res.render("admin/homeEditor", { homeEdits });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -341,12 +344,26 @@ const addCategory = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { productId, productName, description, categoryId, price, stock, lowStockAlert, gender, hsnCode, skuId, specification, size, discount } = req.body;
-   
+    const {
+      productId,
+      productName,
+      description,
+      categoryId,
+      price,
+      stock,
+      lowStockAlert,
+      gender,
+      hsnCode,
+      skuId,
+      specification,
+      size,
+      discount,
+    } = req.body;
+
     // Collect uploaded file paths
-    
+
     const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
-    
+
     // Save to DB
     const newProduct = new Products({
       productId,
@@ -366,7 +383,7 @@ const addProduct = async (req, res) => {
     });
 
     await newProduct.save();
-   
+
     res.json({ success: true });
   } catch (error) {
     console.error("Error saving product:", error);
@@ -378,7 +395,9 @@ const deleteCategory = async (req, res) => {
   try {
     const category = await Categories.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
     }
 
     // 1. Find products linked to this category
@@ -386,7 +405,7 @@ const deleteCategory = async (req, res) => {
 
     // 2. Loop through products and delete their images
     for (const product of products) {
-      product.images.forEach(image => {
+      product.images.forEach((image) => {
         const filePath = path.join(__dirname, "../public/uploads", image);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
@@ -398,7 +417,7 @@ const deleteCategory = async (req, res) => {
     }
 
     // 4. Delete category images from filesystem
-    category.images.forEach(image => {
+    category.images.forEach((image) => {
       const filePath = path.join(__dirname, "../public/uploads", image);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -408,8 +427,10 @@ const deleteCategory = async (req, res) => {
     // 5. Delete the category itself
     await Categories.findByIdAndDelete(req.params.id);
 
-    res.json({ success: true, message: "Category and related products deleted successfully" });
-
+    res.json({
+      success: true,
+      message: "Category and related products deleted successfully",
+    });
   } catch (err) {
     console.error("Delete error:", err);
     res.status(500).json({ success: false, message: "Server error" });
@@ -417,14 +438,14 @@ const deleteCategory = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
-    try {
+  try {
     const product = await Products.findById(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
     // Optional: Delete images from filesystem if stored locally
-    product.images.forEach(image => {
+    product.images.forEach((image) => {
       const filePath = path.join(__dirname, "../public/uploads", image);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -433,21 +454,21 @@ const deleteProduct = async (req, res) => {
 
     await Products.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({ message: 'Product deleted successfully' });
+    res.status(200).json({ message: "Product deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
-const editCategory= async (req, res) => {
+const editCategory = async (req, res) => {
   try {
     const { categoryId, categoryName, description } = req.body;
 
     const category = await Category.findOne({ categoryId });
 
     if (!category) {
-      return res.status(404).send('Category not found');
+      return res.status(404).send("Category not found");
     }
 
     // Update text fields
@@ -456,12 +477,12 @@ const editCategory= async (req, res) => {
 
     // Update image files only if new ones uploaded
     const imageUpdates = {};
-    req.files.forEach(file => {
+    req.files.forEach((file) => {
       const fieldName = file.fieldname; // e.g. sliderImage1
-      const index = parseInt(fieldName.replace('sliderImage', '')) - 1;
+      const index = parseInt(fieldName.replace("sliderImage", "")) - 1;
 
       if (!isNaN(index)) {
-        imageUpdates[index] = '/uploads/category/' + file.filename;
+        imageUpdates[index] = "/uploads/category/" + file.filename;
       }
     });
 
@@ -475,24 +496,75 @@ const editCategory= async (req, res) => {
 
     await category.save();
 
-    res.json({ message: 'Category updated successfully' });
+    res.json({ message: "Category updated successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 };
-
-
 
 const viewProductsByCategory = async (req, res) => {
   try {
     const products = await Products.find({ categoryId: req.params.categoryId });
     res.json({ products });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch products' });
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 };
 
+const updateSlider = async (req, res) => {
+  try {
+    const homeData = await UserHome.findOne();
+    if (!homeData) return res.status(404).json({ success: false, message: "Home content not found" });
+
+    const sliderImages = [...homeData.sliderImages]; // Copy current sliderImages
+
+    console.log("Uploaded Files:", req.files);
+
+    const updatedSliderImages = [];
+
+for (let i = 1; i <= 4; i++) {
+  const field = `sliderImage${i}`;
+  const key = `slider${i}`;
+
+  // Step 1: Try to get old path safely
+  const oldEntry = homeData.sliderImages[i - 1];
+  let oldPath = (oldEntry && oldEntry[key]) ? oldEntry[key] : "";
+
+  // Step 2: Check if new file uploaded
+  let newPath = oldPath; // default to old path
+
+  if (req.files && req.files[field] && req.files[field][0]) {
+    newPath = "/uploads/" + req.files[field][0].filename;
+
+    // Optional: delete old image
+    if (oldPath) {
+      const filePath = path.join(__dirname, "../public", oldPath);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+  }
+
+  // Step 3: If newPath is still empty (means no old and no new), set a default dummy
+  if (!newPath) {
+    newPath = "/uploads/placeholder.jpg"; // or skip this field if truly optional
+  }
+
+  // ✅ Step 4: Push valid key-value object
+  updatedSliderImages.push({ [key]: newPath });
+}
+
+// Replace and save
+homeData.sliderImages = updatedSliderImages;
+await homeData.save();
+
+    return res.json({ success: true, message: "Slider updated successfully" });
+  } catch (err) {
+    console.error("Error updating slider:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
 
 module.exports = {
   viewLogin,
@@ -525,5 +597,5 @@ module.exports = {
   addProduct,
   editCategory,
   viewProductsByCategory,
-
+  updateSlider,
 };
