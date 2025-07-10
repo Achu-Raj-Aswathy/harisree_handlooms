@@ -666,5 +666,6 @@ module.exports = {
   updateSlider,
   addCoupon,
   updateOfferTagline,
+  viewEditCoupon,
   
 };
