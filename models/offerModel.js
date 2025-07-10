@@ -20,4 +20,4 @@ offerSchema.pre("save", async function (next) {
   }
 });
 
-module.exports = mongoose.model("Orders", offerSchema);
+module.exports = mongoose.model("Offers", offerSchema);

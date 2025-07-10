@@ -1,0 +1,110 @@
+<%- include('./partials/header') %>
+
+<div class="wrapper">
+  <%- include('./partials/adminHeader') %>
+  <%- include('./partials/sidebar') %>
+
+  <!-- 🟨 MAIN CONTENT AREA -->
+  <div class="content container mb-5" style="max-width: 700px;">
+    <h2 class="mb-4 text-center text-danger fw-bold">🎁 Edit Offer</h2>
+
+    <!-- ✅ FORM -->
+    <form id="editOfferForm" enctype="multipart/form-data" data-offer-id="<%= offer._id %>">
+
+      <!-- Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label fw-semibold">Offer Title</label>
+        <input type="text" class="form-control" id="title" name="title" value="<%= offer.name %>" required />
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label fw-semibold">Offer Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required><%= offer.description %></textarea>
+      </div>
+
+      <!-- Start Date -->
+      <div class="mb-3">
+        <label for="startDate" class="form-label fw-semibold">Start Date</label>
+        <input type="date" class="form-control" id="startDate" name="startDate" required 
+               value="<%= offer.startDate ? offer.startDate.toISOString().split('T')[0] : '' %>" />
+      </div>
+
+      <!-- End Date -->
+      <div class="mb-3">
+        <label for="endDate" class="form-label fw-semibold">End Date</label>
+        <input type="date" class="form-control" id="endDate" name="endDate" required 
+               value="<%= offer.endDate ? offer.endDate.toISOString().split('T')[0] : '' %>" />
+      </div>
+
+      <!-- Discount -->
+      <div class="mb-3">
+        <label for="discount" class="form-label fw-semibold">Discount (%)</label>
+        <input type="number" class="form-control" id="discount" name="discount" placeholder="e.g., 20" min="1" max="90" 
+               value="<%= offer.discountPercentage %>" required />
+      </div>
+
+      <!-- Image Upload -->
+      <div class="mb-3">
+        <label for="offerImage" class="form-label fw-semibold">Offer Image</label>
+        <input type="file" class="form-control" id="offerImage" name="image" accept="image/*" onchange="previewImage(event)" />
+      </div>
+
+      <!-- Image Preview -->
+      <div class="mb-3 text-center">
+        <img id="imagePreview" 
+             src="<%= offer.image ? '/uploads/' + offer.image : '' %>" 
+             alt="Image Preview"
+             style="max-width: 300px; max-height: 200px; <%= offer.image ? '' : 'display: none;' %>; border: 1px solid #ddd; padding: 5px;" />
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-success w-100 fw-bold">
+        ✅ Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+<!-- END Wrapper -->
+
+<!-- ✅ SCRIPTS -->
+<script>
+  // Preview selected image
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const img = document.getElementById("imagePreview");
+      img.src = reader.result;
+      img.style.display = "block";
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  // Handle form submission with FormData
+  document.getElementById("editOfferForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const offerId = form.dataset.offerId;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(`/admin/offers/edit?id=${offerId}`, {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.ok) {
+        alert("✅ Offer updated successfully!");
+        window.location.href = "/admin/list-offers"; // redirect to offer list
+      } else {
+        const error = await response.text();
+        console.error("Error:", error);
+        alert("❌ Failed to update offer.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("❌ Something went wrong.");
+    }
+  });
+</script>

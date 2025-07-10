@@ -1,87 +1,114 @@
 <%- include('./partials/header') %>
 
-<div class="wrapper">
-  <%- include('./partials/adminHeader') %>
-  <%- include('./partials/sidebar') %>
+  <div class="wrapper">
+    <%- include('./partials/adminHeader') %>
+      <%- include('./partials/sidebar') %>
 
-  <main class="content-area" style=" padding: 2rem;">
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-danger fw-bold">🎁 Offer List</h2>
-        <a href="/admin/add-offers" class="btn btn-primary fw-semibold">➕ Add Offer</a>
-      </div>
+        <main class="content-area" style=" padding: 2rem;">
+          <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="text-danger fw-bold">🎁 Offer List</h2>
+              <a href="/admin/add-offers" class="btn btn-primary fw-semibold">➕ Add Offer</a>
+            </div>
 
-      <!-- 🔧 MOCK STATIC DATA since backend is not working -->
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle">
-          <thead class="table-dark">
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Discount (%)</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Image</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Offer 1 -->
-            <tr>
-              <td>1</td>
-              <td>Onam Special</td>
-              <td>30% Off on all Kerala Handlooms</td>
-              <td>30%</td>
-              <td>2025-08-01</td>
-              <td>2025-08-15</td>
-              <td>
-                <img src="/uploads/offers/sample1.jpg" alt="Offer Image" style="max-width: 100px; height: auto; border-radius: 4px;" />
-              </td>
-              <td>
-                <a href="/add-offers" class="btn btn-sm btn-warning mb-1">✏️ Edit</a>
-                <button class="btn btn-sm btn-danger" onclick="alert('Delete functionality not active in mock view')">🗑️ Delete</button>
-              </td>
-            </tr>
+            <!-- 🔧 MOCK STATIC DATA since backend is not working -->
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Discount (%)</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+               <% if (offers.length > 0) { %>
+  <% offers.forEach((offer, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= offer.name %></td>
+      <td><%= offer.description %></td>
+      <td><%= offer.discountPercentage %> %</td>
+      <td><%= offer.startDate.toISOString().slice(0, 10) %></td>
+      <td><%= offer.endDate.toISOString().slice(0, 10) %></td>
+      <td>
+       <% if (offer.image) { %>
+  <img src="/uploads/<%= offer.image %>" alt="Offer Image" class="avatar-md" />
+<% } else { %>
+  <img src="/assets/images/default.jpg" alt="Default Image" class="avatar-md" />
+<% } %>
 
-            <!-- Offer 2 -->
-            <tr>
-              <td>2</td>
-              <td>Vishu Delight</td>
-              <td>20% Discount for Vishu Festival</td>
-              <td>20%</td>
-              <td>2025-04-10</td>
-              <td>2025-04-16</td>
-              <td>
-                <img src="/uploads/offers/sample2.jpg" alt="Offer Image" style="max-width: 100px; height: auto; border-radius: 4px;" />
-              </td>
-              <td>
-                <a href="/add-offers" class="btn btn-sm btn-warning mb-1">✏️ Edit</a>
-                <button class="btn btn-sm btn-danger" onclick="alert('Delete functionality not active in mock view')">🗑️ Delete</button>
-              </td>
-            </tr>
+      </td>
+      <td>
+        <a href="/admin/edit-offer?id=<%= offer._id %>" class="btn btn-sm btn-warning mb-1">✏️ Edit</a>
+        <form action="/admin/delete-offer/<%= offer._id %>" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-sm btn-danger">🗑️ Delete</button>
+        </form>
+      </td>
+    </tr>
+ 
 
-            <!-- More mock offers as needed -->
-          </tbody>
-        </table>
-      </div>
+                       
+  <% }) %>
+<% } else { %>
+  <tr><td colspan="8" class="text-center">No offers found</td></tr>
+<% } %>
 
-    </div>
-  </main>
-</div>
 
-<%- include('./partials/footer') %>
-<style>
-    .content-area {
-    margin-left: 250px;
-    padding: 2rem;
-    transition: margin-left 0.3s ease;
-  }
+                </tbody>
+              </table>
+            </div>
 
-  @media (max-width: 768px) {
-    .content-area {
-      margin-left: 0 !important;
-      padding: 1rem;
-    }
-  }
-</style>
+          </div>
+        </main>
+  </div>
+
+  <%- include('./partials/footer') %>
+    <style>
+      .content-area {
+        margin-left: 250px;
+        padding: 2rem;
+        transition: margin-left 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .content-area {
+          margin-left: 0 !important;
+          padding: 1rem;
+        }
+      }
+    </style>
+
+   <script>
+  document.querySelectorAll('.delete-offer-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+      const offerId = this.dataset.offerId;
+
+      if (confirm('Are you sure you want to delete this offer?')) {
+        try {
+          const response = await fetch(`/admin/delete-offer/${offerId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            // Remove the row or card from the DOM
+            this.closest('.offer-row').remove(); // Make sure each offer is wrapped in a div with class "offer-row"
+          } else {
+            alert('Failed to delete offer.');
+          }
+        } catch (error) {
+          console.error('Delete failed:', error);
+          alert('Something went wrong.');
+        }
+      }
+    });
+  });
+</script>

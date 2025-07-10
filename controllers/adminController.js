@@ -8,7 +8,7 @@ const Categories = require("../models/categoryModel");
 const Products = require("../models/productModel");
 const UserHome = require("../models/userHomeModel");
 const Coupons = require("../models/couponModel");
-
+const Offers = require("../models/offerModel");
 const viewLogin = async (req, res) => {
   try {
     res.render("admin/login", { message: "" });
@@ -283,7 +283,8 @@ const viewAddOffers = async (req, res) => {
 
 const viewListOffers = async (req, res) => {
   try {
-    res.render("admin/listOffers", {});
+    const offers=await Offers.find().lean();
+    res.render("admin/listOffers", {offers});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -684,21 +685,95 @@ const addOffer = async (req, res) => {
     const { title, description, startDate, endDate, discount } = req.body;
     const image = req.file ? req.file.filename : null;
 
-    const newOffer = new Offer({
-      title,
+    const newOffer = new Offers({
+      name:title,
+      
       description,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      discount,
+      discountPercentage:discount,
       image
     });
 
     await newOffer.save();
 
-    res.redirect('/admin/offers/list'); // change to wherever your list view is
+    res.redirect('/admin/list-offers'); // change to wherever your list view is
   } catch (error) {
     console.error("Error adding offer:", error);
     res.status(500).send("Failed to add offer");
+  }
+};
+
+
+
+const viewEditOffer = async (req, res) => {
+  console.log("hai");
+  const offerId = req.query.id; // or use req.params.id if using route like /offer/edit/:id
+console.log(offerId);
+  try {
+    const offer = await Offers.findById(offerId);
+
+    if (!offer) {
+      return res.status(404).json({success:false,message:"Offer not found"});
+    }
+
+    res.render("admin/editOffer", { offer });
+  } catch (error) {
+    console.log("Error loading edit offer page:", error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+
+const deleteOffer = async (req, res) => {
+  try {
+    const offerId = req.params.id;
+    await Offers.findByIdAndDelete(offerId);
+    res.redirect('/admin/list-offers'); // redirect to list page after deletion
+  } catch (error) {
+    console.error('Error deleting offer:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+const editOffer = async (req, res) => {
+  try {
+    const offerId = req.query.id;
+    const { title, description, startDate, endDate, discount } = req.body;
+
+    const offer = await Offers.findById(offerId);
+    if (!offer) {
+      return res.status(404).json({ success: false, message: 'Offer not found' });
+    }
+
+    // Update basic fields
+    offer.name = title;
+    offer.description = description;
+    offer.startDate = new Date(startDate);
+    offer.endDate = new Date(endDate);
+    offer.discountPercentage = discount;
+
+    // Handle image replacement
+    if (req.file) {
+      // Delete old image if it exists
+      if (offer.image) {
+        const oldImagePath = path.join(__dirname, '..', 'public', 'uploads', offer.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      // Save new image name
+      offer.image = req.file.filename;
+    }
+
+    await offer.save();
+
+    res.status(200).json({ success: true, message: 'Offer updated successfully' });
+  } catch (error) {
+    console.error('Error updating offer:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
@@ -740,4 +815,7 @@ module.exports = {
   editCoupon,
   deleteCoupon,
   addOffer,
+  viewEditOffer,
+  deleteOffer,
+  editOffer,
 };
