@@ -256,7 +256,8 @@ const viewUserDetails = async (req, res) => {
 
 const viewInventory = async (req, res) => {
   try {
-    res.render("admin/inventory", {});
+    const products=await Products.find().populate("categoryId")
+    res.render("admin/inventory", {products});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });

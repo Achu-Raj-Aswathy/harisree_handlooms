@@ -35,6 +35,11 @@ const productSchema = mongoose.Schema(
         required: true,
       },
     ],
+    availableStock:{
+      type:Number,
+      required:true,
+      default:0
+    }
   },
   { timestamps: true }
 );
