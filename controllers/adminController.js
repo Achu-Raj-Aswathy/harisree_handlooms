@@ -8,7 +8,12 @@ const Categories = require("../models/categoryModel");
 const Products = require("../models/productModel");
 const UserHome = require("../models/userHomeModel");
 const Coupons = require("../models/couponModel");
+<<<<<<< HEAD
 const Offers = require("../models/offerModel");
+=======
+const Orders = require("../models/orderModel")
+
+>>>>>>> 46fc7cf (customer list and details)
 const viewLogin = async (req, res) => {
   try {
     res.render("admin/login", { message: "" });
@@ -246,10 +251,29 @@ const viewListUser = async (req, res) => {
 };
 
 const viewUserDetails = async (req, res) => {
+  const userId = req.query.id;
+
   try {
-    res.render("admin/customerDetails", {});
+    const user = await Users.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Find all orders placed by this user
+    const orders = await Orders.find({ userId: user._id });
+
+    // Calculate total price
+    const totalOrderPrice = orders.reduce((sum, order) => sum + order.price, 0);
+
+    res.render("admin/customerDetails", {
+      user,
+      totalOrderPrice,
+      orders, // optional: if you want to show individual order details
+    });
+
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching user details:", error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };

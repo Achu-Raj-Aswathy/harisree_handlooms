@@ -53,24 +53,29 @@
                                                   </tr>
                                              </thead>
                                              <tbody>
+                                                  <% if(users && users.length > 0) { %>
+                                                       <% users.forEach((user, index) => { %>
                                                   <tr>
-                                                       <td>Michael A. Miner</td>
-                                                       <td><a href="javascript: void(0);" class="text-body">#INV2540</a> </td>
-                                                       <td> <span class="badge bg-success-subtle text-success py-1 px-2">Completed</span> </td>
-                                                       <td> $4,521 </td>
-                                                       <td> $8,901 </td>
-                                                       <td> 07 Jan, 2023</td>
-                                                       <td> Mastercard </td>
+                                                       <td><%= user.userId %></td>
+                                                       <td><%= user.name %></td>
+                                                       <td><%= user.email %></td>
+                                                       <td><%= user.mobile %></td>
+                                                       <td><%= user.address[0].shipping %></td>
+                                                       <td><%= user.orders.length %></td>
                                                        <td>
                                                             <div class="d-flex gap-2">
-                                                                 <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                 <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                 <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                                                 <a href="/admin/user-details?id=<%= user._id %>" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
+                                                                 <!-- <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                                                 <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a> -->
                                                             </div>
                                                        </td>
                                                   </tr>
-
-                                      
+                                                  <% }) %>
+                                                  <% } else { %>
+                                                       <tr>
+                                                            <td colspan="7">No users found</td>
+                                                       </tr>
+                                                  <% } %>
                                              </tbody>
                                         </table>
                                    </div>
