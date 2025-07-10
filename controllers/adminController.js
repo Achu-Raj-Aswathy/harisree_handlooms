@@ -480,7 +480,7 @@ const editCategory = async (req, res) => {
   try {
     const { categoryId, categoryName, description } = req.body;
 
-    const category = await Category.findOne({ categoryId });
+    const category = await Categories.findOne({ categoryId });
 
     if (!category) {
       return res.status(404).send("Category not found");
@@ -581,35 +581,6 @@ await homeData.save();
   }
 }
 
-const addCoupon=async (req,res)=>{
-
-try {
-    const { code, categoryId, productId, discountValue, discountType, startDate, endDate, status } = req.body;
-const [startDay, startMonth, startYear] = startDate.split("-");
-    const [endDay, endMonth, endYear] = endDate.split("-");
-
-    const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
-    const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
-    const coupon = new Coupons({
-      code,
-       categoryId,
-       productId,
-      discountValue,
-      type:discountType,
-      startDate:parsedStartDate,
-      endDate:parsedEndDate,
-      status
-    });
-
-    await coupon.save();
-
-    res.json({ success: true, message: "Coupon created successfully." });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error." });
-  }
-};
-
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -643,5 +614,4 @@ module.exports = {
   viewProductsByCategory,
   updateSlider,
   addCoupon,
-  viewEditCoupon,
 };

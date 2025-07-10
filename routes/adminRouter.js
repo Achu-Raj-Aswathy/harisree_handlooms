@@ -48,6 +48,6 @@ adminRouter.post("/update-slider", upload.fields([
   { name: "sliderImage1" }, { name: "sliderImage2" },
   { name: "sliderImage3" }, { name: "sliderImage4" }
 ]), adminController.updateSlider);
-
+adminRouter.post("/update-offer-tag", adminController.updateOfferTagline);
 
 module.exports = adminRouter;
