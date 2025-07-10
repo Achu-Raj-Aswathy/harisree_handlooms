@@ -1,204 +1,168 @@
 <%- include('./partials/header') %>
 <%- include('./partials/adminHeader') %>
 
+<div class="wrapper">
+  <%- include('./partials/sidebar') %>
 
-    <!-- START Wrapper -->
-    <div class="wrapper">
-<%- include('./partials/sidebar') %>
-     
-        <!-- ========== Topbar End ========== -->
-
-        <!-- ========== App Menu Start ========== -->
-        
-        <!-- ========== App Menu End ========== -->
-
-        <!-- ==================================================== -->
-        <!-- Start right Content here -->
-        <!-- ==================================================== -->
-
-        <div class="page-content">
-
-            <!-- Start Container Fluid -->
-            <div class="container-xxl">
-
+  <div class="page-content">
+    <div class="container-xxl">
+      <div class="row">
+        <div class="col-lg-12">
+          <form id="couponForm">
             <div class="row">
-                <div class="col-lg-5">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Coupon Status</h4>
+              <!-- Coupon Status -->
+              <div class="col-lg-5">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Coupon Status</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="status" value="Active" id="statusActive" checked>
+                          <label class="form-check-label" for="statusActive">Active</label>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <div class="form-check">
-                                             <input class="form-check-input" type="radio" name="flexRadioDefault5" id="flexRadioDefault9" checked="">
-                                             <label class="form-check-label" for="flexRadioDefault9">
-                                                  Active
-                                             </label>
-                                        </div>
-                                        
-                                   </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault5" id="flexRadioDefault10">
-                                        <label class="form-check-label" for="flexRadioDefault10">
-                                             In Active
-                                        </label>
-                                   </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault5" id="flexRadioDefault11">
-                                        <label class="form-check-label" for="flexRadioDefault11">
-                                            Future Plan
-                                        </label>
-                                   </div>
-                                </div>
-                            </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="status" value="Inactive" id="statusInactive">
+                          <label class="form-check-label" for="statusInactive">Inactive</label>
                         </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="status" value="Future Plan" id="statusFuture">
+                          <label class="form-check-label" for="statusFuture">Future Plan</label>
+                        </div>
+                      </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Date Schedule</h4>
-                        </div>
-                        <div class="card-body">
-  <form id="dateForm">
-    <div class="mb-3">
-      <label for="start-date" class="form-label text-dark">Start Date</label>
-      <input type="text" id="start-date" class="form-control" placeholder="dd-mm-yyyy" readonly>
-    </div>
-
-    <div class="mb-3">
-      <label for="end-date" class="form-label text-dark">End Date</label>
-      <input type="text" id="end-date" class="form-control" placeholder="dd-mm-yyyy" readonly>
-    </div>
-  </form>
-</div>
-
-                    </div>
+                  </div>
                 </div>
 
-                <div class="col-lg-7">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Coupon Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="coupons-code" class="form-label">Coupons Code</label>
-                                        <input type="text" id="coupons-code" name="coupons-code" class="form-control" placeholder="Code enter">
-                                   </div>
-                                </div>
-                                 <div class="col-lg-6">
-  <div class="mb-3">
-    <label for="categoryId" class="form-label">Select Category</label>
-    <select id="categoryId" name="categoryId" class="form-select" required>
-      <option value="">-- Choose a Category --</option>
-      <% categories.forEach(category => { %>
-        <option value="<%= category._id %>"><%= category.name %></option>
-      <% }) %>
-    </select>
-  </div>
-</div>
-
-<div class="col-lg-6">
-  <div class="mb-3">
-    <label for="product-categories" class="form-label">Discount Products</label>
-    <select class="form-control" id="product-categories" name="choices-single-groups">
-      <!-- Options will be loaded dynamically -->
-    </select>
-  </div>
-</div>
-
-                            
-                                <!-- <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="coupons-limits" class="form-label">Coupons Limits</label>
-                                        <input type="number" id="coupons-limits" name="coupons-limits" class="form-control" placeholder="limits nu">
-                                   </div>
-                                </div> -->
-                            </div>
-                            <h4 class="card-title mb-3 mt-2">Coupons Types</h4>
-                            <div class="row mb-3">
-                                <div class="col-lg-4">
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <div class="form-check">
-                                             <input class="form-check-input" type="radio" name="flexRadioDefault6" id="flexRadioDefault12" checked="">
-                                             <label class="form-check-label" for="flexRadioDefault12">
-                                                Free Shipping
-                                             </label>
-                                        </div>
-                                        
-                                   </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault6" id="flexRadioDefault13">
-                                        <label class="form-check-label" for="flexRadioDefault13">
-                                            Percentage
-                                        </label>
-                                   </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault6" id="flexRadioDefault14">
-                                        <label class="form-check-label" for="flexRadioDefault14">
-                                            Fixed Amount
-                                        </label>
-                                   </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="">
-                                        <label for="discount-value" class="form-label">Discount Value</label>
-                                        <input type="text" id="discount-value" name="discount-value" class="form-control" placeholder="value enter">
-                                   </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer border-top">
-                            <a href="#!" class="btn btn-primary">Create Coupon</a>
-                        </div>
+                <!-- Date Schedule -->
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Date Schedule</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-3">
+                      <label for="start-date" class="form-label text-dark">Start Date</label>
+                      <input type="text" id="start-date" name="startDate" class="form-control" placeholder="dd-mm-yyyy" readonly>
                     </div>
+                    <div class="mb-3">
+                      <label for="end-date" class="form-label text-dark">End Date</label>
+                      <input type="text" id="end-date" name="endDate" class="form-control" placeholder="dd-mm-yyyy" readonly>
+                    </div>
+                  </div>
                 </div>
-            </div>
+              </div>
 
-            </div>
-            <!-- End Container Fluid -->
+              <!-- Coupon Info -->
+              <div class="col-lg-7">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Coupon Information</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <!-- Code -->
+                      <div class="col-lg-6">
+                        <div class="mb-3">
+                          <label for="coupons-code" class="form-label">Coupon Code</label>
+                          <input type="text" id="coupons-code" name="code" class="form-control" placeholder="Enter code">
+                        </div>
+                      </div>
 
+                      <!-- Category -->
+                      <div class="col-lg-6">
+                        <div class="mb-3">
+                          <label for="categoryId" class="form-label">Select Category</label>
+                          <select id="categoryId" name="categoryId" class="form-select" required>
+                            <option value="">-- Choose a Category --</option>
+                            <% categories.forEach(category => { %>
+                              <option value="<%= category._id %>"><%= category.name %></option>
+                            <% }) %>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Products -->
+                      <div class="col-lg-6">
+                        <div class="mb-3">
+                          <label for="product-categories" class="form-label">Discount Product</label>
+                          <select class="form-control" id="product-categories" name="productId">
+                            <option value="">-- Select Category First --</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Type -->
+                    <h4 class="card-title mb-3 mt-2">Coupon Type</h4>
+                    <div class="row mb-3">
+                      <div class="col-lg-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="type" value="Free Shipping" id="typeShipping" checked>
+                          <label class="form-check-label" for="typeShipping">Free Shipping</label>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="type" value="Percentage" id="typePercentage">
+                          <label class="form-check-label" for="typePercentage">Percentage</label>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="type" value="Fixed Amount" id="typeFixed">
+                          <label class="form-check-label" for="typeFixed">Fixed Amount</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Discount Value -->
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <label for="discount-value" class="form-label">Discount Value</label>
+                          <input type="number" id="discount-value" name="discountValue" class="form-control" placeholder="Enter value">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="card-footer border-top">
+                    <button type="submit" class="btn btn-primary">Create Coupon</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
-        <!-- ==================================================== -->
-        <!-- End Page Content -->
-        <!-- ==================================================== -->
-
+      </div>
     </div>
-    <!-- END Wrapper -->
+  </div>
+</div>
 
-    <!-- Vendor Javascript (Require in all Page) -->
-    <%- include('./partials/footer') %>
+<%- include('./partials/footer') %>
 
-<script>
-  flatpickr("#start-date", {
-    dateFormat: "d-m-Y"
-  });
-
-  flatpickr("#end-date", {
-    dateFormat: "d-m-Y"
-  });
-</script>
+<!-- Flatpickr -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Date Picker Init -->
+<script>
+  flatpickr("#start-date", { dateFormat: "d-m-Y" });
+  flatpickr("#end-date", { dateFormat: "d-m-Y" });
+</script>
+
+<!-- Load products dynamically by category -->
 <script>
   document.getElementById('categoryId').addEventListener('change', function () {
     const categoryId = this.value;
     const productSelect = document.getElementById('product-categories');
-
-    // Clear current options
     productSelect.innerHTML = '<option value="">Loading...</option>';
 
     if (categoryId) {
@@ -217,8 +181,43 @@
           console.error(err);
           productSelect.innerHTML = '<option value="">Error loading products</option>';
         });
-    } else {
-      productSelect.innerHTML = '<option value="">-- Select Category First --</option>';
     }
+  });
+</script>
+
+<!-- Form Submit Script -->
+<script>
+  document.getElementById("couponForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = {
+      code: document.getElementById("coupons-code").value,
+      categoryId: document.getElementById("categoryId").value,
+      productId: document.getElementById("product-categories").value,
+      discountValue: document.getElementById("discount-value").value,
+      startDate: document.getElementById("start-date").value,
+      endDate: document.getElementById("end-date").value,
+      type: document.querySelector('input[name="type"]:checked').value,
+      status: document.querySelector('input[name="status"]:checked').value
+    };
+
+    fetch("/admin/coupons/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Coupon created successfully!");
+          window.location.href = "/admin/coupons/list";
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        alert("Something went wrong.");
+      });
   });
 </script>
