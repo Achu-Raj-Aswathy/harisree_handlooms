@@ -11,12 +11,12 @@
                     <div class="container-xxl">
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 ">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">Edit Slider Images</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <form action="/admin/update-slider" method="POST" enctype="multipart/form-data">
+                                <!-- <form action="/admin/update-slider" method="POST" enctype="multipart/form-data">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Edit Slider Images</h4>
+                                        </div>
+                                        <div class="card-body">
                                             <div class="row g-4">
                                                 <% const sliderImages=[ "/assets/images/banner/handloom-hero1.jpg"
                                                     , "/assets/images/banner/handloom-hero2.jpg"
@@ -29,7 +29,8 @@
                                                                     %></label>
                                                             <img id="preview<%= index + 1 %>" src="<%= img %>"
                                                                 alt="Slider <%= index + 1 %>"
-                                                                class="img-fluid border rounded mb-2" />
+                                                                class="img-fluid border rounded mb-2"
+                                                                style="width: 250px; height: 250px;" />
                                                             <input type="file" name="sliderImage<%= index + 1 %>"
                                                                 class="form-control mb-2 image-input"
                                                                 data-preview="preview<%= index + 1 %>"
@@ -38,51 +39,140 @@
                                                                 current</small>
                                                         </div>
                                                         <% }) %>
-
                                             </div>
-
-
-
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="p-3 bg-light mb-3 rounded">
-                                    <div class="row justify-content-end g-2">
-                                        <div class="col-lg-2">
-                                            <a href="#!" class="btn btn-outline-secondary w-100">Update</a>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <a href="#!" class="btn btn-primary w-100">Cancel</a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">Offer Tagline</h4>
+
+                                    <div class="p-3 bg-light mb-3 rounded">
+                                        <div class="row justify-content-end g-2">
+                                            <div class="col-lg-2">
+                                                <button type="submit"
+                                                    class="btn btn-outline-secondary w-100">Update</button>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <a href="/admin/sliders" class="btn btn-primary w-100">Cancel</a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <form>
+                                </form> -->
+
+                                <!-- <form action="/admin/update-offer-tagline" method="POST">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Offer Tagline</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
                                                     <div class="mb-3">
-                                                        <input type="text" id="product-name" class="form-control"
-                                                            placeholder="Write a catchy tagline for your offer" />
+                                                        <input type="text" id="product-name" name="tagline"
+                                                            class="form-control"
+                                                            placeholder="Write a catchy tagline for your offer"
+                                                            required />
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="p-3 bg-light mb-3 rounded">
-                                    <div class="row justify-content-end g-2">
-                                        <div class="col-lg-2">
-                                            <a href="#!" class="btn btn-outline-secondary w-100">Update</a>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <a href="#!" class="btn btn-primary w-100">Cancel</a>
+
+                                    <div class="p-3 bg-light mb-3 rounded">
+                                        <div class="row justify-content-end g-2">
+                                            <div class="col-lg-2">
+                                                <button type="submit"
+                                                    class="btn btn-outline-secondary w-100">Update</button>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <a href="/admin/dashboard" class="btn btn-primary w-100">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </form> -->
+                                <!-- SLIDER IMAGE FORM -->
+                                <form id="sliderForm" enctype="multipart/form-data">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Edit Slider Images</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row g-4">
+  <% if (homeEdits && homeEdits.sliderImages) { %>
+    <% homeEdits.sliderImages.forEach((imgObj, index) => {
+         // Safely extract image value from each object
+         const entries = Object.entries(imgObj).filter(([key]) => key !== "_id");
+         const img = entries.length ? entries[0][1] : null;
+    %>
+      <div class="col-md-3 text-center">
+        <label class="form-label d-block mb-2">Slider <%= index + 1 %></label>
+        <% if (img) { %>
+          <!-- 👇 This path is correct if static serving is set up -->
+          <img id="preview<%= index + 1 %>" src="<%= img %>"
+               alt="Slider <%= index + 1 %>"
+               class="img-fluid border rounded mb-2"
+               style="width: 250px; height: 250px;" />
+        <% } else { %>
+          <p class="text-muted">Image not found</p>
+        <% } %>
+        <input type="file" name="sliderImage<%= index + 1 %>"
+               class="form-control mb-2 image-input"
+               data-preview="preview<%= index + 1 %>"
+               accept="image/*" />
+        <small class="text-muted">Leave empty to keep current</small>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p class="text-muted">No slider data available.</p>
+  <% } %>
+</div>
+
+
+
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-light mb-3 rounded">
+                                        <div class="row justify-content-end g-2">
+                                            <div class="col-lg-2">
+                                                <button type="submit"
+                                                    class="btn btn-outline-secondary w-100">Update</button>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <a href="/admin/home-editor" class="btn btn-primary w-100">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!-- OFFER TAGLINE FORM -->
+                                <form id="taglineForm">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Offer Tagline</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <input type="text" id="taglineInput" name="tagline"
+                                                            class="form-control"
+                                                            placeholder="Write a catchy tagline for your offer"
+                                                            value="<%= homeEdits.offerTag %>" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-light mb-3 rounded">
+                                        <div class="row justify-content-end g-2">
+                                            <div class="col-lg-2">
+                                                <button type="submit"
+                                                    class="btn btn-outline-secondary w-100">Update</button>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <a href="/admin/home-editor" class="btn btn-primary w-100">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -106,3 +196,65 @@
             });
         });
     </script>
+
+<script>
+document.getElementById("sliderForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData();
+
+    // Append only changed files
+    document.querySelectorAll(".image-input").forEach((input, index) => {
+        const file = input.files[0];
+        if (file) {
+            formData.append(`sliderImage${index + 1}`, file);
+        }
+    });
+
+    try {
+        const response = await fetch("/admin/update-slider", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Slider updated successfully!");
+            location.reload();
+        } else {
+            alert(result.message || "Something went wrong");
+        }
+    } catch (err) {
+        console.error("Update failed:", err);
+        alert("Error occurred while updating.");
+    }
+});
+</script>
+
+<script>
+document.getElementById("taglineForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData();
+
+    try {
+        const response = await fetch("/admin/update-slider", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Slider updated successfully!");
+            location.reload();
+        } else {
+            alert(result.message || "Something went wrong");
+        }
+    } catch (err) {
+        console.error("Update failed:", err);
+        alert("Error occurred while updating.");
+    }
+});
+</script>
