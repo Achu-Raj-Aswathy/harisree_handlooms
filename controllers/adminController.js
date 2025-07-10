@@ -632,6 +632,40 @@ const updateOfferTagline = async (req, res) => {
   }
 }
 
+
+
+const editCoupon = async (req, res) => {
+ const couponId=req.query.id
+
+  try {
+
+     const { code, categoryId, productId, discountValue, type, startDate, endDate, status } = req.body;
+   console.log(req.body);
+    const [startDay, startMonth, startYear] = startDate.split("-");
+    const [endDay, endMonth, endYear] = endDate.split("-");
+
+    const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+    const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+
+    await Coupons.findByIdAndUpdate(couponId, {
+      code,
+      categoryId,
+      productId,
+      discountValue,
+      type,
+      startDate: parsedStartDate,
+      endDate: parsedEndDate,
+      status
+    });
+
+    return res.json({success:true}); // 👈 go back to the list page
+  } catch (error) {
+    console.error("Error updating coupon:", error);
+    res.status(500).send("Error updating coupon");
+  }
+};
+
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -667,5 +701,6 @@ module.exports = {
   addCoupon,
   updateOfferTagline,
   viewEditCoupon,
+  editCoupon,
   
 };

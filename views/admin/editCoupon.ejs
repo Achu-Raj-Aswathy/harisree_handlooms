@@ -79,6 +79,7 @@
                       <!-- Category -->
                         <div class="col-lg-6">
                         <div class="mb-3">
+                            <label for="categoryId" class="form-label">Select Category</label>
                      <select id="categoryId" name="categoryId" class="form-select" required>
   <option value="">-- Choose a Category --</option>
   <% categories.forEach(category => { %>
@@ -125,6 +126,7 @@
       <%= coupon.type === 'Fixed Amount' ? 'checked' : '' %> >
     <label class="form-check-label" for="typeFixed">Fixed Amount</label>
   </div>
+</div>
 </div>
 
 
@@ -194,37 +196,89 @@
 
 <!-- Form Submit Script -->
 <script>
-  document.getElementById("couponForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+  document.addEventListener("DOMContentLoaded", function () {
+    const couponForm = document.getElementById("couponForm");
+    const couponId = "<%= coupon._id %>"; // Pass coupon ID from server
 
-    const formData = {
-      code: document.getElementById("coupons-code").value,
-      categoryId: document.getElementById("categoryId").value,
-      productId: document.getElementById("product-categories").value,
-      discountValue: document.getElementById("discount-value").value,
-      startDate: document.getElementById("start-date").value,
-      endDate: document.getElementById("end-date").value,
-      type: document.querySelector('input[name="type"]:checked').value,
-      status: document.querySelector('input[name="status"]:checked').value
-    };
+    flatpickr("#start-date", {
+      dateFormat: "d-m-Y",
+      defaultDate: new Date("<%= coupon.startDate.toISOString() %>")
+    });
 
-    fetch("/admin/add-coupon", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert("Coupon created successfully!");
-          window.location.href = "/admin/list-coupon";
-        } else {
-          alert("Error: " + data.message);
-        }
+    flatpickr("#end-date", {
+      dateFormat: "d-m-Y",
+      defaultDate: new Date("<%= coupon.endDate.toISOString() %>")
+    });
+
+    // Populate products dropdown with selected category's products
+    const productSelect = document.getElementById("product-categories");
+    const categoryId = document.getElementById("categoryId").value;
+
+    if (categoryId) {
+      fetch(`/admin/products/by-category/${categoryId}`)
+        .then(res => res.json())
+        .then(data => {
+          productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+          data.products.forEach(product => {
+            const selected = product._id === "<%= coupon.productId.toString() %>" ? 'selected' : '';
+            productSelect.innerHTML += `<option value="${product._id}" ${selected}>${product.name}</option>`;
+          });
+        });
+    }
+
+    document.getElementById("categoryId").addEventListener("change", function () {
+      const selectedCategory = this.value;
+      productSelect.innerHTML = '<option value="">Loading...</option>';
+      if (selectedCategory) {
+        fetch(`/admin/products/by-category/${selectedCategory}`)
+          .then(res => res.json())
+          .then(data => {
+            productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+            data.products.forEach(product => {
+              const option = document.createElement('option');
+              option.value = product._id;
+              option.textContent = product.name;
+              productSelect.appendChild(option);
+            });
+          });
+      }
+    });
+
+    couponForm.addEventListener("submit", function (e) {
+     
+      e.preventDefault();
+
+
+      const formData = {
+        code: document.getElementById("coupons-code").value,
+        categoryId: document.getElementById("categoryId").value,
+        productId: document.getElementById("product-categories").value,
+        discountValue: document.getElementById("discount-value").value,
+        startDate: document.getElementById("start-date").value,
+        endDate: document.getElementById("end-date").value,
+        type: document.querySelector('input[name="type"]:checked').value,
+        status: document.querySelector('input[name="status"]:checked').value
+      };
+
+      fetch(`/admin/edit-coupon?id=${couponId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
       })
-      .catch(err => {
-        console.error("Error:", err);
-        alert("Something went wrong.");
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("Coupon updated successfully!");
+            window.location.href = "/admin/list-coupon";
+          } else {
+            alert("Failed to update coupon: " + data.message);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Something went wrong while updating coupon.");
+        });
+    });
   });
 </script>
+
