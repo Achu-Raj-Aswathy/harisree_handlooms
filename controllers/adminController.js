@@ -237,7 +237,8 @@ const viewOrderDetails = async (req, res) => {
 
 const viewListUser = async (req, res) => {
   try {
-    res.render("admin/userList", {});
+    const users = await Users.find({role: "user"});
+    res.render("admin/userList", {users});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
