@@ -8,12 +8,8 @@ const Categories = require("../models/categoryModel");
 const Products = require("../models/productModel");
 const UserHome = require("../models/userHomeModel");
 const Coupons = require("../models/couponModel");
-<<<<<<< HEAD
-const Offers = require("../models/offerModel");
-=======
 const Orders = require("../models/orderModel")
 
->>>>>>> 46fc7cf (customer list and details)
 const viewLogin = async (req, res) => {
   try {
     res.render("admin/login", { message: "" });
