@@ -581,6 +581,57 @@ await homeData.save();
   }
 }
 
+const addCoupon=async (req,res)=>{
+try {
+    const { code, categoryId, productId, discountValue, discountType, startDate, endDate, status } = req.body;
+const [startDay, startMonth, startYear] = startDate.split("-");
+    const [endDay, endMonth, endYear] = endDate.split("-");
+
+    const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+    const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+    const coupon = new Coupons({
+      code,
+       categoryId,
+       productId,
+      discountValue,
+      type:discountType,
+      startDate:parsedStartDate,
+      endDate:parsedEndDate,
+      status
+    });
+
+    await coupon.save();
+
+    res.json({ success: true, message: "Coupon created successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+};
+
+const updateOfferTagline = async (req, res) => {
+  try {
+    const { tagline } = req.body;
+
+    if (!tagline || typeof tagline !== "string" || !tagline.trim()) {
+      return res.status(400).json({ success: false, message: "Invalid tagline." });
+    }
+
+    const homeContent = await UserHome.findOne();
+    if (!homeContent) {
+      return res.status(404).json({ success: false, message: "UserHome data not found." });
+    }
+
+    homeContent.offerTag = tagline.trim();
+    await homeContent.save();
+
+    res.json({ success: true, message: "Tagline updated successfully." });
+  } catch (err) {
+    console.error("Tagline update error:", err);
+    res.status(500).json({ success: false, message: "Server error while updating tagline." });
+  }
+}
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -614,4 +665,6 @@ module.exports = {
   viewProductsByCategory,
   updateSlider,
   addCoupon,
+  updateOfferTagline,
+  
 };
