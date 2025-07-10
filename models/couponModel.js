@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const couponSchema = mongoose.Schema(
   {
-    couponId: { type: String, unique: true, required: true },
+    couponId: { type: String, unique: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     code: { type: String, required: true },

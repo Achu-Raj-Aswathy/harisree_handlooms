@@ -81,52 +81,80 @@
                                                   <thead class="bg-light-subtle">
                                                        <tr>
                                                             
-                                                            <th>Product Name & Type</th>
-                                                            <th>Price</th>
-                                                            <th>Discount</th>
-                                                            <th>Code</th>
+                                                            <th>Product Name</th>
+                                                            <th>Category</th>
                                                             <th>Start Date</th>
                                                             <th>End Date</th>
+                                                            <th>Code</th>
+                                                            <th>Discount</th>
+                                                            
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                        </tr>
                                                   </thead>
                                                   <tbody>
+                                                         <% if(coupons.length>0){ %>
+
+
+                                                                      <% coupons.forEach((coupon)=> { %>
                                                        <tr>
-                                                            <td>
-                                                                
-                                                            </td>
+                                                            
                                                             <td>
                                                                  <div class="d-flex align-items-center gap-2">
                                                                       <div class="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                                                           <img src="assets/images/product/p-1.png" alt="" class="avatar-md">
-                                                                      </div>
-                                                                      <div>
-                                                                           <a href="#!" class="text-dark fw-medium fs-15">Black T-shirt</a>
-                                                                           <p class="text-muted mb-0 mt-1 fs-13"><span>Fashion</p>
-                                                                      </div>
-                                                                 </div>
+                                                                           <% if (coupon.productId.images &&
+                                                                                                    coupon.productId.images.length>
+                                                                                                    0) { %>
 
+                                                                                                    <img src="<%= coupon.productId.images[0] %>"
+                                                                                                         alt="Product Image"
+                                                                                                         class="avatar-md">
+
+                                                                                                    <% } else { %>
+                                                                                                         <img src="assets/images/handlooms/sarees27.jpg"
+                                                                                                              alt="Category Image"
+                                                                                                              class="avatar-md" />
+                                                                                                         <% } %>
+                                                                      </div>
+
+                                                                 </div>
+<p
+                                                                                               class="text-dark fw-medium fs-15 mb-0">
+                                                                                               <%= coupon.productId.name
+                                                                                                    %>
+                                                                                          </p>
                                                             </td>
-                                                            <td>$80.00</td>
-                                                            <td>$20.00</td>
-                                                            <td>FASHION123</td>
-                                                            <td>12 May 2023</td>
-                                                            <td>12 Jun 2023</td>
-                                                            <td>
-                                                                 <span class="badge text-success bg-success-subtle fs-12"><i class="bx bx-check-double"></i>Active</span>
-                                                            </td>
-                                                            <td>
+                                                            <td><%= coupon.categoryId.name %></td>
+                                                         <td>
+  <%= coupon.startDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+</td>
+<td>
+  <%= coupon.endDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+</td>
+
+                                                            <td><%= coupon.code %></td>
+                                                            <td><%= coupon.discountValue %></td>
+                                                            <td><%= coupon.status %></td>
+                                                        
+                                                               
+                                                            
+                                                                <td> 
                                                                  <div class="d-flex gap-2">
-                                                                      <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      <a href="#!" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                                                    
+                                                                      <a href="/admin/edit-coupon" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
                                                                       <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
                                                                  </div>
                                                             </td>
                                                        </tr>
 
                                                  
+                                                   <% }) %>
+                                                                                <% } else { %>
+                                                                                     <tr>
+                                                                                           <td colspan="7" class="text-center">No products found</td>
+                                                                                     </tr>
 
+                                                                                     <% } %>
 
                                                   </tbody>
                                              </table>

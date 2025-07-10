@@ -42,6 +42,7 @@ adminRouter.post('/login', adminController.loginAdmin);
 adminRouter.post('/add-category', upload.array("thumbnail[]", 5), adminController.addCategory);
 adminRouter.post('/add-product', upload.array("thumbnail[]", 5), adminController.addProduct)
 adminRouter.post('/edit-category', upload.array("thumbnail[]",5),adminController.editCategory);
+adminRouter.post('/add-coupon',adminController.addCoupon);
 adminRouter.post("/update-slider", upload.fields([
   { name: "sliderImage1" }, { name: "sliderImage2" },
   { name: "sliderImage3" }, { name: "sliderImage4" }

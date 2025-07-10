@@ -209,7 +209,8 @@ const viewAddCoupon = async (req, res) => {
 
 const viewListCoupon = async (req, res) => {
   try {
-    res.render("admin/couponsList", {});
+    const coupons=await Coupons.find().populate("productId").populate("categoryId");
+    res.render("admin/couponsList", {coupons});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -566,6 +567,35 @@ await homeData.save();
   }
 }
 
+const addCoupon=async (req,res)=>{
+
+try {
+    const { code, categoryId, productId, discountValue, discountType, startDate, endDate, status } = req.body;
+const [startDay, startMonth, startYear] = startDate.split("-");
+    const [endDay, endMonth, endYear] = endDate.split("-");
+
+    const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+    const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+    const coupon = new Coupons({
+      code,
+       categoryId,
+       productId,
+      discountValue,
+      type:discountType,
+      startDate:parsedStartDate,
+      endDate:parsedEndDate,
+      status
+    });
+
+    await coupon.save();
+
+    res.json({ success: true, message: "Coupon created successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+};
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -598,4 +628,5 @@ module.exports = {
   editCategory,
   viewProductsByCategory,
   updateSlider,
+  addCoupon,
 };
