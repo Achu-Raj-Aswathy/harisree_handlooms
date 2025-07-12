@@ -1,180 +1,192 @@
 <%- include('./partials/header') %>
 
-<!-- START Wrapper -->
-
 <div class="wrapper">
-     <%- include('./partials/adminHeader') %>
-     <%- include('./partials/sidebar') %>
+  <%- include('./partials/adminHeader') %>
+  <%- include('./partials/sidebar') %>
 
-          <!-- ==================================================== -->
-          <!-- Start right Content here -->
-          <!-- ==================================================== -->
-          <div class="page-content">
+  <div class="page-content">
+    <div class="container-xxl">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12">
+          <form id="CategoryForm" enctype="multipart/form-data">
 
-               <!-- Start Container Fluid -->
-               <div class="container-xxl">
-
-                    <div class="row">
-                        
-
-                         <div class="col-xl-12 col-lg-12 ">
-                              <div class="card">
-                                  
-                                  
+            <!-- Thumbnail Section -->
+            <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Add Thumbnail Photo</h4>
+                <h4 class="card-title">Edit Thumbnail Photo</h4>
               </div>
               <div class="card-body">
-                <!-- File Upload -->
-                <input type="file" 
-                       name="thumbnail[]" 
-                       class="filepond"
-                       multiple 
-                       data-max-file-size="3MB"
-                       data-max-files="5"
-                       accept="image/png, image/jpeg, image/gif" />
+                <input 
+                  type="file" 
+                  name="thumbnail[]" 
+                  class="filepond" 
+                  multiple 
+                  data-max-file-size="3MB" 
+                  data-max-files="5"
+                  accept="image/png, image/jpeg, image/gif" 
+                />
                 <small class="text-muted fs-13 d-block mt-2">
-                  1600 x 1200 (4:3) recommended. PNG and JPG  files are allowed.
+                  1600 x 1200 (4:3) recommended. PNG and JPG files are allowed.
                 </small>
               </div>
             </div>
 
-                                   </div>
-                              </div>
-
-                              <div class="card">
-                                   <div class="card-header">
-                                        <h4 class="card-title">General Information</h4>
-                                   </div>
-                                   <div class="card-body">
-                                        <div class="row">
-
-                                                <div class="col-lg-6">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-id" class="form-label">Category ID</label>
-                                                            <input type="text" id="product-id" class="form-control" name="categoryId" value="<%= category.categoryId %>">
-                                                       </div>
-
-                                                  </form>
-                                             </div>
-                                             <div class="col-lg-6">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="category-title" class="form-label">Category Title</label>
-                                                            <input type="text" id="category-title" class="form-control" name="categoryName" value="<%= category.name %>">
-                                                       </div>
-                                                  </form>
-                                             </div>
-
-                                             <!-- <div class="col-lg-6">
-                                                  <form>
-                                                       <label for="crater" class="form-label">Created By</label>
-                                                       <select class="form-control" id="crater" data-choices data-choices-groups data-placeholder="Select Crater">
-                                                            <option value="">Select Crater</option>
-                                                            <option value="Seller" selected>Seller</option>
-                                                            <option value="Admin">Admin</option>
-                                                            <option value="Other">Other</option>
-                                                       </select>
-                                                  </form>
-                                             </div> -->
-                                             <!-- <div class="col-lg-6">
-                                                  <form>
-                                                       <div class="mb-3">
-                                                            <label for="product-stock" class="form-label">Stock</label>
-                                                            <input type="number" id="product-stock" class="form-control" placeholder="Quantity" value="46233">
-                                                       </div>
-
-                                                  </form>
-                                             </div> -->
-                                          
-                                             <div class="col-lg-12">
-                                                  <div class="mb-0">
-                                                       <label for="description" class="form-label">Description</label>
-                                                       <textarea class="form-control bg-light-subtle" id="description" rows="7" name="description" value="<%= category.description %>" ><%= category.description %></textarea>
-
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-                            
-                              <div class="p-3 bg-light mb-3 rounded">
-                                   <div class="row justify-content-end g-2">
-                                        <div class="col-lg-2">
-                                             <a href="#!" class="btn btn-outline-secondary w-100">Save Change</a>
-                                        </div>
-                                        <div class="col-lg-2">
-                                             <a href="#!" class="btn btn-primary w-100">Cancel</a>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
+            <!-- General Information -->
+            <div class="card mt-4">
+              <div class="card-header">
+                <h4 class="card-title">General Information</h4>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="product-id" class="form-label">Category ID</label>
+                      <input 
+                        type="text" 
+                        name="categoryIdText" 
+                        id="product-id" 
+                        class="form-control" 
+                        value="<%= category.categoryId %>" 
+                        readonly 
+                      />
                     </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label for="category-title" class="form-label">Category Title</label>
+                      <input 
+                        type="text" 
+                        name="name" 
+                        id="category-title" 
+                        class="form-control" 
+                        value="<%= category.name %>" 
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="mb-0">
+                      <label for="description" class="form-label">Description</label>
+                      <textarea 
+                        class="form-control bg-light-subtle" 
+                        name="description" 
+                        id="description" 
+                        rows="7"
+                      ><%= category.description %></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              
-               <!-- End Container Fluid -->
+            <!-- Submit / Cancel Buttons -->
+            <div class="p-3 bg-light mb-3 rounded mt-4">
+              <div class="row justify-content-end g-2">
+                <div class="col-lg-2">
+                  <button type="submit" class="btn btn-outline-secondary w-100">Update</button>
+                </div>
+                <div class="col-lg-2">
+                  <a href="/admin/list-category" class="btn btn-primary w-100">Cancel</a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-             
+    <%- include('./partials/footer') %>
 
-          
-          <!-- ==================================================== -->
-          <!-- End Page Content -->
-          <!-- ==================================================== -->
-<%- include('./partials/footer') %>
+    <!-- FilePond Styles -->
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
 
-     </div>
-    <!-- ✅ FilePond Styles -->
-<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
-<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+    <!-- FilePond Scripts -->
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
 
-<!-- ✅ FilePond Scripts -->
-<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <!-- Custom Styles for FilePond -->
+    <style>
+      .filepond--item {
+        width: calc(25% - 0.5em);
+      }
 
-<script>
-  // Register plugin
-  FilePond.registerPlugin(FilePondPluginImagePreview);
+      .filepond--list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+      }
+    </style>
 
-  // Initialize FilePond
-  FilePond.create(document.querySelector('.filepond'), {
-    allowMultiple: true,
-    maxFiles: 5,
-    allowImagePreview: true,
-    imagePreviewHeight: 170,
-    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
-    labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
-  });
-</script>
+    <!-- FilePond Init and Form Submission -->
+    <script>
+      FilePond.registerPlugin(FilePondPluginImagePreview);
 
-<!-- ✅ Custom Preview Grid Styling -->
-<style>
-  .filepond--item {
-    width: calc(25% - 0.5em); /* 4 per row */
-  }
-
-  .filepond--list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5em;
-  }
-</style>
-
-     <script>
-  // On document ready
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("CategoryForm");
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const formData = new FormData(form);
-
-      // Append FilePond files manually
-      const pondFiles = FilePond.find(document.querySelector('.filepond')).getFiles();
-      pondFiles.forEach((file, index) => {
-        formData.append("thumbnail[]", file.file);
+      const pond = FilePond.create(document.querySelector(".filepond"), {
+        allowMultiple: true,
+        maxFiles: 5,
+        allowImagePreview: true,
+        imagePreviewHeight: 170,
+        acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+        labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>',
+        files: [
+          <% category.images.forEach((img, i) => { %>
+            {
+              source: "/uploads/<%= img %>",
+              options: {
+                type: "local",
+                file: {
+                  name: "<%= img %>",
+                  size: 1234,
+                  type: "image/png"
+                },
+                metadata: {
+                  originalName: "<%= img %>"
+                }
+              }
+            },
+          <% }) %>
+        ]
       });
-    })
-  })
-      </script>
+
+      document.getElementById("CategoryForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const form = e.target;
+const formData = new FormData(form);
+
+// Collect local (existing) images
+const keptOldImages = [];
+
+const files = pond.getFiles();
+files.forEach(file => {
+  if (file.origin === 'local') {
+    keptOldImages.push(file.file.name); // already uploaded image
+  } else {
+    formData.append("thumbnail", file.file); // new images
+  }
+});
+
+// Add old image names as a JSON string
+formData.append("existingImages", JSON.stringify(keptOldImages));
+
+
+        try {
+          const res = await fetch("/admin/edit-category?id=<%=category._id%>", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await res.json();
+          if (result.success) {
+            alert("Category updated successfully!");
+            window.location.href = "/admin/list-category";
+          } else {
+            alert("Failed to update category.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("An error occurred.");
+        }
+      });
+    </script>
+  </div>
+</div>

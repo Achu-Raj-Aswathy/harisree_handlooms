@@ -11,82 +11,6 @@
                     <div class="container-xxl">
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 ">
-                                <!-- <form action="/admin/update-slider" method="POST" enctype="multipart/form-data">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Edit Slider Images</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row g-4">
-                                                <% const sliderImages=[ "/assets/images/banner/handloom-hero1.jpg"
-                                                    , "/assets/images/banner/handloom-hero2.jpg"
-                                                    , "/assets/images/banner/handloom-hero3.jpg"
-                                                    , "/assets/images/banner/handloom-hero4.jpg" ]; %>
-
-                                                    <% sliderImages.forEach((img, index)=> { %>
-                                                        <div class="col-md-3 text-center">
-                                                            <label class="form-label d-block mb-2">Slider <%= index + 1
-                                                                    %></label>
-                                                            <img id="preview<%= index + 1 %>" src="<%= img %>"
-                                                                alt="Slider <%= index + 1 %>"
-                                                                class="img-fluid border rounded mb-2"
-                                                                style="width: 250px; height: 250px;" />
-                                                            <input type="file" name="sliderImage<%= index + 1 %>"
-                                                                class="form-control mb-2 image-input"
-                                                                data-preview="preview<%= index + 1 %>"
-                                                                accept="image/*" />
-                                                            <small class="text-muted">Leave empty to keep
-                                                                current</small>
-                                                        </div>
-                                                        <% }) %>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="p-3 bg-light mb-3 rounded">
-                                        <div class="row justify-content-end g-2">
-                                            <div class="col-lg-2">
-                                                <button type="submit"
-                                                    class="btn btn-outline-secondary w-100">Update</button>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <a href="/admin/sliders" class="btn btn-primary w-100">Cancel</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form> -->
-
-                                <!-- <form action="/admin/update-offer-tagline" method="POST">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="card-title">Offer Tagline</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="mb-3">
-                                                        <input type="text" id="product-name" name="tagline"
-                                                            class="form-control"
-                                                            placeholder="Write a catchy tagline for your offer"
-                                                            required />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="p-3 bg-light mb-3 rounded">
-                                        <div class="row justify-content-end g-2">
-                                            <div class="col-lg-2">
-                                                <button type="submit"
-                                                    class="btn btn-outline-secondary w-100">Update</button>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <a href="/admin/dashboard" class="btn btn-primary w-100">Cancel</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form> -->
                                 <!-- SLIDER IMAGE FORM -->
                                 <form id="sliderForm" enctype="multipart/form-data">
                                     <div class="card">
@@ -95,33 +19,24 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row g-4">
-  <% if (homeEdits && homeEdits.sliderImages) { %>
-    <% homeEdits.sliderImages.forEach((imgObj, index) => {
-         // Safely extract image value from each object
-         const entries = Object.entries(imgObj).filter(([key]) => key !== "_id");
-         const img = entries.length ? entries[0][1] : null;
-    %>
-      <div class="col-md-3 text-center">
-        <label class="form-label d-block mb-2">Slider <%= index + 1 %></label>
-        <% if (img) { %>
-          <!-- 👇 This path is correct if static serving is set up -->
-          <img id="preview<%= index + 1 %>" src="<%= img %>"
-               alt="Slider <%= index + 1 %>"
-               class="img-fluid border rounded mb-2"
-               style="width: 250px; height: 250px;" />
-        <% } else { %>
-          <p class="text-muted">Image not found</p>
-        <% } %>
-        <input type="file" name="sliderImage<%= index + 1 %>"
-               class="form-control mb-2 image-input"
-               data-preview="preview<%= index + 1 %>"
-               accept="image/*" />
-        <small class="text-muted">Leave empty to keep current</small>
-      </div>
-    <% }) %>
-  <% } else { %>
-    <p class="text-muted">No slider data available.</p>
-  <% } %>
+<% if (homeEdits && homeEdits.sliderImages) { %>
+  <% const sliders = homeEdits.sliderImages; %>
+  <% [1, 2, 3, 4].forEach((num) => { 
+       const img = sliders[`slider${num}`];
+  %>
+    <div class="col-md-3 text-center">
+      <label class="form-label d-block mb-2">Slider <%= num %></label>
+      <% if (img) { %>
+        <img id="preview<%= num %>" src="<%= img %>" class="img-fluid border rounded mb-2" style="width: 250px; height: 250px;" />
+      <% } else { %>
+        <p class="text-muted">Image not found</p>
+      <% } %>
+      <input type="file" name="sliderImage<%= num %>" class="form-control mb-2 image-input" data-preview="preview<%= num %>" accept="image/*" />
+      <small class="text-muted">Leave empty to keep current</small>
+    </div>
+  <% }) %>
+<% } %>
+
 </div>
 
 

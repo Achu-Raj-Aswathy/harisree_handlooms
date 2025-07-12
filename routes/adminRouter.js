@@ -46,7 +46,7 @@ adminRouter.post('/delete-offer/:id', adminController.deleteOffer);
 adminRouter.post('/login', adminController.loginAdmin);
 adminRouter.post('/add-category', upload.array("thumbnail[]", 5), adminController.addCategory);
 adminRouter.post('/add-product', upload.array("thumbnail[]", 5), adminController.addProduct)
-adminRouter.post('/edit-category', upload.array("thumbnail[]",5),adminController.editCategory);
+adminRouter.post('/edit-category', upload.array("thumbnail",5),adminController.editCategory);
 adminRouter.post('/offers/add', upload.single('image'), adminController.addOffer);
 adminRouter.post('/offers/edit',upload.single('image'),adminController.editOffer);
 adminRouter.post('/edit-coupon',adminController.editCoupon);
