@@ -23,6 +23,27 @@
                 placeholder="Details about the offer..." required></textarea>
             </div>
 
+            <!-- Category -->
+            <div class="mb-3">
+              <label for="categoryId" class="form-label">Select Category</label>
+              <select id="categoryId" name="categoryId" class="form-select" required>
+                <option value="">-- Choose a Category --</option>
+                <% categories.forEach(category=> { %>
+                  <option value="<%= category._id %>">
+                    <%= category.name %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
+
+            <!-- Products -->
+            <div class="mb-3">
+              <label for="product-categories" class="form-label">Discount Product</label>
+              <select class="form-control" id="product-categories" name="productId">
+                <option value="">-- Select Category First --</option>
+              </select>
+            </div>
+
             <!-- Start Date -->
             <div class="mb-3">
               <label for="startDate" class="form-label fw-semibold">Start Date</label>
@@ -59,19 +80,40 @@
               ➕ Add Offer
             </button>
           </form>
-   
-  
+
+
         </div>
   </div>
-  
- <!-- <%- include('./partials/footer') %> -->
+
+  <!-- <%- include('./partials/footer') %> -->
 
   </div>
-  
 
+  <script>
+    document.getElementById('categoryId').addEventListener('change', function () {
+      const categoryId = this.value;
+      const productSelect = document.getElementById('product-categories');
+      productSelect.innerHTML = '<option value="">Loading...</option>';
 
-
-    
+      if (categoryId) {
+        fetch(`/admin/products/by-category/${categoryId}`)
+          .then(res => res.json())
+          .then(data => {
+            productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+            data.products.forEach(product => {
+              const option = document.createElement('option');
+              option.value = product._id;
+              option.textContent = product.name;
+              productSelect.appendChild(option);
+            });
+          })
+          .catch(err => {
+            console.error(err);
+            productSelect.innerHTML = '<option value="">Error loading products</option>';
+          });
+      }
+    });
+  </script>
 
   <script>
     function previewImage(event) {

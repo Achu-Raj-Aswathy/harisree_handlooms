@@ -48,10 +48,16 @@
     animation: scroll-left 25s linear infinite;
     padding-left: 100%;
   ">
+  <%
+  if(offerTag) { %>
     <span style="padding-right: 50px; display: inline-block;">
-      🎉 100% SECURE PAYMENTS | 14 DAYS MONEY BACK GUARANTEE | EXCLUSIVE FESTIVE OFFERS 🎁 | ONAM SPECIAL 🌼
+      <%= offerTag %> 
     </span>
-    
+    <% } else { %>
+    <span style="padding-right: 50px; display: inline-block;">
+      🎉 100% SECURE PAYMENTS | 14 DAYS MONEY BACK GUARANTEE | EXCLUSIVE FESTIVE OFFERS 🎁 
+    </span>
+    <% } %>
   </div>
 </div>
 
@@ -123,7 +129,7 @@
                                         <li><a class="dropdown-item" href="/shop">Set Mundu</a></li>
                                         <li><a class="dropdown-item" href="/shop">Set Saree</a></li>
                                         <li><a class="dropdown-item" href="/shop">Dhoti</a></li>
-                                       </ul>
+                                    </ul>
                                 </li>
                                 <li>
                                     <a href="/shop"><i class="fas fa-shopping-bag"></i> Shop</a>

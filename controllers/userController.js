@@ -3,12 +3,52 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Users = require("../models/userModel");
 const { countries } = require('countries-list');
-const userHome = require("../models/userHomeModel");
+const UserHome = require("../models/userHomeModel");
+const Products = require("../models/productModel");
+const Offers = require("../models/offerModel")
+const Categories = require("../models/categoryModel");
+
+// const viewHomepage = async (req, res) => {
+//   try {
+//     const homeEdits = await UserHome.find({}, { sliderImages: 1, _id: 0 });
+//     const products = await Products.find();
+//     const newArrivals = await Products.find().sort({ createdAt: -1 });
+//     // const offersArea = 
+//     // const bestDeals = await Products.find()
+//     res.render("user/home", { sliderImages: homeEdits[0]?.sliderImages || {}, products, newArrivals }); 
+//   } catch (error) {
+//     console.error(error);
+//     res.render("error", { error });
+//   }
+// };
 
 const viewHomepage = async (req, res) => {
   try {
-    const homeEdits = await userHome.find({}, { sliderImages: 1, _id: 0 }); // Only get sliderImages
-    res.render("user/home", { sliderImages: homeEdits[0]?.sliderImages || {} }); // Send only sliderImages
+    const homeEdits = await UserHome.find({}, { sliderImages: 1, _id: 0 });
+    const products = await Products.find();
+    const newArrivals = await Products.find().sort({ createdAt: -1 });
+
+    // Get all products with offers (for offers area)
+    const offersArea = await Offers.find()
+      .populate("productId")
+      .sort({ createdAt: -1 });
+
+    // Filter for best deals (only those active today)
+    const today = new Date();
+    const bestDeals = await Offers.find({
+      startDate: { $lte: today },
+      endDate: { $gte: today }
+    })
+      .populate("productId")
+      .sort({ discountPercentage: -1 }); // Highest discount first
+
+    res.render("user/home", {
+      sliderImages: homeEdits[0]?.sliderImages || {},
+      products,
+      newArrivals,
+      offersArea,
+      bestDeals
+    });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -147,7 +187,9 @@ const viewResetPassword = async (req, res) => {
 
 const viewShop = async (req, res) => {
   try {
-    res.render("user/shop", { });
+    const categories = await Categories.find({}).select("name");
+    const products = await Products.find();
+    res.render("user/shop", { products, categories });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -155,8 +197,10 @@ const viewShop = async (req, res) => {
 };
 
 const viewProduct = async (req, res) => {
+  const productId = req.query.id;
   try {
-    res.render("user/product", { });
+    const product = await Products.findOne({ _id: productId })
+    res.render("user/product", { product });
   } catch (error) {
     console.error(error);
     res.render("error", { error });

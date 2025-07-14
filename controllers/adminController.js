@@ -297,7 +297,8 @@ const viewSalesReport = async (req, res) => {
 
 const viewAddOffers = async (req, res) => {
   try {
-    res.render("admin/addOffers", {});
+    const categories = await Categories.find({}).select("name");
+    res.render("admin/addOffers", { categories });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -817,7 +818,8 @@ const deleteCoupon = async (req, res) => {
 
 const addOffer = async (req, res) => {
   try {
-    const { title, description, startDate, endDate, discount } = req.body;
+    const { title, description, startDate, endDate, discount, categoryId,
+      productId, } = req.body;
     const image = req.file ? req.file.filename : null;
 
     const newOffer = new Offers({
@@ -828,6 +830,8 @@ const addOffer = async (req, res) => {
       endDate: new Date(endDate),
       discountPercentage: discount,
       image,
+      categoryId,
+      productId
     });
 
     await newOffer.save();
@@ -852,7 +856,9 @@ const viewEditOffer = async (req, res) => {
         .json({ success: false, message: "Offer not found" });
     }
 
-    res.render("admin/editOffer", { offer });
+    const categories = await Categories.find({}).select("name"); 
+
+    res.render("admin/editOffer", { offer, categories });
   } catch (error) {
     console.log("Error loading edit offer page:", error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -873,7 +879,8 @@ const deleteOffer = async (req, res) => {
 const editOffer = async (req, res) => {
   try {
     const offerId = req.query.id;
-    const { title, description, startDate, endDate, discount } = req.body;
+    const { title, description, startDate, endDate, discount, categoryId,
+      productId } = req.body;
 
     const offer = await Offers.findById(offerId);
     if (!offer) {
@@ -888,6 +895,8 @@ const editOffer = async (req, res) => {
     offer.startDate = new Date(startDate);
     offer.endDate = new Date(endDate);
     offer.discountPercentage = discount;
+    offer.categoryId = categoryId;
+    offer.productId = productId;
 
     // Handle image replacement
     if (req.file) {

@@ -13,13 +13,12 @@
           <label for="categorySelect" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
             🧵 Choose Category
           </label>
-          <select id="categorySelect" class="form-select shadow-sm" onchange="handleCategoryChange(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
-            <option value="">All Categories</option>
-            <option value="Saree">Saree</option>
-            <option value="SetSaree">Set Saree</option>
-            <option value="SetMund">Set Mundu</option>
-            <option value="Dhoti">Dhoti</option>
-          </select>
+            <select id="categorySelect" class="form-select shadow-sm" onchange="handleCategoryChange(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
+    <option value="">All Categories</option>
+    <% categories.forEach(category => { %>
+      <option value="<%= category.name %>"><%= category.name %></option>
+    <% }) %>
+  </select>
         </div>
 
         <div class="col-lg-3">
@@ -37,7 +36,7 @@
       </div>
 
       <!-- Product Grid -->
-      <div class="row gx-4 gy-4" id="productGrid">
+      <div class="row gy-4" id="productGrid">
         <!-- Products will be rendered here -->
       </div>
     </div>
@@ -70,23 +69,41 @@
     }
 
     products.forEach(product => {
-      const html = `
-        <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-6" data-aos="fade-up" data-aos-duration="800">
-          <div class="axil-product product-style-one has-color-pick">
-            <div class="thumbnail position-relative" style="width: 100%; height: 460px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-              <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
-              ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
-            </div>
-            <div class="product-content text-center mt-2">
-              <h5 class="title">${product.name}</h5>
-              <div class="product-price-variant">
-                ${product.oldPrice ? `<span class="price old-price" style="text-decoration: line-through; margin-right: 8px; color: #888;">₹${product.oldPrice}</span>` : ""}
-                <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
-              </div>
-              <a href="/product/${product.id}" class="axil-btn mt-2 btn btn-warning text-white fw-semibold">View Details</a>
-            </div>
-          </div>
-        </div>`;
+//       const html = `
+// <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-aos="fade-up product-card" data-aos-duration="800">
+//           <div class="axil-product product-style-one has-color-pick">
+//             <div class="thumbnail position-relative" style="width: 100%; height: 460px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+//               <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+//               ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
+//             </div>
+//             <div class="product-content text-center mt-2">
+//               <h5 class="title">${product.name}</h5>
+//               <div class="product-price-variant">
+//                 ${product.oldPrice ? `<span class="price old-price" style="text-decoration: line-through; margin-right: 8px; color: #888;">₹${product.oldPrice}</span>` : ""}
+//                 <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
+//               </div>
+//               <a href="/product/${product.id}" class="axil-btn mt-2 btn btn-warning text-white fw-semibold">View Details</a>
+//             </div>
+//           </div>
+//         </div>`;
+const html = `
+  <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-card" data-aos="fade-up" data-aos-duration="800">
+    <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
+      <div class="thumbnail flex-shrink-0" style="width: 100%; height: 250px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+        ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
+      </div>
+      <div class="product-content text-center text-sm-start px-2">
+        <h5 class="title">${product.name}</h5>
+        <div class="product-price-variant mb-1">
+          ${product.oldPrice ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${product.oldPrice}</span>` : ""}
+          <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
+        </div>
+        <a href="/product" class="axil-btn btn btn-warning text-white fw-semibold">View Details</a>
+      </div>
+    </div>
+  </div>`;
+
       grid.innerHTML += html;
     });
 
@@ -132,4 +149,40 @@
   }
 </script>
 
+<style>
+@media (max-width: 479.98px) {
+  .small-screen-card {
+    flex-direction: row !important;
+    align-items: center;
+  }
+
+  .small-screen-card .thumbnail {
+    width: 45% !important;
+    height: 120px !important;
+  }
+
+  .small-screen-card .product-content {
+    flex: 1;
+    padding-left: 10px;
+    text-align: left !important;
+  }
+
+  .small-screen-card .title {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .small-screen-card .product-price-variant {
+    font-size: 0.95rem;
+  }
+
+  .small-screen-card .axil-btn {
+    font-size: 0.9rem;
+    padding: 4px 8px;
+  }
+}
+
+
+</style>
 <%- include('./partials/footer') %>
+
