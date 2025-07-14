@@ -9,7 +9,7 @@ userRouter.use(async(req, res, next) => {
       
       if (req.session.user) {
           try {
-            res.locals.user = await Users.findById(req.session.user); 
+            res.locals.user = await Users.findById(req.session.user).populate("orders").populate("wishlist").populate("cart"); 
           } catch (error) {
               console.error('Error fetching user details:', error);
               res.locals.user = null;

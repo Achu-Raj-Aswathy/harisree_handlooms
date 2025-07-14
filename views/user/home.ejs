@@ -4,15 +4,12 @@
     <main class="main-wrapper">
         <!-- Start Slider Area -->
         <%
-// Array of handloom images
-const handloomImages = [
-  "/assets/images/banner/handloom-hero.jpg",
-  "/assets/images/banner/handloom-hero1.jpg",
-  "/assets/images/banner/handloom-hero2.jpg",
-  "/assets/images/banner/handloom-hero3.jpg",
-  "/assets/images/banner/handloom-hero4.jpg",
-  "/assets/images/banner/handloom-hero5.jpg"
-];
+  // Convert sliderImages object to array
+  const handloomImages = [];
+  if (sliderImages.slider1) handloomImages.push(sliderImages.slider1);
+  if (sliderImages.slider2) handloomImages.push(sliderImages.slider2);
+  if (sliderImages.slider3) handloomImages.push(sliderImages.slider3);
+  if (sliderImages.slider4) handloomImages.push(sliderImages.slider4);
 %>
 
 <div class="axil-main-slider-area main-slider-style-4 position-relative" id="handloomSlider" style="background-image: url('<%= handloomImages[0] %>'); background-size: cover; background-position: center; min-height: 90vh; display: flex; align-items: center; transition: background-image 1s ease-in-out;">

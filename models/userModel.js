@@ -39,6 +39,15 @@ const userSchema = mongoose.Schema(
         },
       },
     ],
+    cart: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Products",
+          required: false,
+        },
+      },
+    ], 
   },
   { timestamps: true }
 );

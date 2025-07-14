@@ -3,10 +3,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Users = require("../models/userModel");
 const { countries } = require('countries-list');
+const userHome = require("../models/userHomeModel");
 
 const viewHomepage = async (req, res) => {
   try {
-    res.render("user/home", { });
+    const homeEdits = await userHome.find({}, { sliderImages: 1, _id: 0 }); // Only get sliderImages
+    res.render("user/home", { sliderImages: homeEdits[0]?.sliderImages || {} }); // Send only sliderImages
   } catch (error) {
     console.error(error);
     res.render("error", { error });
