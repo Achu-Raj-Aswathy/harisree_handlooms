@@ -25,7 +25,7 @@
           <label for="priceSelect" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
             💰 Price Range
           </label>
-          <select id="priceSelect" class="form-select shadow-sm" onchange="handlePriceFilter(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
+          <select id="priceSelect" class="form-select shadow-sm" onchange="handlePriceFilter(this.value)" style="border-radius: 10px;  font-size: 1.2rem;">
             <option value="">All Prices</option>
             <option value="0 - 100">₹0 - ₹100</option>
             <option value="100 - 500">₹100 - ₹500</option>
@@ -180,8 +180,43 @@ const html = `
     font-size: 0.9rem;
     padding: 4px 8px;
   }
-}
 
+/* Responsive Select Box Fix *
+/* Mobile adjustments */
+/* @media (max-width: 767.98px) {
+  .container,
+  .row,
+  .col-lg-9,
+  .col-lg-3 {
+    max-width: 100% !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    box-sizing: border-box;
+  }
+
+  select.form-select {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  
+  html, body {
+    overflow-x: hidden !important;
+  }
+
+  .main-wrapper {
+    overflow-x: hidden;
+  }
+}
+} */
+}
 
 </style>
 <%- include('./partials/footer') %>
