@@ -125,10 +125,17 @@
                                         <i class="fas fa-th-large"></i> Categories
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdown-header-menu">
-                                        <li><a class="dropdown-item" href="/shop">Saree</a></li>
-                                        <li><a class="dropdown-item" href="/shop">Set Mundu</a></li>
-                                        <li><a class="dropdown-item" href="/shop">Set Saree</a></li>
-                                        <li><a class="dropdown-item" href="/shop">Dhoti</a></li>
+                                       <% if(categories) { %>
+
+                                        <% categories.forEach ((category)=>{ %>
+
+                                            <li><a class="dropdown-item" href="/shop"><%= category.name %></a></li>
+
+                                        <% }) %> 
+                                        <% } else { %>
+                                        <li>No category found</li>
+                                        <% } %>
+                                        
                                     </ul>
                                 </li>
                                 <li>
@@ -147,6 +154,7 @@
                                     <i class="fas fa-search"></i>
                                 </a>
                             </li>
+                             <% if(user) { %>
                             <li class="shopping-cart">
                                 <a href="#" class="cart-dropdown-btn">
                                     <span class="cart-count">2</span>
@@ -159,7 +167,7 @@
                                 </a>
                             </li>
                             
-                            <% if(user) { %>
+                           
 <li class="my-account">
                                 <a href="javascript:void(0)">
                                     <i class="far fa-user"></i>

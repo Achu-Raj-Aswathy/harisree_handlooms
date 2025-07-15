@@ -5,6 +5,7 @@ const {isLogin,isLogout} = require("../middleware/userAuth");
 const upload = require("../multer/multer");
 const Users = require("../models/userModel");
 const UserHome = require("../models/userHomeModel");
+const Categories=require("../models/categoryModel");
 
 userRouter.use(async(req, res, next) => {
       
@@ -28,6 +29,18 @@ userRouter.use(async (req, res, next) => {
   } catch (error) {
     console.error('Error fetching offer tag:', error);
     res.locals.offerTag = null;
+  }
+
+  next();
+});
+
+userRouter.use(async (req, res, next) => {
+  try {
+    const categories = await Categories.find().select("name"); // Get the first (and only) document
+    res.locals.categories = categories || null;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.locals.categories = null;
   }
 
   next();
