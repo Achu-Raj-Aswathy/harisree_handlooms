@@ -4,12 +4,13 @@ const userController = require("../controllers/userController");
 const {isLogin,isLogout} = require("../middleware/userAuth");
 const upload = require("../multer/multer");
 const Users = require("../models/userModel");
+const UserHome = require("../models/userHomeModel");
 
 userRouter.use(async(req, res, next) => {
       
       if (req.session.user) {
           try {
-            res.locals.user = await Users.findById(req.session.user); 
+            res.locals.user = await Users.findById(req.session.user).populate("orders").populate("wishlist").populate("cart"); 
           } catch (error) {
               console.error('Error fetching user details:', error);
               res.locals.user = null;
@@ -19,6 +20,18 @@ userRouter.use(async(req, res, next) => {
       }
       next();
   });
+
+userRouter.use(async (req, res, next) => {
+  try {
+    const userHomeData = await UserHome.findOne(); // Get the first (and only) document
+    res.locals.offerTag = userHomeData?.offerTag || null;
+  } catch (error) {
+    console.error('Error fetching offer tag:', error);
+    res.locals.offerTag = null;
+  }
+
+  next();
+});
 
 userRouter.get("/", userController.viewHomepage);
 userRouter.get("/signin", isLogout, userController.viewSignin);

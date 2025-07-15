@@ -59,7 +59,7 @@
                               <div class="card">
                                    <div class="d-flex card-header justify-content-between align-items-center">
                                         <div>
-                                             <h4 class="card-title">All Product List</h4>
+                                             <h4 class="card-title">All Coupon List</h4>
                                         </div>
                                         <div class="dropdown">
                                              <a href="#" class="dropdown-toggle btn btn-sm btn-outline-light rounded" data-bs-toggle="dropdown" aria-expanded="false">
@@ -102,19 +102,12 @@
                                                             <td>
                                                                  <div class="d-flex align-items-center gap-2">
                                                                       <div class="rounded bg-light avatar-md d-flex align-items-center justify-content-center">
-                                                                           <% if (coupon.productId.images &&
-                                                                                                    coupon.productId.images.length>
-                                                                                                    0) { %>
+                                                                          <% if (coupon.productId && coupon.productId.images && coupon.productId.images.length > 0) { %>
+    <img src="<%= coupon.productId.images[0] %>" alt="Product Image" class="avatar-md">
+<% } else { %>
+    <img src="assets/images/handlooms/sarees27.jpg" alt="Category Image" class="avatar-md" />
+<% } %>
 
-                                                                                                    <img src="<%= coupon.productId.images[0] %>"
-                                                                                                         alt="Product Image"
-                                                                                                         class="avatar-md">
-
-                                                                                                    <% } else { %>
-                                                                                                         <img src="assets/images/handlooms/sarees27.jpg"
-                                                                                                              alt="Category Image"
-                                                                                                              class="avatar-md" />
-                                                                                                         <% } %>
                                                                       </div>
 
                                                                  </div>
@@ -156,7 +149,7 @@
                                                    <% }) %>
                                                                                 <% } else { %>
                                                                                      <tr>
-                                                                                           <td colspan="7" class="text-center">No products found</td>
+                                                                                           <td colspan="7" class="text-center">No coupons found</td>
                                                                                      </tr>
 
                                                                                      <% } %>

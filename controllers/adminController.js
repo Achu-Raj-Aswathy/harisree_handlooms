@@ -211,8 +211,10 @@ const viewAddCoupon = async (req, res) => {
 
 const viewListCoupon = async (req, res) => {
   try {
-    const coupons=await Coupons.find().populate("productId").populate("categoryId");
-    res.render("admin/couponsList", {coupons});
+    const coupons = await Coupons.find()
+      .populate("productId")
+      .populate("categoryId");
+    res.render("admin/couponsList", { coupons });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -239,8 +241,8 @@ const viewOrderDetails = async (req, res) => {
 
 const viewListUser = async (req, res) => {
   try {
-    const users = await Users.find({role: "user"});
-    res.render("admin/userList", {users});
+    const users = await Users.find({ role: "user" });
+    res.render("admin/userList", { users });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -268,7 +270,6 @@ const viewUserDetails = async (req, res) => {
       totalOrderPrice,
       orders, // optional: if you want to show individual order details
     });
-
   } catch (error) {
     console.error("Error fetching user details:", error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -277,8 +278,8 @@ const viewUserDetails = async (req, res) => {
 
 const viewInventory = async (req, res) => {
   try {
-    const products=await Products.find().populate("categoryId")
-    res.render("admin/inventory", {products});
+    const products = await Products.find().populate("categoryId");
+    res.render("admin/inventory", { products });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -296,7 +297,8 @@ const viewSalesReport = async (req, res) => {
 
 const viewAddOffers = async (req, res) => {
   try {
-    res.render("admin/addOffers", {});
+    const categories = await Categories.find({}).select("name");
+    res.render("admin/addOffers", { categories });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -305,8 +307,8 @@ const viewAddOffers = async (req, res) => {
 
 const viewListOffers = async (req, res) => {
   try {
-    const offers=await Offers.find().lean();
-    res.render("admin/listOffers", {offers});
+    const offers = await Offers.find().lean();
+    res.render("admin/listOffers", { offers });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -318,10 +320,13 @@ const viewHomeEditor = async (req, res) => {
     const homeEditArr = await UserHome.find().sort({ _id: -1 }).limit(1);
     const homeEdits = homeEditArr[0] || null;
 
-    console.log("homeEdits:", homeEdits.sliderImages[0].slider1);
+    if (homeEdits && homeEdits.sliderImages) {
+      console.log("Slider 1 image:", homeEdits.sliderImages.slider1); // ✅ correct
+    }
+
     res.render("admin/homeEditor", { homeEdits });
   } catch (error) {
-    console.log(error);
+    console.error("Error in viewHomeEditor:", error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };
@@ -367,19 +372,17 @@ const addCategory = async (req, res) => {
   }
 };
 
-
 const viewEditCoupon = async (req, res) => {
- const couponId=req.query.id;
+  const couponId = req.query.id;
   try {
-    const coupon=await Coupons.findById(couponId);
-     const categories = await Categories.find({}).select("name"); // only fetch name and _id
-    res.render("admin/editCoupon", {categories,coupon});
+    const coupon = await Coupons.findById(couponId);
+    const categories = await Categories.find({}).select("name"); // only fetch name and _id
+    res.render("admin/editCoupon", { categories, coupon });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };
-
 
 const addProduct = async (req, res) => {
   try {
@@ -502,45 +505,87 @@ const deleteProduct = async (req, res) => {
 
 const editCategory = async (req, res) => {
   try {
-    const { categoryId, categoryName, description } = req.body;
+    const categoryId = req.query.id;
+    const { name, description, existingImages } = req.body;
 
-    const category = await Categories.findOne({ categoryId });
-
+    const category = await Categories.findById(categoryId);
     if (!category) {
-      return res.status(404).send("Category not found");
+      return res.status(404).json({ success: false, message: "Category not found" });
     }
 
-    // Update text fields
-    category.name = categoryName;
+    // Parse retained old images
+    let retainedImages = [];
+    if (existingImages) {
+      retainedImages = JSON.parse(existingImages); // array of old image filenames
+    }
+
+    // Upload new images
+    let newImages = req.files?.map((file) => `/uploads/${file.filename}`) || [];
+
+    // Delete old images that were removed
+    category.images.forEach(img => {
+  const imgFilename = path.basename(img); // get filename only
+  if (!retainedImages.includes(imgFilename)) {
+    const imgPath = path.join(__dirname, "../public", img); // img already includes /uploads
+    if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+  }
+});
+
+
+    // Merge retained + new
+category.images = [...retainedImages.map(name => `/uploads/${name}`), ...newImages];
+    category.name = name;
     category.description = description;
-
-    // Update image files only if new ones uploaded
-    const imageUpdates = {};
-    req.files.forEach((file) => {
-      const fieldName = file.fieldname; // e.g. sliderImage1
-      const index = parseInt(fieldName.replace("sliderImage", "")) - 1;
-
-      if (!isNaN(index)) {
-        imageUpdates[index] = "/uploads/category/" + file.filename;
-      }
-    });
-
-    // Update only uploaded images in their positions
-    const updatedImages = [...category.images]; // Copy existing images
-    Object.entries(imageUpdates).forEach(([index, path]) => {
-      updatedImages[index] = path;
-    });
-
-    category.images = updatedImages;
 
     await category.save();
 
-    res.json({ message: "Category updated successfully" });
+    res.json({ success: true, message: "Category updated successfully" });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    console.log(err);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+// const editCategory = async (req, res) => {
+//   try {
+//     const categoryId = req.query.id;
+//     const { name, description, existingImages } = req.body;
+
+//     const category = await Categories.findById(categoryId);
+//     if (!category) {
+//       return res.status(404).json({ success: false, message: "Category not found" });
+//     }
+
+//     // Parse retained old images
+//     let retainedImages = [];
+//     if (existingImages) {
+//       retainedImages = JSON.parse(existingImages).map(name => `/uploads/${name}`); // FIXED: add /uploads/
+//     }
+
+//     // Upload new images
+//     let newImages = req.files?.map((file) => `/uploads/${file.filename}`) || [];
+
+//     // Delete old images that were removed
+//     category.images.forEach(img => {
+//       if (!retainedImages.includes(img)) {
+//         const imgPath = path.join(__dirname, "../public", img); // use `img` directly
+//         if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+//       }
+//     });
+
+//     // Merge retained + new
+//     category.images = [...retainedImages, ...newImages];
+//     category.name = name;
+//     category.description = description;
+
+//     await category.save();
+
+//     res.json({ success: true, message: "Category updated successfully" });
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ success: false, message: "Server Error" });
+//   }
+// };
 
 const viewProductsByCategory = async (req, res) => {
   try {
@@ -551,77 +596,132 @@ const viewProductsByCategory = async (req, res) => {
   }
 };
 
+// const updateSlider = async (req, res) => {
+//   try {
+//     const homeData = await UserHome.findOne();
+//     if (!homeData)
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Home content not found" });
+
+//     const sliderImages = [...homeData.sliderImages]; // Copy current sliderImages
+
+//     console.log("Uploaded Files:", req.files);
+
+//     const updatedSliderImages = [];
+
+//     for (let i = 1; i <= 4; i++) {
+//       const field = `sliderImage${i}`;
+//       const key = `slider${i}`;
+
+//       // Step 1: Try to get old path safely
+//       const oldEntry = homeData.sliderImages[i - 1];
+//       let oldPath = oldEntry && oldEntry[key] ? oldEntry[key] : "";
+
+//       // Step 2: Check if new file uploaded
+//       let newPath = oldPath; // default to old path
+
+//       if (req.files && req.files[field] && req.files[field][0]) {
+//         newPath = "/uploads/" + req.files[field][0].filename;
+
+//         // Optional: delete old image
+//         if (oldPath) {
+//           const filePath = path.join(__dirname, "../public", oldPath);
+//           if (fs.existsSync(filePath)) {
+//             fs.unlinkSync(filePath);
+//           }
+//         }
+//       }
+
+//       // Step 3: If newPath is still empty (means no old and no new), set a default dummy
+//       if (!newPath) {
+//         newPath = "/uploads/placeholder.jpg"; // or skip this field if truly optional
+//       }
+
+//       // ✅ Step 4: Push valid key-value object
+//       updatedSliderImages.push({ [key]: newPath });
+//     }
+
+//     // Replace and save
+//     homeData.sliderImages = updatedSliderImages;
+//     await homeData.save();
+
+//     return res.json({ success: true, message: "Slider updated successfully" });
+//   } catch (err) {
+//     console.error("Error updating slider:", err);
+//     return res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
 const updateSlider = async (req, res) => {
   try {
     const homeData = await UserHome.findOne();
-    if (!homeData) return res.status(404).json({ success: false, message: "Home content not found" });
+    if (!homeData) {
+      return res.status(404).json({ success: false, message: "Home content not found" });
+    }
 
-    const sliderImages = [...homeData.sliderImages]; // Copy current sliderImages
+    const currentImages = homeData.sliderImages || {};
+    const updatedImages = { ...currentImages };
 
-    console.log("Uploaded Files:", req.files);
+    for (let i = 1; i <= 4; i++) {
+      const field = `sliderImage${i}`;
+      const key = `slider${i}`;
 
-    const updatedSliderImages = [];
+      // Check if a new file was uploaded
+      if (req.files && req.files[field] && req.files[field][0]) {
+        const newPath = "/uploads/" + req.files[field][0].filename;
 
-for (let i = 1; i <= 4; i++) {
-  const field = `sliderImage${i}`;
-  const key = `slider${i}`;
+        // Delete old image if it exists
+        const oldPath = currentImages[key];
+        if (oldPath) {
+          const oldFilePath = path.join(__dirname, "../public", oldPath);
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        }
 
-  // Step 1: Try to get old path safely
-  const oldEntry = homeData.sliderImages[i - 1];
-  let oldPath = (oldEntry && oldEntry[key]) ? oldEntry[key] : "";
-
-  // Step 2: Check if new file uploaded
-  let newPath = oldPath; // default to old path
-
-  if (req.files && req.files[field] && req.files[field][0]) {
-    newPath = "/uploads/" + req.files[field][0].filename;
-
-    // Optional: delete old image
-    if (oldPath) {
-      const filePath = path.join(__dirname, "../public", oldPath);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        // Update with new image path
+        updatedImages[key] = newPath;
       }
     }
-  }
 
-  // Step 3: If newPath is still empty (means no old and no new), set a default dummy
-  if (!newPath) {
-    newPath = "/uploads/placeholder.jpg"; // or skip this field if truly optional
-  }
-
-  // ✅ Step 4: Push valid key-value object
-  updatedSliderImages.push({ [key]: newPath });
-}
-
-// Replace and save
-homeData.sliderImages = updatedSliderImages;
-await homeData.save();
+    // Save only the updated fields
+    homeData.sliderImages = updatedImages;
+    await homeData.save();
 
     return res.json({ success: true, message: "Slider updated successfully" });
   } catch (err) {
     console.error("Error updating slider:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};
 
-const addCoupon=async (req,res)=>{
-try {
-    const { code, categoryId, productId, discountValue, discountType, startDate, endDate, status } = req.body;
-const [startDay, startMonth, startYear] = startDate.split("-");
+const addCoupon = async (req, res) => {
+  try {
+    const {
+      code,
+      categoryId,
+      productId,
+      discountValue,
+      discountType,
+      startDate,
+      endDate,
+      status,
+    } = req.body;
+    const [startDay, startMonth, startYear] = startDate.split("-");
     const [endDay, endMonth, endYear] = endDate.split("-");
 
     const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
     const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
     const coupon = new Coupons({
       code,
-       categoryId,
-       productId,
+      categoryId,
+      productId,
       discountValue,
-      type:discountType,
-      startDate:parsedStartDate,
-      endDate:parsedEndDate,
-      status
+      type: discountType,
+      startDate: parsedStartDate,
+      endDate: parsedEndDate,
+      status,
     });
 
     await coupon.save();
@@ -638,12 +738,16 @@ const updateOfferTagline = async (req, res) => {
     const { tagline } = req.body;
 
     if (!tagline || typeof tagline !== "string" || !tagline.trim()) {
-      return res.status(400).json({ success: false, message: "Invalid tagline." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid tagline." });
     }
 
     const homeContent = await UserHome.findOne();
     if (!homeContent) {
-      return res.status(404).json({ success: false, message: "UserHome data not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "UserHome data not found." });
     }
 
     homeContent.offerTag = tagline.trim();
@@ -652,19 +756,30 @@ const updateOfferTagline = async (req, res) => {
     res.json({ success: true, message: "Tagline updated successfully." });
   } catch (err) {
     console.error("Tagline update error:", err);
-    res.status(500).json({ success: false, message: "Server error while updating tagline." });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Server error while updating tagline.",
+      });
   }
-}
-
-
+};
 
 const editCoupon = async (req, res) => {
- const couponId=req.query.id
+  const couponId = req.query.id;
 
   try {
-
-     const { code, categoryId, productId, discountValue, type, startDate, endDate, status } = req.body;
-   console.log(req.body);
+    const {
+      code,
+      categoryId,
+      productId,
+      discountValue,
+      type,
+      startDate,
+      endDate,
+      status,
+    } = req.body;
+    console.log(req.body);
     const [startDay, startMonth, startYear] = startDate.split("-");
     const [endDay, endMonth, endYear] = endDate.split("-");
 
@@ -679,17 +794,15 @@ const editCoupon = async (req, res) => {
       type,
       startDate: parsedStartDate,
       endDate: parsedEndDate,
-      status
+      status,
     });
 
-    return res.json({success:true}); // 👈 go back to the list page
+    return res.json({ success: true }); // 👈 go back to the list page
   } catch (error) {
     console.error("Error updating coupon:", error);
     res.status(500).send("Error updating coupon");
   }
 };
-
-
 
 const deleteCoupon = async (req, res) => {
   try {
@@ -697,76 +810,83 @@ const deleteCoupon = async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error("Error deleting coupon:", err);
-    res.status(500).json({ success: false, message: "Failed to delete coupon" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to delete coupon" });
   }
 };
 
-
 const addOffer = async (req, res) => {
   try {
-    const { title, description, startDate, endDate, discount } = req.body;
+    const { title, description, startDate, endDate, discount, categoryId,
+      productId, } = req.body;
     const image = req.file ? req.file.filename : null;
 
     const newOffer = new Offers({
-      name:title,
-      
+      name: title,
+
       description,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      discountPercentage:discount,
-      image
+      discountPercentage: discount,
+      image,
+      categoryId,
+      productId
     });
 
     await newOffer.save();
 
-    res.redirect('/admin/list-offers'); // change to wherever your list view is
+    res.redirect("/admin/list-offers"); // change to wherever your list view is
   } catch (error) {
     console.error("Error adding offer:", error);
     res.status(500).send("Failed to add offer");
   }
 };
 
-
-
 const viewEditOffer = async (req, res) => {
   console.log("hai");
   const offerId = req.query.id; // or use req.params.id if using route like /offer/edit/:id
-console.log(offerId);
+  console.log(offerId);
   try {
     const offer = await Offers.findById(offerId);
 
     if (!offer) {
-      return res.status(404).json({success:false,message:"Offer not found"});
+      return res
+        .status(404)
+        .json({ success: false, message: "Offer not found" });
     }
 
-    res.render("admin/editOffer", { offer });
+    const categories = await Categories.find({}).select("name"); 
+
+    res.render("admin/editOffer", { offer, categories });
   } catch (error) {
     console.log("Error loading edit offer page:", error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };
 
-
 const deleteOffer = async (req, res) => {
   try {
     const offerId = req.params.id;
     await Offers.findByIdAndDelete(offerId);
-    res.redirect('/admin/list-offers'); // redirect to list page after deletion
+    res.redirect("/admin/list-offers"); // redirect to list page after deletion
   } catch (error) {
-    console.error('Error deleting offer:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error deleting offer:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
-
 
 const editOffer = async (req, res) => {
   try {
     const offerId = req.query.id;
-    const { title, description, startDate, endDate, discount } = req.body;
+    const { title, description, startDate, endDate, discount, categoryId,
+      productId } = req.body;
 
     const offer = await Offers.findById(offerId);
     if (!offer) {
-      return res.status(404).json({ success: false, message: 'Offer not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Offer not found" });
     }
 
     // Update basic fields
@@ -775,12 +895,20 @@ const editOffer = async (req, res) => {
     offer.startDate = new Date(startDate);
     offer.endDate = new Date(endDate);
     offer.discountPercentage = discount;
+    offer.categoryId = categoryId;
+    offer.productId = productId;
 
     // Handle image replacement
     if (req.file) {
       // Delete old image if it exists
       if (offer.image) {
-        const oldImagePath = path.join(__dirname, '..', 'public', 'uploads', offer.image);
+        const oldImagePath = path.join(
+          __dirname,
+          "..",
+          "public",
+          "uploads",
+          offer.image
+        );
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
@@ -792,10 +920,12 @@ const editOffer = async (req, res) => {
 
     await offer.save();
 
-    res.status(200).json({ success: true, message: 'Offer updated successfully' });
+    res
+      .status(200)
+      .json({ success: true, message: "Offer updated successfully" });
   } catch (error) {
-    console.error('Error updating offer:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error("Error updating offer:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

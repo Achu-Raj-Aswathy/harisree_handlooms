@@ -4,15 +4,12 @@
     <main class="main-wrapper">
         <!-- Start Slider Area -->
         <%
-// Array of handloom images
-const handloomImages = [
-  "/assets/images/banner/handloom-hero.jpg",
-  "/assets/images/banner/handloom-hero1.jpg",
-  "/assets/images/banner/handloom-hero2.jpg",
-  "/assets/images/banner/handloom-hero3.jpg",
-  "/assets/images/banner/handloom-hero4.jpg",
-  "/assets/images/banner/handloom-hero5.jpg"
-];
+  // Convert sliderImages object to array
+  const handloomImages = [];
+  if (sliderImages.slider1) handloomImages.push(sliderImages.slider1);
+  if (sliderImages.slider2) handloomImages.push(sliderImages.slider2);
+  if (sliderImages.slider3) handloomImages.push(sliderImages.slider3);
+  if (sliderImages.slider4) handloomImages.push(sliderImages.slider4);
 %>
 
 <div class="axil-main-slider-area main-slider-style-4 position-relative" id="handloomSlider" style="background-image: url('<%= handloomImages[0] %>'); background-size: cover; background-position: center; min-height: 90vh; display: flex; align-items: center; transition: background-image 1s ease-in-out;">
@@ -61,9 +58,9 @@ const handloomImages = [
 </script>
 
         <!-- End Slider Area -->
-        <!-- Start Categorie Area  -->
+        <!-- Start Categories Area  -->
        <!-- Start New Arrivals Product Area  -->
-        <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
+        <!-- <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
             <div class="container ml--xxl-0">
                 <div class="product-area pb--50">
                     <div class="section-title-wrapper">
@@ -83,8 +80,8 @@ const handloomImages = [
                                     </div>
                                     <div class="product-hover-action">
                                         <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="wishlist"><a href="/wishlist"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="/cart">Add to Cart</a></li>
                                             <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
                                         </ul>
                                     </div>
@@ -100,240 +97,105 @@ const handloomImages = [
                                 </div>
                             </div>
                         </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/dhoti3.jpg" alt="Product Images">
-                                        <img class="hover-img" src="assets/images/handlooms/dhoti4.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Leather Bag For Men</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$40</span>
-                                            <span class="price current-price">$40</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="300" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">15% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$30</span>
-                                            <span class="price current-price">$24</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu2.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">30% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Men's Winter Jacket</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$50</span>
-                                            <span class="price current-price">$40</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu3.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$60</span>
-                                            <span class="price current-price">$50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/kasavu-mundu4.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">15% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$30</span>
-                                            <span class="price current-price">$24</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                    
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/kasavu-saree.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$60</span>
-                                            <span class="price current-price">$50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
+                        End .slick-single-layout
+                        
                     </div>
                 </div>
             </div>
+        </div> -->
+
+
+        <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
+    <div class="container ml--xxl-0">
+                <div class="product-area pb--50">
+                    <div class="section-title-wrapper">
+                        <span class="title-highlighter highlighter-primary"><i class="fa-solid fa-basket-shopping"></i> This Week’s</span>
+                        <h2 class="title">New Arrivals</h2>
+                    </div>
+                    <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
+                
+                <% newArrivals.forEach(product => { %>
+                <div class="slick-single-layout">
+                    <div class="axil-product product-style-four">
+                        <div class="thumbnail">
+                            <a href="/product?id=<%= product._id %>">
+                                <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="<%= product.images[0] %>" alt="Product Image">
+                                <% if (product.images.length > 1) { %>
+                                    <img class="hover-img" src="<%= product.images[1] %>" alt="Product Image">
+                                <% } %>
+                            </a>
+                            <% if (product.discountPercentage) { %>
+                            <div class="label-block label-right">
+                                <div class="product-badget"><%= product.discountPercentage %>% OFF</div>
+                            </div>
+                            <% } %>
+                            <div class="product-hover-action">
+                                <ul class="cart-action">
+                                    <li class="wishlist"><a href="/wishlist"><i class="far fa-heart"></i></a></li>
+                                    <li class="select-option"><a href="/cart/add/<%= product._id %>">Add to Cart</a></li>
+                                    <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <div class="inner">
+                                <h5 class="title"><a href="/product?id=<%= product._id %>"><%= product.name %></a></h5>
+                                <div class="product-price-variant">
+                                    <% if (product.price) { %>
+                                        <span class="price old-price">₹<%= product.price %></span>
+                                    <% } %>
+                                    <span class="price current-price">₹<%= product.discount %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+                <!-- End .slick-single-layout -->
+                
+            </div>
         </div>
+    </div>
+</div>
+
         <!-- End New Arrivals Product Area  -->
         
     <div class="product-collection-area bg-lighter axil-section-gapcommon">
   <div class="container">
     <div class="section-title-border d-flex justify-content-between align-items-center">
       <h2 class="title">Today’s Best Deals 💥</h2>
-      <div class="view-btn"><a href="shop.ejs">View All Deals</a></div>
+      <div class="view-btn"><a href="/shop">View All Deals</a></div>
     </div>
 
 
       <!-- Right 4 Products -->
       <div class="row align-items-stretch">
-  <!-- LEFT SIDE IMAGE -->
-  <div class="col-xl-7 d-flex">
-    <div class="product-collection product-collection-two w-100">
-      <div class="collection-thumbnail h-100">
-        <img src="assets/images/handlooms/sarees11.jpg" alt="Main Banner" class="w-100 h-100 object-cover rounded">
-      </div>
-     
-       
-    </div>
-  </div>
-
-  <!-- RIGHT SIDE PRODUCT CARDS -->
-  <div class="col-xl-5">
+  <div class="col-xl-12">
     <div class="row g-4">
       <!-- CARD 1 -->
-      <div class="col-md-6">
+      <!-- <div class="col-md-3">
         <div class="deal-card">
           <img src="assets/images/handlooms/sarees.png" class="deal-img" alt="Product 1" />
           <h5 class="deal-title">Ladies Short Sleeve Dress</h5>
           <p class="deal-price">₹999</p>
         </div>
-      </div>
-
-      <!-- CARD 2 -->
-      <div class="col-md-6">
+      </div> -->
+<% bestDeals.forEach(offer => { 
+           const product = offer.productId;
+      %>
+      <div class="col-md-3">
         <div class="deal-card">
-          <img src="assets/images/handlooms/sarees1.jpg" class="deal-img" alt="Product 2" />
-          <h5 class="deal-title">Oil Soap Wood Cleaner</h5>
-          <p class="deal-price">₹299</p>
+          <a href="/product?id=<%= product._id %>"><img src="<%= product.images[0] %>" class="deal-img" alt="<%= product.name %>" /></a>
+          <h5 class="deal-title"><%= product.name %></h5>
+          <p class="deal-price">
+            ₹<%= product.price %>
+            <% if (offer.discountPercentage) { %>
+              <span class="text-danger">(<%= offer.discountPercentage %>% OFF)</span>
+            <% } %>
+          </p>
         </div>
       </div>
-
-      <!-- CARD 3 -->
-      <div class="col-md-6">
-        <div class="deal-card">
-          <img src="assets/images/handlooms/sarees2.jpg" class="deal-img" alt="Product 3" />
-          <h5 class="deal-title">Pendant Light Ceiling</h5>
-          <p class="deal-price">₹499</p>
-        </div>
-      </div>
-
-      <!-- CARD 4 -->
-      <div class="col-md-6">
-        <div class="deal-card">
-          <img src="assets/images/handlooms/sarees3.jpg" class="deal-img" alt="Product 4" />
-          <h5 class="deal-title">Iphone New Model</h5>
-          <p class="deal-price">₹49,999</p>
-        </div>
-      </div>
+      <% }) %>
     </div>
   </div>
 </div>
@@ -350,7 +212,7 @@ const handloomImages = [
                         <h2 class="title"> Offers Area</h2>
                     </div>
                     <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
-                        <div class="slick-single-layout">
+                        <!-- <div class="slick-single-layout">
                             <div class="axil-product product-style-four">
                                 <div class="thumbnail">
                                     <a href="single-product.html">
@@ -362,8 +224,8 @@ const handloomImages = [
                                     </div>
                                     <div class="product-hover-action">
                                         <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                                            <li class="wishlist"><a href="/wishlist"><i class="far fa-heart"></i></a></li>
+                                            <li class="select-option"><a href="/cart">Add to Cart</a></li>
                                             <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
                                         </ul>
                                     </div>
@@ -378,197 +240,44 @@ const handloomImages = [
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/sarees27.jpg" alt="Product Images">
-                                        <img class="hover-img" src="assets/images/handlooms/sarees26.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Leather Bag For Men</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$40</span>
-                                            <span class="price current-price">$40</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="300" data-sal-duration="1500" src="assets/images/handlooms/sarees25.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">15% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$30</span>
-                                            <span class="price current-price">$24</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/sarees23.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$60</span>
-                                            <span class="price current-price">$50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/sarees23.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$60</span>
-                                            <span class="price current-price">$50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="200" data-sal-duration="1500" src="assets/images/handlooms/sarees22.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">15% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Long Sleeve Sweater</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$30</span>
-                                            <span class="price current-price">$24</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/sarees1.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$60</span>
-                                            <span class="price current-price">$50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="400" data-sal-duration="1500" src="assets/images/handlooms/sarees1.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
-                                            <li class="select-option"><a href="cart.html">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Micro Fiber Sheet</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$60</span>
-                                            <span class="price current-price">$50</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End .slick-single-layout -->
+                        <% offersArea.forEach(offer => {
+       const product = offer.productId;
+       const discountedPrice = Math.round(product.price * (1 - offer.discountPercentage / 100));
+  %>
+  <div class="slick-single-layout">
+    <div class="axil-product product-style-four">
+      <div class="thumbnail">
+        <a href="/product?id=<%= product._id %>">
+          <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="<%= product.images[0] %>" alt="<%= product.name %>">
+          <% if (product.images.length > 1) { %>
+            <img class="hover-img" src="<%= product.images[1] %>" alt="<%= product.name %>">
+          <% } %>
+        </a>
+        <div class="label-block label-right">
+          <div class="product-badget"><%= offer.discountPercentage %>% OFF</div>
+        </div>
+        <div class="product-hover-action">
+          <ul class="cart-action">
+            <li class="wishlist"><a href="/wishlist"><i class="far fa-heart"></i></a></li>
+            <li class="select-option"><a href="/cart/add/<%= product._id %>">Add to Cart</a></li>
+            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="product-content">
+        <div class="inner">
+          <h5 class="title"><a href="/product?id=<%= product._id %>"><%= product.name %></a></h5>
+          <div class="product-price-variant">
+            <span class="price old-price">₹<%= product.price %></span>
+            <span class="price current-price">₹<%= discountedPrice %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% }) %>
                     </div>
                 </div>
             </div>
@@ -579,9 +288,9 @@ const handloomImages = [
             <div class="container">
                 <div class="section-title-border">
                     <h2 class="title">Explore Our Products 💥</h2>
-                    <div class="view-btn"><a href="shop.ejs">View All Products</a></div>
+                    <div class="view-btn"><a href="/shop">View All Products</a></div>
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
                         <div class="axil-product product-style-eight">
                             <div class="thumbnail">
@@ -638,383 +347,65 @@ const handloomImages = [
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees5.jpg" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget">20% OFF</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Calvin Klein womens Solid Sheath With Chiffon Bell Sleeves Dress</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$100.00</span>
-                                        <span class="price current-price">$78.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees6jpg.jpg" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget">TOP SELLING</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Gildan Men's Ultra Cotton T-Shirt, Style G2000,</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$20.00</span>
-                                        <span class="price current-price">$17.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees7.jpg" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget sold-out">SOLD OUT</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Essentials Men's Regular-Fit Short-Sleeve Crewneck T-Shirt</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$12.00</span>
-                                        <span class="price current-price">$5.22</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees8.jpg" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">2.4G Remote Control Rc BB-8 Droid Football Robot</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">1,300</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$100.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="150" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees9.jpg" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Perfume Nat White Chocolate Flavor WONF (BD-10914)</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">2,300</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$14.81</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="200" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees10.jpg" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Women's Winter Mid Length Thick Warm Faux Lamb Wool.</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">50</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$59.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="250" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees11.jpg" alt="Product Images">
-                                </a>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Ion8 One Touch Sport / Bike Water Bottle - Leakproof</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">652</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price current-price">$29.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    
+                </div> -->
+                <div class="row">
+  <% products.forEach(product => { %>
+  <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
+    <div class="axil-product product-style-eight">
+      <div class="thumbnail">
+        <a href="/product?id=<%= product._id %>">
+          <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="<%= product.images[0] %>" alt="<%= product.name %>">
+        </a>
+        <div class="label-block label-left">
+          <div class="product-badget sale">Sale</div>
+        </div>
+        <div class="product-hover-action">
+          <ul class="cart-action">
+            <li class="select-option">
+              <a href="/cart/add/<%= product._id %>">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="product-content">
+        <div class="inner">
+          <!-- Optional color variants UI -->
+          <!-- <div class="color-variant-wrapper">
+            <ul class="color-variant">
+              <li class="color-extra-01 active"><span><span class="color"></span></span></li>
+              <li class="color-extra-02"><span><span class="color"></span></span></li>
+              <li class="color-extra-03"><span><span class="color"></span></span></li>
+            </ul>
+          </div> -->
+          <h5 class="title">
+            <a href="/product?id=<%= product._id %>"><%= product.name %></a>
+          </h5>
+          <!-- <div class="product-rating">
+            <span class="icon">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </span>
+            <span class="rating-number">★ ★ ★ ★ ★</span>
+          </div> -->
+          <div class="product-price-variant">
+            <% if (product.price) { %>
+              <span class="price old-price">₹<%= product.price %></span>
+            <% } %>
+            <span class="price current-price">₹<%= product.discount %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% }) %>
+</div>
+
             </div>
         </div>
         <!-- End Expolre Product Area  -->
@@ -1077,402 +468,6 @@ const handloomImages = [
           <h6 class="video-title text-center mt-2">Dupatta Styling Tips</h6>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-        <div class="product-collection-area bg-lighter axil-section-gapcommon">
-  <div class="container">
-    <div class="section-title-border text-center mb-5">
-      <h2 class="title">Our Mega Collections 💥</h2>
-    </div>
-
-    <div class="row g-4">
-      <!-- Card 1 -->
-      <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees12.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
-      <!-- Card 2 -->
-     <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees13.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-      <!-- Card 3 -->
-    <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees14.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-      <!-- Card 4 -->
-      <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees15.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
- <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees16.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
- <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees17.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
-
-
- <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees18.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
- <div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees19.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
-<div class="col-md-4 col-lg-4">
-  <div class="product-card">
-    <img src="assets/images/handlooms/sarees20.jpg" alt="Explore The Sunglass" class="product-image">
-    <div class="product-details">
-      <span class="badge">Sunglass</span>
-      <h5 class="title">Explore The Sunglass</h5>
-      <p class="desc">The Bouguessa FW21 collection is.</p>
-      <div class="price-box">
-        <span class="price-label">Starting From</span>
-        <span class="price">₹178.00</span>
-      </div>
-      <a href="shop.html" class="shop-btn">
-        <i class="far fa-shopping-cart"></i> SHOP BRAND
-      </a>
-    </div>
-  </div>
-</div>
-
-
-    </div>
-  </div>
-</div>
-
-        <!-- Start Expolre Product Area  -->
-      
-        <!-- End Expolre Product Area  -->
-        
-        <!-- Start Expolre Product Area  -->
-        <div class="axil-product-area bg-color-white axil-section-gapcommon">
-  <div class="container">
-    <div class="section-title-border slider-section-title">
-      <h2 class="title">Popular Weekly Deals 💥</h2>
-    </div>
-
-    <div class="row">
-      <!-- Product 1 -->
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="axil-product product-style-eight product-list-style-3">
-          <div class="thumbnail fixed-thumbnail">
-            <a href="single-product-8.html">
-              <img class="main-img" src="assets/images/handlooms/sarees21.jpg" alt="Saree 21">
-            </a>
-          </div>
-          <div class="product-content">
-            <div class="inner">
-              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-              <h5 class="title"><a href="#">Soft Handloom Saree</a></h5>
-              <div class="product-rating">
-                <span class="icon">
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </span>
-                <span class="rating-number">1540</span>
-              </div>
-              <div class="product-price-variant">
-                <span class="price-text">Price</span>
-                <span class="price current-price">₹1999</span>
-              </div>
-            </div>
-          </div>
-          <div class="label-block label-right">
-            <div class="product-badget sold-out">SOLD OUT</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product 2 -->
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="axil-product product-style-eight product-list-style-3">
-          <div class="thumbnail fixed-thumbnail">
-            <a href="single-product-8.html">
-              <img class="main-img" src="assets/images/handlooms/sarees22.jpg" alt="Saree 22">
-            </a>
-          </div>
-          <div class="product-content">
-            <div class="inner">
-              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-              <h5 class="title"><a href="#">Elegant Golden Saree</a></h5>
-              <div class="product-rating">
-                <span class="icon">
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </span>
-                <span class="rating-number">1540</span>
-              </div>
-              <div class="product-price-variant">
-                <span class="price-text">Price</span>
-                <span class="price current-price">₹1799</span>
-              </div>
-            </div>
-          </div>
-          <div class="label-block label-right">
-            <div class="product-badget sold-out">SOLD OUT</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product 3 -->
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="axil-product product-style-eight product-list-style-3">
-          <div class="thumbnail fixed-thumbnail">
-            <a href="single-product-8.html">
-              <img class="main-img" src="assets/images/handlooms/sarees23.jpg" alt="Saree 23">
-            </a>
-          </div>
-          <div class="product-content">
-            <div class="inner">
-              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-              <h5 class="title"><a href="#">Traditional Kerala Set Saree</a></h5>
-              <div class="product-rating">
-                <span class="icon">
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </span>
-                <span class="rating-number">1540</span>
-              </div>
-              <div class="product-price-variant">
-                <span class="price-text">Price</span>
-                <span class="price current-price">₹1599</span>
-              </div>
-            </div>
-          </div>
-          <div class="label-block label-right">
-            <div class="product-badget sold-out">SOLD OUT</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product 4 -->
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="axil-product product-style-eight product-list-style-3">
-          <div class="thumbnail fixed-thumbnail">
-            <a href="single-product-8.html">
-              <img class="main-img" src="assets/images/handlooms/sarees26.jpg" alt="Saree 24">
-            </a>
-          </div>
-          <div class="product-content">
-            <div class="inner">
-              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-              <h5 class="title"><a href="#">Designer Red Border Saree</a></h5>
-              <div class="product-rating">
-                <span class="icon">
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </span>
-                <span class="rating-number">1540</span>
-              </div>
-              <div class="product-price-variant">
-                <span class="price-text">Price</span>
-                <span class="price current-price">₹2099</span>
-              </div>
-            </div>
-          </div>
-          <div class="label-block label-right">
-            <div class="product-badget sold-out">SOLD OUT</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product 5 -->
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="axil-product product-style-eight product-list-style-3">
-          <div class="thumbnail fixed-thumbnail">
-            <a href="single-product-8.html">
-              <img class="main-img" src="assets/images/handlooms/sarees25.jpg" alt="Saree 25">
-            </a>
-          </div>
-          <div class="product-content">
-            <div class="inner">
-              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-              <h5 class="title"><a href="#">Casual Cotton Saree</a></h5>
-              <div class="product-rating">
-                <span class="icon">
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </span>
-                <span class="rating-number">1540</span>
-              </div>
-              <div class="product-price-variant">
-                <span class="price-text">Price</span>
-                <span class="price current-price">₹1399</span>
-              </div>
-            </div>
-          </div>
-          <div class="label-block label-right">
-            <div class="product-badget sold-out">SOLD OUT</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product 6 -->
-      <div class="col-md-4 col-sm-6 mb-4">
-        <div class="axil-product product-style-eight product-list-style-3">
-          <div class="thumbnail fixed-thumbnail">
-            <a href="single-product-8.html">
-              <img class="main-img" src="assets/images/handlooms/sarees26.jpg" alt="Saree 26">
-            </a>
-          </div>
-          <div class="product-content">
-            <div class="inner">
-              <div class="product-cate"><a href="#">KIDS’ DOLLS</a></div>
-              <h5 class="title"><a href="#">Colorful Pallu Saree</a></h5>
-              <div class="product-rating">
-                <span class="icon">
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </span>
-                <span class="rating-number">1540</span>
-              </div>
-              <div class="product-price-variant">
-                <span class="price-text">Price</span>
-                <span class="price current-price">₹1699</span>
-              </div>
-            </div>
-          </div>
-          <div class="label-block label-right">
-            <div class="product-badget sold-out">SOLD OUT</div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 </div>
