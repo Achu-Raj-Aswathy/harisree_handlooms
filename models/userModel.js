@@ -17,9 +17,25 @@ const userSchema = mongoose.Schema(
     },
     address: [
       {
-        billing: { type: String, default: null },
-        shipping: { type: String, default: null },
-      },
+        billing: {
+          name: { type: String, required: false },
+          addressLine: { type: String, required: false },
+          city: { type: String, required: false },
+          state: { type: String, required: false },
+          country: { type: String, required: false },
+          pincode: { type: String, required: false },
+          phone: { type: String, required: false }
+        },
+        shipping: {
+          name: { type: String, required: false },
+          addressLine: { type: String, required: false },
+          city: { type: String, required: false },
+          state: { type: String, required: false },
+          country: { type: String, required: false },
+          pincode: { type: String, required: false },
+          phone: { type: String, required: false }
+        }
+      }
     ],
     orders: [
       {
@@ -46,6 +62,10 @@ const userSchema = mongoose.Schema(
           ref: "Products",
           required: false,
         },
+        quantity: {
+          type: Number,
+          required: false,
+        }
       },
     ], 
   },

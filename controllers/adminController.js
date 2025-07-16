@@ -10,6 +10,7 @@ const UserHome = require("../models/userHomeModel");
 const Coupons = require("../models/couponModel");
 const Orders = require("../models/orderModel");
 const Offers = require("../models/offerModel");
+const Requests = require("../models/returnRequestModel")
 
 const viewLogin = async (req, res) => {
   try {
@@ -342,7 +343,8 @@ const viewOrderTracking = async (req, res) => {
 
 const viewReturn = async (req, res) => {
   try {
-    res.render("admin/returnView", {});
+    const returnRequests = await Requests.find().populate("userId");
+    res.render("admin/returnView", { returnRequests });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });

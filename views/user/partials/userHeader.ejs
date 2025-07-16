@@ -584,9 +584,13 @@
     <span class="subtotal-amount">₹<%= subtotal %></span>
   </h3>
   <div class="group-btn">
-    <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
-    <a href="/checkout" class="axil-btn btn-bg-secondary checkout-btn">Checkout</a>
-  </div>
+      <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
+  <form id="mini-cart-checkout-form" action="/checkout" method="POST">
+    <input type="hidden" name="cartData" id="miniCartDataInput">
+    <a href="#" class="axil-btn btn-bg-secondary checkout-btn" id="miniCartCheckoutBtn">Checkout</a>
+  </form>
+</div>
+
 </div>
     </div>
 </div>
@@ -618,4 +622,47 @@
       });
     });
   });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const checkoutBtn = document.getElementById("miniCartCheckoutBtn");
+  const hiddenInput = document.getElementById("miniCartDataInput");
+  const form = document.getElementById("mini-cart-checkout-form");
+
+  if (checkoutBtn && form && hiddenInput) {
+    checkoutBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const cartItems = [];
+      let total = 0;
+
+      document.querySelectorAll(".cart-item").forEach(itemEl => {
+        const name = itemEl.querySelector(".item-title a")?.textContent.trim();
+        const priceText = itemEl.querySelector(".item-price")?.textContent.replace(/[₹\s]/g, "") || "0";
+        const price = parseFloat(priceText);
+        
+        // Default quantity is 1 (unless you store per-item quantity elsewhere)
+        const quantity = 1;
+
+        cartItems.push({
+          name,
+          quantity,
+          price,
+          subtotal: (price * quantity).toFixed(2)
+        });
+
+        total += price * quantity;
+      });
+
+      const cartData = {
+        items: cartItems,
+        total: total.toFixed(2)
+      };
+
+      hiddenInput.value = JSON.stringify(cartData);
+      form.submit();
+    });
+  }
+});
 </script>
