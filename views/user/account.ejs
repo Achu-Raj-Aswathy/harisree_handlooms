@@ -315,14 +315,14 @@
                                                 <div class="address-info mb--40">
                                                     <div class="addrss-header d-flex align-items-center justify-content-between">
                                                         <h4 class="title mb-0">Shipping Address</h4>
-                                                        <a href="#" class="address-edit"><i class="far fa-edit"></i></a>
+                                                        <!-- <a href="#" class="address-edit"><i class="far fa-edit"></i></a> -->
                                                     </div>
                                                     <ul class="address-details">
-                                                        <li>Name: Annie Mario</li>
-                                                        <li>Email: annie@example.com</li>
-                                                        <li>Phone: 1234 567890</li>
-                                                        <li class="mt--30">7398 Smoke Ranch Road <br>
-                                                        Las Vegas, Nevada 89128</li>
+                                                        <li>Name: <%= user.name %></li>
+                                                        <li>Email: <%= user.email %></li>
+                                                        <li>Phone: <%= user.mobile %> </li>
+                                                        <li class="mt--30"><%= user.address[0].billing?.name %><br> <%= user.address[0].billing?.addressLine %> <br>
+                                                      <%= user.address[0].billing?.city %> <br> <%= user.address[0].billing?.state %><br><%= user.address[0].billing?.pincode %> <br> <%= user.address[0].billing?.phone %></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -330,14 +330,14 @@
                                                 <div class="address-info">
                                                     <div class="addrss-header d-flex align-items-center justify-content-between">
                                                         <h4 class="title mb-0">Billing Address</h4>
-                                                        <a href="#" class="address-edit"><i class="far fa-edit"></i></a>
+                                                        <!-- <a href="#" class="address-edit"><i class="far fa-edit"></i></a> -->
                                                     </div>
                                                     <ul class="address-details">
-                                                        <li>Name: Annie Mario</li>
-                                                        <li>Email: annie@example.com</li>
-                                                        <li>Phone: 1234 567890</li>
-                                                        <li class="mt--30">7398 Smoke Ranch Road <br>
-                                                        Las Vegas, Nevada 89128</li>
+                                                        <li>Name:<%= user.name %></li>
+                                                        <li>Email: <%= user.email %></li>
+                                                        <li>Phone: <%= user.mobile %></li>
+                                                        <li class="mt--30"><%= user.address[0].shipping?.name %><br>
+                                                       <%= user.address[0].shipping?.addressLine %> <br> <%= user.address[0].shipping?.city %> <br> <%= user.address[0].shipping?.state %> <br> <%= user.address[0].shipping?.country %> <br> <%= user.address[0].shipping?.pincode %> <br> <%= user.address[0].shipping?.phone %> </li>
                                                     </ul>
                                                 </div>
                                             </div>
