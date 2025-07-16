@@ -215,8 +215,22 @@ const viewProduct = async (req, res) => {
 };
 
 const viewCart = async (req, res) => {
+  const userId = req.session.user;
+
   try {
-    res.render("user/cart", { });
+    if (!userId) {
+      return res.redirect("/signin"); // or show a friendly message
+    }
+
+    const user = await Users.findById(userId).populate("cart.productId");
+
+    if (!user) {
+      return res.status(404).render("error", { error: "User not found" });
+    }
+
+    const carts = user.cart || [];
+
+    res.render("user/cart", { carts });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -224,11 +238,25 @@ const viewCart = async (req, res) => {
 };
 
 const viewCheckout = async (req, res) => {
+  // try {
+  //   res.render("user/checkout", { });
+  // } catch (error) {
+  //   console.error(error);
+  //   res.render("error", { error });
+  // }
+   const { cartData } = req.body;
+  let parsed;
+
   try {
-    res.render("user/checkout", { });
-  } catch (error) {
-    console.error(error);
-    res.render("error", { error });
+    parsed = JSON.parse(cartData);
+    console.log("Cart Items:", parsed.items);
+    console.log("Total:", parsed.total);
+
+    // Save to DB, session, or pass to payment gateway
+    res.render("user/checkout", { cart: parsed.items, total: parsed.total });
+  } catch (e) {
+    console.error("Invalid cart data:", e);
+    res.status(400).send("Invalid cart data");
   }
 };
 
@@ -258,7 +286,12 @@ const viewWishlist = async (req, res) => {
 
 const viewAccount = async (req, res) => {
   try {
-    res.render("user/account", { });
+    const userId = req.session.user;
+    if (!userId) {
+      return res.redirect("/signin"); // or show a friendly message
+    }
+    const user = await Users.findById(userId).populate("orders.orderId").populate("wishlist.productId").populate("cart.productId");
+    res.render("user/account", { user });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -417,6 +450,48 @@ const addToCart = async (req, res) => {
   }
 };
 
+const removeFromCart = async (req, res) => {
+  const userId = req.session.user;
+  const productId = req.query.id;
+
+  try {
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not logged in" });
+    }
+
+    await Users.findByIdAndUpdate(userId, {
+      $pull: { cart: { productId } }
+    });
+
+    res.status(200).json({ success: true, message: "Product removed from cart" });
+
+  } catch (error) {
+    console.error("Error removing from cart:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const removeFromWishlist = async (req, res) => {
+  const userId = req.session.user;
+  const productId = req.query.id;
+
+  try {
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not logged in" });
+    }
+
+    await Users.findByIdAndUpdate(userId, {
+      $pull: { wishlist: { productId } }
+    });
+
+    res.status(200).json({ success: true, message: "Product removed from wishlist" });
+
+  } catch (error) {
+    console.error("Error removing from wishlist:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -442,5 +517,7 @@ module.exports = {
   getApiCountries,
   addToCart,
   addToWishlist,
+  removeFromCart,
+  removeFromWishlist,
 
 }

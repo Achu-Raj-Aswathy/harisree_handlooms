@@ -8,7 +8,6 @@ const UserHome = require("../models/userHomeModel");
 const Categories=require("../models/categoryModel");
 
 userRouter.use(async(req, res, next) => {
-      
       if (req.session.user) {
           try {
             res.locals.user = await Users.findById(req.session.user)
@@ -58,7 +57,7 @@ userRouter.get("/reset-password", isLogout, userController.viewResetPassword);
 userRouter.get("/shop", userController.viewShop);
 userRouter.get("/product", userController.viewProduct);
 userRouter.get("/cart", userController.viewCart);
-userRouter.get("/checkout", userController.viewCheckout);
+userRouter.post("/checkout", userController.viewCheckout);
 userRouter.get("/wishlist", userController.viewWishlist);
 userRouter.get("/account", userController.viewAccount);
 userRouter.get("/contact", userController.viewContact);
@@ -74,5 +73,8 @@ userRouter.post("/signin", userController.signIn);
 userRouter.post("/signup", userController.signUp);
 userRouter.post("/cart/add", userController.addToCart);
 userRouter.post("/wishlist/add", userController.addToWishlist)
+
+userRouter.delete("/cart/remove", userController.removeFromCart);
+userRouter.delete("/wishlist/remove", userController.removeFromWishlist);
 
 module.exports = userRouter;
