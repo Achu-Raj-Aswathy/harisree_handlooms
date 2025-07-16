@@ -18,6 +18,15 @@
       <ul id="customDropdownMenu" class="dropdown-menu-custom">
        
         <li onclick="selectDropdownOption('Sort By Latest')">Sort By Latest</li>
+         <li id="sortByCategoryItem" onmouseenter="showCategoryDropdown()" onmouseleave="hideCategoryDropdown()" onclick="toggleMobileCategoryDropdown()" style="position: relative;">
+  Sort By Category
+  <ul id="categorySubMenu" class="dropdown-submenu-custom">
+    <% categories.forEach(cat => { %>
+      <li onclick="handleCategoryChange('<%= cat.name %>')"><%= cat.name %></li>
+    <% }) %>
+  </ul>
+</li>
+
         <li onclick="selectDropdownOption('Sort By Price: Low To High')">Sort By Price: Low To High</li>
         <li onclick="selectDropdownOption('Sort By Price: High To Low')">Sort By Price: High To Low</li>
       </ul>
@@ -141,6 +150,13 @@ const html = `
     }
   }
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Ensure the dropdown menu is hidden on page load
+    const dropdown = document.getElementById('customDropdownMenu');
+    dropdown.style.display = 'none';
+  });
+</script>
 
 
 <script>
@@ -176,6 +192,65 @@ document.addEventListener('click', function(e) {
 });
 </script>
 
+<script>
+  const backendCategories = <%- JSON.stringify(categories) %>;
+</script>
+
+
+<script>
+let categoryMenuLoaded = false;
+
+function loadCategoryDropdown() {
+  const submenu = document.getElementById('categorySubMenu');
+
+  if (categoryMenuLoaded) {
+    submenu.style.display = 'block';
+    return;
+  }
+
+  submenu.innerHTML = '';
+
+  backendCategories.forEach(cat => {
+    const li = document.createElement('li');
+    li.textContent = cat.name;
+    li.onclick = () => handleCategoryChange(cat.name);
+    submenu.appendChild(li);
+  });
+
+  submenu.style.display = 'block';
+  categoryMenuLoaded = true;
+}
+
+// Close submenu on outside click
+document.addEventListener('click', (e) => {
+  const sortItem = document.getElementById('sortByCategoryItem');
+  const submenu = document.getElementById('categorySubMenu');
+  if (!sortItem.contains(e.target)) {
+    submenu.style.display = 'none';
+  }
+});
+</script>
+<script>
+  function showCategoryDropdown() {
+    if (window.innerWidth >= 768) {
+      document.getElementById('categorySubMenu').style.display = 'block';
+    }
+  }
+
+  function hideCategoryDropdown() {
+    if (window.innerWidth >= 768) {
+      document.getElementById('categorySubMenu').style.display = 'none';
+    }
+  }
+
+  function toggleMobileCategoryDropdown() {
+    if (window.innerWidth < 768) {
+      const submenu = document.getElementById('categorySubMenu');
+      submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+    }
+  }
+</script>
+
 
 <style>
 @media (max-width: 479.98px) {
@@ -208,7 +283,8 @@ document.addEventListener('click', function(e) {
     font-size: 0.9rem;
     padding: 4px 8px;
   }
-
+</style>
+<style>
 .custom-dropdown {
   position: relative;
   font-family: 'Poppins', sans-serif;
@@ -230,6 +306,7 @@ document.addEventListener('click', function(e) {
 }
 
 .dropdown-menu-custom {
+  display: none; /* Hidden by default */
   list-style: none;
   margin: 0;
   padding: 10px 0;
@@ -241,7 +318,6 @@ document.addEventListener('click', function(e) {
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  display: none;
   z-index: 1000;
 }
 
@@ -255,11 +331,43 @@ document.addEventListener('click', function(e) {
 .dropdown-menu-custom li:hover {
   background-color: #f4f4f4;
 }
+}
+</style>
+
+<style>
+.dropdown-submenu-custom {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  min-width: 180px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1001;
+}
+
+/* Mobile view adjustment */
+@media (max-width: 767.98px) {
+  .dropdown-submenu-custom {
+    position: static;
+    width: 100%;
+    background-color: #f9f9f9;
+    border: none;
+    box-shadow: none;
+    padding-left: 20px;
+    display: none;
+  }
+
+  .dropdown-submenu-custom li {
+    padding: 8px 10px;
+  }
+}
 
 
-
-
-/* Responsive Select Box Fix *
+</style>
+<!-- /* Responsive Select Box Fix *
 /* Mobile adjustments */
 /* @media (max-width: 767.98px) {
   .container,
@@ -293,9 +401,9 @@ document.addEventListener('click', function(e) {
     overflow-x: hidden;
   }
 }
-} */
-}
+ */ -->
 
-</style>
+
+
 <%- include('./partials/footer') %>
 
