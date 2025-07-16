@@ -8,32 +8,43 @@
   <div class="axil-shop-area axil-section-gap bg-color-white">
     <div class="container">
       <!-- Filters -->
-      <div class="row align-items-end mb-4">
-        <div class="col-lg-9 mb-3 mb-lg-0">
-          <label for="categorySelect" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
-            🧵 Choose Category
-          </label>
-            <select id="categorySelect" class="form-select shadow-sm" onchange="handleCategoryChange(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
-    <option value="">All Categories</option>
-    <% categories.forEach(category => { %>
-      <option value="<%= category.name %>"><%= category.name %></option>
-    <% }) %>
-  </select>
-        </div>
+     <!-- Unified Sort By Dropdown -->
+<div class="row align-items-end mb-4">
+  <div class="col-lg-6 mb-3">
+    <label for="sortBy" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
+      🔽 Sort By
+    </label>
+    <select id="sortBy" class="form-select shadow-sm" onchange="handleSortBy(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
+      <option value="">Choose an option</option>
+      <option value="category">Category</option>
+      <option value="price">Price Range</option>
+    </select>
+  </div>
 
-        <div class="col-lg-3">
-          <label for="priceSelect" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
-            💰 Price Range
-          </label>
-          <select id="priceSelect" class="form-select shadow-sm" onchange="handlePriceFilter(this.value)" style="border-radius: 10px;  font-size: 1.2rem;">
-            <option value="">All Prices</option>
-            <option value="0 - 100">₹0 - ₹100</option>
-            <option value="100 - 500">₹100 - ₹500</option>
-            <option value="500 - 1000">₹500 - ₹1000</option>
-            <option value="1000 - 1500">₹1000 - ₹1500</option>
-          </select>
-        </div>
-      </div>
+  <!-- Sub-category dropdown (hidden by default) -->
+  <div class="col-lg-3 mb-3" id="categoryDropdown" style="display: none;">
+    <label for="categorySelect" class="form-label fw-semibold">🧵 Category</label>
+    <select id="categorySelect" class="form-select shadow-sm" onchange="handleCategoryChange(this.value)" style="border-radius: 10px; padding: 12px; font-size: 1.1rem;">
+      <option value="">All Categories</option>
+      <% categories.forEach(category => { %>
+        <option value="<%= category.name %>"><%= category.name %></option>
+      <% }) %>
+    </select>
+  </div>
+
+  <!-- Price range dropdown (hidden by default) -->
+  <div class="col-lg-3 mb-3" id="priceDropdown" style="display: none;">
+    <label for="priceSelect" class="form-label fw-semibold">💰 Price Range</label>
+    <select id="priceSelect" class="form-select shadow-sm" onchange="handlePriceFilter(this.value)" style="border-radius: 10px; padding: 12px; font-size: 1.1rem;">
+      <option value="">All Prices</option>
+      <option value="0 - 100">₹0 - ₹100</option>
+      <option value="100 - 500">₹100 - ₹500</option>
+      <option value="500 - 1000">₹500 - ₹1000</option>
+      <option value="1000 - 1500">₹1000 - ₹1500</option>
+    </select>
+  </div>
+</div>
+
 
       <!-- Product Grid -->
       <div class="row gy-4" id="productGrid">
@@ -145,6 +156,20 @@ const html = `
       window.location.href = `/shop?category=${encodeURIComponent(category)}`;
     } else {
       window.location.href = `/shop`;
+    }
+  }
+</script>
+
+
+<script>
+  function handleSortBy(value) {
+    document.getElementById('categoryDropdown').style.display = 'none';
+    document.getElementById('priceDropdown').style.display = 'none';
+
+    if (value === "category") {
+      document.getElementById('categoryDropdown').style.display = 'block';
+    } else if (value === "price") {
+      document.getElementById('priceDropdown').style.display = 'block';
     }
   }
 </script>
