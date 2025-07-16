@@ -27,7 +27,7 @@
                                         <a class="nav-item nav-link" data-bs-toggle="tab" href="#address" role="tab" aria-selected="false"><i class="fas fa-home"></i>Address </a>
                                         <a class="nav-item nav-link" data-bs-toggle="tab" href="#nav-account" role="tab" aria-selected="false"><i class="fas fa-user"></i>Account Details</a>
 
-                                        <a class="nav-item nav-link" href="/"><i class="fal fa-sign-out"></i>Logout</a>
+                                        <a class="nav-item nav-link" href="/signout"><i class="fal fa-sign-out"></i>Logout</a>
                                     </div>
                                 </nav>
                             </aside>
@@ -36,8 +36,8 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="nav-dashboard" role="tabpanel">
                                     <div class="axil-dashboard-overview">
-                                        <div class="welcome-text">Hello Annie (not <span>Annie?</span> <a href="sign-in.html">Log Out</a>)</div>
-                                        <p>From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.</p>
+                                        <div class="welcome-text">Hello <%= user.name %> (not <span><%= user.name %></span> <a href="/signout">Log Out</a>)</div>
+                                        <p>From your account dashboard you can view your recent orders, manage your shipping and billing addresses,manage your order return,view your orders and edit your password and account details.</p>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-orders" role="tabpanel">
@@ -196,7 +196,7 @@
       <div class="card-body">
         <h3 class="text-center text-danger mb-4">Return Product Request</h3>
 
-        <form id="returnForm" action="/return" method="POST" onsubmit="return validateReturnDate();" enctype="multipart/form-data">
+      <form id="returnForm">
           <!-- Order ID -->
           <div class="mb-3">
             <label for="orderId" class="form-label">Order ID</label>
@@ -255,23 +255,55 @@
 
 
   <script>
-    function validateReturnDate() {
-      const receivedDate = new Date(document.getElementById('receivedDate').value);
-      const today = new Date();
-      const diffTime = today - receivedDate;
-      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  function isReturnValid() {
+    const receivedDate = new Date(document.getElementById('receivedDate').value);
+    const today = new Date();
+    const diffTime = today - receivedDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-      const dateError = document.getElementById('dateError');
-
-      if (diffDays > 7) {
-        dateError.classList.remove('d-none');
-        return false;
-      }
-
-      dateError.classList.add('d-none');
-      return true;
+    const dateError = document.getElementById('dateError');
+    if (diffDays > 7) {
+      dateError.classList.remove('d-none');
+      return false;
     }
-  </script>
+    dateError.classList.add('d-none');
+    return true;
+  }
+
+  document.getElementById('returnForm').addEventListener('submit', async function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    if (!isReturnValid()) return;
+
+    const form = document.getElementById('returnForm');
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/return', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        alert("Return request submitted successfully!");
+
+        // ✅ Redirect explicitly using the redirect URL from response
+        if (result.redirect) {
+          window.location.href = result.redirect;
+        } else {
+          window.location.href = '/account'; // fallback
+        }
+      } else {
+        alert("Failed to submit return request. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while submitting the form.");
+    }
+  });
+</script>
 </div>
 
 
@@ -376,26 +408,18 @@
                                         <div class="axil-dashboard-account">
                                             <form class="account-details-form">
                                                 <div class="row">
-                                                    <div class="col-lg-6">
+                                                    <div class="col-lg-12">
                                                         <div class="form-group">
-                                                            <label>First Name</label>
-                                                            <input type="text" class="form-control" value="Annie">
+                                                            <label>Name</label>
+                                                            <input type="text" class="form-control" value="<%= user.name %>">
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label>Last Name</label>
-                                                            <input type="text" class="form-control" value="Mario">
-                                                        </div>
-                                                    </div>
+                                                 
                                                     <div class="col-12">
                                                         <div class="form-group mb--40">
                                                             <label>Country/ Region</label>
-                                                            <select class="select2">
-                                                                <option value="1">United Kindom (UK)</option>
-                                                                <option value="1">United States (USA)</option>
-                                                                <option value="1">United Arab Emirates (UAE)</option>
-                                                                <option value="1">Australia</option>
+                                                            <select id="country">
+                                                                
                                                             </select>
                                                             <p class="b3 mt--10">This will be how your name will be displayed in the account section and in reviews</p>
                                                         </div>
@@ -432,6 +456,32 @@
                 </div>
             </div>
 
+        <script>
+  async function populateCountryDropdowns() {
+    try {
+      const response = await fetch("/api/countries");
+      const countries = await response.json();
+
+      const countrys = document.querySelectorAll("#country");
+
+      countries.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country;
+        option.textContent = country;
+
+        countrys.forEach(select => {
+          select.appendChild(option.cloneNode(true));
+        });
+      });
+    } catch (err) {
+      console.error("Error fetching country list:", err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(populateCountryDropdowns, 200);
+  });
+</script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
              <%- include('./partials/footer') %>

@@ -7,6 +7,7 @@ const Users = require("../models/userModel");
 const UserHome = require("../models/userHomeModel");
 const Categories=require("../models/categoryModel");
 
+
 userRouter.use(async(req, res, next) => {
       if (req.session.user) {
           try {
@@ -73,7 +74,7 @@ userRouter.post("/signin", userController.signIn);
 userRouter.post("/signup", userController.signUp);
 userRouter.post("/cart/add", userController.addToCart);
 userRouter.post("/wishlist/add", userController.addToWishlist)
-
+userRouter.post("/return",upload.single('image'),userController.returnRequest);
 userRouter.delete("/cart/remove", userController.removeFromCart);
 userRouter.delete("/wishlist/remove", userController.removeFromWishlist);
 

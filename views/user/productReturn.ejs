@@ -13,7 +13,7 @@
       <div class="card-body">
         <h3 class="text-center text-danger mb-4">Return Product Request</h3>
 
-        <form id="returnForm" action="/return" method="POST" onsubmit="return validateReturnDate();">
+        <form id="returnForm">
           <!-- Order ID -->
           <div class="mb-3">
             <label for="orderId" class="form-label">Order ID</label>
@@ -70,23 +70,56 @@
     </div>
   </div>
 
-  <script>
-    function validateReturnDate() {
-      const receivedDate = new Date(document.getElementById('receivedDate').value);
-      const today = new Date();
-      const diffTime = today - receivedDate;
-      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+ <script>
+  function isReturnValid() {
+    const receivedDate = new Date(document.getElementById('receivedDate').value);
+    const today = new Date();
+    const diffTime = today - receivedDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-      const dateError = document.getElementById('dateError');
-
-      if (diffDays > 7) {
-        dateError.classList.remove('d-none');
-        return false;
-      }
-
-      dateError.classList.add('d-none');
-      return true;
+    const dateError = document.getElementById('dateError');
+    if (diffDays > 7) {
+      dateError.classList.remove('d-none');
+      return false;
     }
-  </script>
+    dateError.classList.add('d-none');
+    return true;
+  }
+
+  document.getElementById('returnForm').addEventListener('submit', async function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    if (!isReturnValid()) return;
+
+    const form = document.getElementById('returnForm');
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/return', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        alert("Return request submitted successfully!");
+
+        // ✅ Redirect explicitly using the redirect URL from response
+        if (result.redirect) {
+          window.location.href = result.redirect;
+        } else {
+          window.location.href = '/account'; // fallback
+        }
+      } else {
+        alert("Failed to submit return request. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while submitting the form.");
+    }
+  });
+</script>
+
 </body>
 </html>

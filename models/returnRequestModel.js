@@ -13,7 +13,7 @@ const requestSchema = mongoose.Schema(
     dateOfProduct: { type: Date, required: true },
     reason: {
       type: String,
-      enum: ["Damaged Product", "Wrong Item Delivered", "Not as Described", "Other"],
+      required : true
     },
     image: { type: String, required: true },
   },

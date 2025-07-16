@@ -7,20 +7,8 @@ const UserHome = require("../models/userHomeModel");
 const Products = require("../models/productModel");
 const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
+const Requests = require('../models/returnRequestModel');
 
-// const viewHomepage = async (req, res) => {
-//   try {
-//     const homeEdits = await UserHome.find({}, { sliderImages: 1, _id: 0 });
-//     const products = await Products.find();
-//     const newArrivals = await Products.find().sort({ createdAt: -1 });
-//     // const offersArea = 
-//     // const bestDeals = await Products.find()
-//     res.render("user/home", { sliderImages: homeEdits[0]?.sliderImages || {}, products, newArrivals }); 
-//   } catch (error) {
-//     console.error(error);
-//     res.render("error", { error });
-//   }
-// };
 
 const viewHomepage = async (req, res) => {
   try {
@@ -288,7 +276,7 @@ const viewAccount = async (req, res) => {
   try {
     const userId = req.session.user;
     if (!userId) {
-      return res.redirect("/signin"); // or show a friendly message
+      return res.render("user/signin"); // or show a friendly message
     }
     const user = await Users.findById(userId).populate("orders.orderId").populate("wishlist.productId").populate("cart.productId");
     res.render("user/account", { user });
@@ -492,6 +480,40 @@ const removeFromWishlist = async (req, res) => {
   }
 };
 
+
+const returnRequest = async (req, res) => {
+  try {
+    const { orderId, productName, receivedDate, reason, description } = req.body;
+    const userId = req.session.user // Adjust this line based on your session structure
+
+    if (!userId) {
+      return res.redirect('/signin');
+    }
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : "no-image";
+
+    const newRequest = new Requests({
+      orderId,
+      productName,
+      dateOfProduct: receivedDate,
+      reason,
+      userId,
+      image: imagePath,
+      description: description || "",
+    });
+
+    await newRequest.save();
+
+    return res.status(200).json({
+  success: true,
+  redirect: '/account' // 👈 include this key
+});
+
+  } catch (error) {
+    console.error("Return request submission failed:", error);
+     return res.status(400).json({success:false});
+  }
+};
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -519,5 +541,6 @@ module.exports = {
   addToWishlist,
   removeFromCart,
   removeFromWishlist,
+  returnRequest,
 
 }
