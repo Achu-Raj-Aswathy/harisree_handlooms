@@ -238,22 +238,22 @@ const viewCart = async (req, res) => {
 };
 
 const viewCheckout = async (req, res) => {
-  // try {
-  //   res.render("user/checkout", { });
-  // } catch (error) {
-  //   console.error(error);
-  //   res.render("error", { error });
-  // }
-   const { cartData } = req.body;
+  const { cartData } = req.body;
   let parsed;
+  const userId = req.session.user;
 
   try {
     parsed = JSON.parse(cartData);
     console.log("Cart Items:", parsed.items);
     console.log("Total:", parsed.total);
 
+    const user = await Users.findById(userId).populate("cart.productId").populate("wishlist.productId").populate("orders.orderId");
+    if (!user) {
+      return res.status(404).render("error", { error: "User not found" });
+    }
+
     // Save to DB, session, or pass to payment gateway
-    res.render("user/checkout", { cart: parsed.items, total: parsed.total });
+    res.render("user/checkout", { cart: parsed.items, total: parsed.total, user });
   } catch (e) {
     console.error("Invalid cart data:", e);
     res.status(400).send("Invalid cart data");

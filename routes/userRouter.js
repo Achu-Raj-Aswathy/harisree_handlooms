@@ -57,7 +57,6 @@ userRouter.get("/reset-password", isLogout, userController.viewResetPassword);
 userRouter.get("/shop", userController.viewShop);
 userRouter.get("/product", userController.viewProduct);
 userRouter.get("/cart", userController.viewCart);
-userRouter.post("/checkout", userController.viewCheckout);
 userRouter.get("/wishlist", userController.viewWishlist);
 userRouter.get("/account", userController.viewAccount);
 userRouter.get("/contact", userController.viewContact);
@@ -73,6 +72,7 @@ userRouter.post("/signin", userController.signIn);
 userRouter.post("/signup", userController.signUp);
 userRouter.post("/cart/add", userController.addToCart);
 userRouter.post("/wishlist/add", userController.addToWishlist)
+userRouter.post("/checkout", userController.viewCheckout);
 
 userRouter.delete("/cart/remove", userController.removeFromCart);
 userRouter.delete("/wishlist/remove", userController.removeFromWishlist);

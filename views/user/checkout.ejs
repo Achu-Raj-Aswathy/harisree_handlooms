@@ -27,43 +27,50 @@
                             <div class="axil-checkout-billing">
                                 <h4 class="title mb--40">Billing details</h4>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label>First Name <span>*</span></label>
-                                            <input type="text" id="first-name" placeholder="Adam">
+                                            <label> Name <span>*</span></label>
+                                            <input type="text" id="first-name" placeholder="Name" value="<%- user.name %>">
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>Last Name <span>*</span></label>
-                                            <input type="text" id="last-name" placeholder="John">
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                               
-                                <div class="form-group">
-                                    <label>Country/ Region <span>*</span></label>
-                                    <select id="country">
-                                       
-                                    </select>
-                                </div>
-                                <!-- <div class="form-group">
-                                    <label>State <span>*</span></label>
-                                    <input type="text" id="address1" class="mb--15" placeholder="House number and street name">
-                                    <input type="text" id="address2" placeholder="Apartment, suite, unit, etc. (optonal)">
-                                </div> -->
-                                <div class="form-group">
-                                    <label>Town/ City <span>*</span></label>
-                                    <input type="text" id="town">
-                                </div>
+                               <div class="form-group">
+  <label>Country/ Region <span>*</span></label>
+  <select id="billingCountry" name="billingCountry">
+    <option value="">Select Country</option>
+    <!-- Add more countries -->
+  </select>
+</div>
+
+<div class="form-group">
+  <label>State <span>*</span></label>
+  <input type="text" name="state" id="address1" class="mb--15" placeholder="State"
+         value="<%= user.address[0]?.billing?.state || '' %>">
+  <input type="text" name="addressLine2" id="address2" placeholder="Apartment, suite, unit, etc. (optional)"
+  value="<%= user.address[0]?.billing?.addressLine || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Town/ City <span>*</span></label>
+  <input type="text" name="city" id="town" placeholder="Town/City"
+         value="<%= user.address[0]?.billing?.city || '' %>">
+</div>
+
+<div class="form-group">
+  <label>PIN Code / ZIP Code <span>*</span></label>
+  <input type="text" name="pincode" id="town" placeholder="ZIP Code"
+         value="<%= user.address[0]?.billing?.pincode || '' %>">
+</div>
                                 
                                 <div class="form-group">
                                     <label>Phone <span>*</span></label>
-                                    <input type="tel" id="phone">
+                                    <input type="tel" id="phone" value="<%- user.mobile %>" placeholder="Phone">
                                 </div>
                                 <div class="form-group">
                                     <label>Email Address <span>*</span></label>
-                                    <input type="email" id="email">
+                                    <input type="email" id="email" value="<%- user.email %>" placeholder="Email">
                                 </div>
                                 <!-- <div class="form-group input-group">
                                     <input type="checkbox" id="checkbox1" name="account-create">
@@ -79,32 +86,30 @@
                                     <div class="toggle-open">
                                         <div class="form-group">
                                             <label>Country/ Region <span>*</span></label>
-                                            <select id="Region">
-                                                <option value="3">Australia</option>
-                                                <option value="4">England</option>
-                                                <option value="6">New Zealand</option>
-                                                <option value="5">Switzerland</option>
-                                                <option value="1">United Kindom (UK)</option>
-                                                <option value="2">United States (USA)</option>
-                                            </select>
+                                             <select id="shippingCountry" name="shippingCountry">
+    <option value="">Select Country</option>
+    <!-- Add more countries -->
+  </select>
                                         </div>
                                         <div class="form-group">
-                                            <label>Street Address <span>*</span></label>
-                                            <input type="text" id="address1" class="mb--15" placeholder="House number and street name">
-                                            <input type="text" id="address2" placeholder="Apartment, suite, unit, etc. (optonal)">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Town/ City <span>*</span></label>
-                                            <input type="text" id="town">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Country</label>
-                                            <input type="text" id="country">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Phone <span>*</span></label>
-                                            <input type="tel" id="phone">
-                                        </div>
+  <label>State <span>*</span></label>
+  <input type="text" name="state" id="address1" class="mb--15" placeholder="State"
+         value="<%= user.address[0]?.shipping?.state || '' %>">
+  <input type="text" name="addressLine2" id="address2" placeholder="Apartment, suite, unit, etc. (optional)"
+  value="<%= user.address[0]?.shipping?.addressLine || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Town/ City <span>*</span></label>
+  <input type="text" name="city" id="town" placeholder="Town/City"
+         value="<%= user.address[0]?.shipping.city || '' %>">
+</div>
+
+<div class="form-group">
+  <label>PIN Code / ZIP Code <span>*</span></label>
+  <input type="text" name="pincode" id="town" placeholder="ZIP Code"
+         value="<%= user.address[0]?.shipping?.pincode || '' %>">
+</div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -125,27 +130,31 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="order-product">
-                                                <td>Commodo Blown Lamp <span class="quantity">x1</span></td>
-                                                <td>$117.00</td>
-                                            </tr>
-                                            <tr class="order-product">
-                                                <td>Commodo Blown Lamp <span class="quantity">x1</span></td>
-                                                <td>$198.00</td>
-                                            </tr>
+                                            <% if (cart && cart.length > 0) { %>
+  <% cart.forEach(item => { %>
+    <tr class="order-product">
+      <td><%= item.name %> <span class="quantity">x<%= item.quantity %></span></td>
+      <td>₹<%= item.subtotal %></td>
+    </tr>
+  <% }) %>
+<% } else { %>
+  <tr><td colspan="2">No products in cart.</td></tr>
+<% } %>
+
                                             <tr class="order-subtotal">
-                                                <td>Subtotal</td>
-                                                <td>$117.00</td>
-                                            </tr>
+  <td>Subtotal</td>
+  <td>₹<%= total %></td>
+</tr>
+
                                             <tr class="order-shipping">
                                                 <td colspan="2">
                                                     <div class="shipping-amount">
                                                         <span class="title">Shipping Charge</span>
-                                                        <span class="amount">$35.00</span>
+                                                        <span class="amount">₹0.00</span>
                                                     </div>
                                                     <div class="shipping-amount">
                                                         <span class="title">Coupon Discount</span>
-                                                        <span class="amount">0.00</span>
+                                                        <span class="amount">₹0.00</span>
                                                     </div>
                                                     <!-- <div class="input-group">
                                                         <input type="radio" id="radio1" name="shipping" checked>
@@ -163,10 +172,11 @@
 
                                             </tr>
 
-                                            <tr class="order-total">
-                                                <td>Total</td>
-                                                <td class="order-total-amount">$323.00</td>
-                                            </tr>
+                                           <tr class="order-total">
+  <td>Total</td>
+  <td class="order-total-amount">₹<%= total %></td>
+</tr>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -305,7 +315,8 @@
             applyBtn.addEventListener("click", function () {
               const code = manualInput.value.trim();
               if (code === "") {
-alert('enter a coupon code') ;            return;
+alert('Enter a coupon code') ;            
+return;
               }
               applyCoupon(code);
 
@@ -348,14 +359,19 @@ alert('enter a coupon code') ;            return;
       const response = await fetch("/api/countries");
       const countries = await response.json();
 
-      const countrys = document.querySelectorAll("#country");
+      const shippingCountrys = document.querySelectorAll("#shippingCountry");
+      const billingCountrys = document.querySelectorAll("#billingCountry");
 
       countries.forEach(country => {
         const option = document.createElement("option");
         option.value = country;
         option.textContent = country;
 
-        countrys.forEach(select => {
+        shippingCountrys.forEach(select => {
+          select.appendChild(option.cloneNode(true));
+        });
+
+        billingCountrys.forEach(select => {
           select.appendChild(option.cloneNode(true));
         });
       });
