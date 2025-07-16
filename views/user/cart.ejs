@@ -1,13 +1,12 @@
 <%- include('./partials/header') %>
-<%- include('./partials/userHeader') %>
- 
+    <%- include('./partials/userHeader') %>
 
-  <div class="axil-product-cart-area axil-section-gap">
+        <div class="axil-product-cart-area axil-section-gap">
             <div class="container">
                 <div class="axil-product-cart-wrap">
                     <div class="product-table-heading">
                         <h4 class="title">Your Cart</h4>
-                        <a href="#" class="cart-clear">Clear Shoping Cart</a>
+                        <!-- <a href="#" class="cart-clear">Clear Shoping Cart</a> -->
                     </div>
                     <div class="table-responsive">
                         <table class="table axil-product-table axil-cart-table mb--40">
@@ -21,97 +20,77 @@
                                     <th scope="col" class="product-subtotal">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="product-remove"><a href="#" class="remove-wishlist"><i class="fal fa-times"></i></a></td>
-                                    <td class="product-thumbnail"><a href="single-product.html"><img src="assets/images/product/electric/product-01.png" alt="Digital Product"></a></td>
-                                    <td class="product-title"><a href="single-product.html">Wireless PS Handler</a></td>
-                                    <td class="product-price" data-title="Price"><span class="currency-symbol">$</span>124.00</td>
-                                    <td class="product-quantity" data-title="Qty">
-                                        <div class="pro-qty">
-                                            <input type="number" class="quantity-input" value="1">
-                                        </div>
-                                    </td>
-                                    <td class="product-subtotal" data-title="Subtotal"><span class="currency-symbol">$</span>275.00</td>
-                                </tr>
-                                <tr>
-                                    <td class="product-remove"><a href="#" class="remove-wishlist"><i class="fal fa-times"></i></a></td>
-                                    <td class="product-thumbnail"><a href="single-product-2.html"><img src="assets/images/product/electric/product-02.png" alt="Digital Product"></a></td>
-                                    <td class="product-title"><a href="single-product-2.html">Gradient Light Keyboard</a></td>
-                                    <td class="product-price" data-title="Price"><span class="currency-symbol">$</span>124.00</td>
-                                    <td class="product-quantity" data-title="Qty">
-                                        <div class="pro-qty">
-                                            <input type="number" class="quantity-input" value="1">
-                                        </div>
-                                    </td>
-                                    <td class="product-subtotal" data-title="Subtotal"><span class="currency-symbol">$</span>275.00</td>
-                                </tr>
-                                <tr>
-                                    <td class="product-remove"><a href="#" class="remove-wishlist"><i class="fal fa-times"></i></a></td>
-                                    <td class="product-thumbnail"><a href="single-product-3.html"><img src="assets/images/product/electric/product-03.png" alt="Digital Product"></a></td>
-                                    <td class="product-title"><a href="single-product-3.html">HD CC Camera</a></td>
-                                    <td class="product-price" data-title="Price"><span class="currency-symbol">$</span>124.00</td>
-                                    <td class="product-quantity" data-title="Qty">
-                                        <div class="pro-qty">
-                                            <input type="number" class="quantity-input" value="1">
-                                        </div>
-                                    </td>
-                                    <td class="product-subtotal" data-title="Subtotal"><span class="currency-symbol">$</span>275.00</td>
-                                </tr>
+                            
+                            <tbody id="cart-body">
+                                <% if (carts.length===0) { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center">Your cart is empty.</td>
+                                    </tr>
+                                    <% } else { %>
+                                        <% carts.forEach(item=> {
+                                            const product = item.productId;
+                                            %>
+                                            <tr data-id="<%= product._id %>" class="cart-row">
+                                                <td class="product-remove">
+                                                    <a href="#" class="remove-from-cart" data-id="<%= product._id %>">
+                                                        <i class="fal fa-times"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="product-thumbnail">
+                                                    <a href="/product?id=<%= product._id %>">
+                                                        <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+                                                    </a>
+                                                </td>
+                                                <td class="product-title">
+                                                    <a href="/product?id=<%= product._id %>">
+                                                        <%= product.name %>
+                                                    </a>
+                                                </td>
+                                                <!-- <td class="product-price" data-title="Price"><span class="currency-symbol">₹</span><%= product.discount || product.price %></td> -->
+                                                <td class="product-price" data-title="Price"
+                                                    data-price="<%= product.discount || product.price %>">
+                                                    <span class="currency-symbol">₹</span>
+                                                    <%= product.discount || product.price %>
+                                                </td>
+
+                                                <td class="product-quantity" data-title="Qty">
+                                                    <div class="pro-qty">
+                                                        <input type="number" class="quantity-input" value="1" min="1" />
+                                                    </div>
+                                                </td>
+                                                <td class="product-subtotal" data-title="Subtotal">
+                                                    <span class="currency-symbol">₹</span><span class="subtotal-value">
+                                                        <%= product.discount || product.price %>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
                             </tbody>
+
                         </table>
-                    </div>
-                    <div class="cart-update-btn-area">
-                        <div class="input-group product-cupon">
-                            <input placeholder="Enter coupon code" type="text">
-                            <div class="product-cupon-btn">
-                                <button type="submit" class="axil-btn btn-outline">Apply</button>
-                            </div>
-                        </div>
-                        <div class="update-btn">
-                            <a href="#" class="axil-btn btn-outline">Update Cart</a>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xl-5 col-lg-7 offset-xl-7 offset-lg-5">
-                            <div class="axil-order-summery mt--80">
+                            <div class="axil-order-summery mt--20">
                                 <h5 class="title mb--20">Order Summary</h5>
                                 <div class="summery-table-wrap">
                                     <table class="table summery-table mb--30">
                                         <tbody>
-                                            <tr class="order-subtotal">
-                                                <td>Subtotal</td>
-                                                <td>$117.00</td>
-                                            </tr>
-                                            <tr class="order-shipping">
-                                                <td>Shipping</td>
-                                                <td>
-                                                    <div class="input-group">
-                                                        <input type="radio" id="radio1" name="shipping" checked>
-                                                        <label for="radio1">Free Shippping</label>
-                                                    </div>
-                                                    <div class="input-group">
-                                                        <input type="radio" id="radio2" name="shipping">
-                                                        <label for="radio2">Local: $35.00</label>
-                                                    </div>
-                                                    <div class="input-group">
-                                                        <input type="radio" id="radio3" name="shipping">
-                                                        <label for="radio3">Flat rate: $12.00</label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr class="order-tax">
-                                                <td>State Tax</td>
-                                                <td>$8.00</td>
-                                            </tr>
                                             <tr class="order-total">
                                                 <td>Total</td>
-                                                <td class="order-total-amount">$125.00</td>
+                                                <!-- <td class="order-total-amount">$125.00</td> -->
+                                                <td class="order-total-amount">₹<span id="cart-total">0</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <a href="/checkout" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</a>
+                                
+<form id="checkout-form" action="/checkout" method="POST">
+  <input type="hidden" name="cartData" id="cartDataInput">
+  <button type="submit" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button>
+</form>
+
                             </div>
                         </div>
                     </div>
@@ -119,5 +98,172 @@
             </div>
         </div>
 
-<%- include('./partials/footer') %>
-</div>
+        <%- include('./partials/footer') %>
+            </div>
+
+            <!-- <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Init totals
+    updateCartTotals();
+
+    // Listen for input/change on quantity input
+    document.querySelectorAll(".quantity-input").forEach(input => {
+        input.addEventListener("input", updateCartTotals);
+        input.addEventListener("change", updateCartTotals);
+    });
+
+    // Listen for clicks on +/– buttons
+    document.querySelectorAll(".pro-qty .qtybtn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const input = this.parentElement.querySelector(".quantity-input");
+            let value = parseInt(input.value) || 1;
+            if (this.classList.contains("inc")) {
+                value++;
+            } else if (this.classList.contains("dec") && value > 1) {
+                value--;
+            }
+            input.value = value;
+            updateCartTotals();
+        });
+    });
+
+    // Remove from cart (your code)
+    document.querySelectorAll(".remove-from-cart").forEach(el => {
+        el.addEventListener("click", async function (e) {
+            e.preventDefault();
+            const productId = this.dataset.id;
+
+            try {
+                const res = await fetch(`/cart/remove?id=${productId}`, {
+                    method: "DELETE",
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    this.closest(".cart-row").remove();
+                    updateCartTotals();
+                } else {
+                    alert(data.message || "Could not remove item.");
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                alert("Something went wrong.");
+            }
+        });
+    });
+});
+</script> -->
+
+<!-- <script>
+function updateCartTotals() {
+  let total = 0;
+  const cartSummary = [];
+
+  document.querySelectorAll(".cart-row").forEach(row => {
+    const productName = row.querySelector(".product-title a").textContent.trim();
+    const price = parseFloat(row.querySelector(".product-price").dataset.price);
+    const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
+    const subtotal = price * qty;
+
+    row.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
+
+    total += subtotal;
+
+    cartSummary.push({
+      name: productName,
+      quantity: qty,
+      price: price,
+      subtotal: subtotal.toFixed(2)
+    });
+  });
+
+  document.getElementById("cart-total").textContent = total.toFixed(2);
+
+  // Also update hidden input with full cart data
+  const cartDataInput = document.getElementById("cartDataInput");
+  if (cartDataInput) {
+    cartDataInput.value = JSON.stringify({
+      items: cartSummary,
+      total: total.toFixed(2)
+    });
+  }
+}
+</script> -->
+
+<script>
+function updateCartTotals() {
+  let total = 0;
+  const cartSummary = [];
+
+  document.querySelectorAll(".cart-row").forEach(row => {
+    const productName = row.querySelector(".product-title a").textContent.trim();
+    const price = parseFloat(row.querySelector(".product-price").dataset.price);
+    const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
+    const subtotal = price * qty;
+
+    row.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
+
+    total += subtotal;
+
+    cartSummary.push({
+      name: productName,
+      quantity: qty,
+      price: price,
+      subtotal: subtotal.toFixed(2)
+    });
+  });
+
+  const cartDataInput = document.getElementById("cartDataInput");
+  if (cartDataInput) {
+    cartDataInput.value = JSON.stringify({
+      items: cartSummary,
+      total: total.toFixed(2)
+    });
+  }
+
+  document.getElementById("cart-total").textContent = total.toFixed(2);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Initial update
+  updateCartTotals();
+
+  // On quantity change
+  document.querySelectorAll(".quantity-input").forEach(input => {
+    input.addEventListener("input", updateCartTotals);
+    input.addEventListener("change", updateCartTotals);
+  });
+
+  // Before form submit, re-run updateCartTotals()
+  document.getElementById("checkout-form").addEventListener("submit", function (e) {
+    updateCartTotals(); // ⬅️ Ensure input is set just before submit
+  });
+
+  // Remove item from cart
+  document.querySelectorAll(".remove-from-cart").forEach(el => {
+    el.addEventListener("click", async function (e) {
+      e.preventDefault();
+      const productId = this.dataset.id;
+
+      try {
+        const res = await fetch(`/cart/remove?id=${productId}`, {
+          method: "DELETE",
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          this.closest(".cart-row").remove();
+          updateCartTotals();
+        } else {
+          alert(data.message || "Could not remove item.");
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        alert("Something went wrong.");
+      }
+    });
+  });
+});
+</script>

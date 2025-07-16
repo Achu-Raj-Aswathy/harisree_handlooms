@@ -32,9 +32,12 @@
     %>
       <tr>
         <td class="product-remove">
-          <a href="/wishlist/remove?id=<%= product._id %>" class="remove-wishlist">
+          <a href="#" class="remove-from-wishlist" data-id="<%= product._id %>">
             <i class="fal fa-times"></i>
           </a>
+          <!-- <a href="" class="close-btn remove-from-wishlist" data-id="<%= product._id %>">
+              <i class="fas fa-times"></i>
+          </a> -->
         </td>
         <td class="product-thumbnail">
           <a href="/product?id=<%= product._id %>">
@@ -66,3 +69,30 @@
     </main>
     <%- include('./partials/footer') %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".remove-from-wishlist").forEach((el) => {
+      el.addEventListener("click", async function (e) {
+        e.preventDefault();
+        const productId = this.dataset.id;
+
+        try {
+          const res = await fetch(`/wishlist/remove?id=${productId}`, { method: "DELETE" });
+
+          const data = await res.json();
+
+          if (data.success) {
+            alert("Removed from wishlist");
+            window.location.reload();
+          } else {
+            alert(data.message || "Could not remove item.");
+          }
+        } catch (err) {
+          console.error("Error:", err);
+          alert("Something went wrong.");
+        }
+      });
+    });
+  });
+</script>

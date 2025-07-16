@@ -732,6 +732,7 @@
           if (data.success) {
             alert("Product added to cart!");
             // You can also reload or update cart count here
+            window.location.reload(); // Or just update the icon/UI
           } else {
             alert(data.message || "Failed to add to cart.");
           }
