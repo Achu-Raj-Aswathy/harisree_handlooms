@@ -67,6 +67,7 @@ userRouter.get("/payment", userController.viewPayment);
 userRouter.get("/address",userController.viewAddress);
 userRouter.get("/privacy-policy", userController.viewPrivacyPolicy);
 userRouter.get("/terms-of-service",userController.viewTermsofService);
+userRouter.get("/refund-policy", userController.viewRefundPolicy);
 userRouter.get("/api/countries", userController.getApiCountries);
 
 userRouter.post("/signin", userController.signIn);

@@ -330,6 +330,7 @@ const viewAddress = async (req, res) => {
     res.render("error", { error });
   }
 };
+
 const viewPrivacyPolicy = async (req, res) => {
   try {
     res.render("user/privacypolicy", { });
@@ -338,6 +339,7 @@ const viewPrivacyPolicy = async (req, res) => {
     res.render("error", { error });
   }
 };
+
 const viewTermsofService = async (req, res) => {
   try {
     res.render("user/termsofService", { });
@@ -347,6 +349,15 @@ const viewTermsofService = async (req, res) => {
   }
 };
  
+const viewRefundPolicy = async (req, res) => {
+  try {
+    res.render("user/refundpolicy", { });
+  } catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
 const getApiCountries = async (req, res) => {
   const countryList = Object.values(countries).map(c => c.name).sort();
   // Remove "India" if present and sort the rest
@@ -536,6 +547,7 @@ module.exports = {
   viewAddress,
   viewPrivacyPolicy,
   viewTermsofService,
+  viewRefundPolicy,
   getApiCountries,
   addToCart,
   addToWishlist,
