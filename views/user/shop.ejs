@@ -7,43 +7,25 @@
 <div class="main-wrapper">
   <div class="axil-shop-area axil-section-gap bg-color-white">
     <div class="container">
-      <!-- Filters -->
-     <!-- Unified Sort By Dropdown -->
+      <!-- Unified Sort By Dropdown with Styled Appearance -->
 <div class="row align-items-end mb-4">
-  <div class="col-lg-6 mb-3">
-    <label for="sortBy" class="form-label fw-semibold" style="font-size: 1.4rem; color: #333;">
-      🔽 Sort By
-    </label>
-    <select id="sortBy" class="form-select shadow-sm" onchange="handleSortBy(this.value)" style="border-radius: 10px; padding: 14px 18px; font-size: 1.2rem;">
-      <option value="">Choose an option</option>
-      <option value="category">Category</option>
-      <option value="price">Price Range</option>
-    </select>
-  </div>
-
-  <!-- Sub-category dropdown (hidden by default) -->
-  <div class="col-lg-3 mb-3" id="categoryDropdown" style="display: none;">
-    <label for="categorySelect" class="form-label fw-semibold">🧵 Category</label>
-    <select id="categorySelect" class="form-select shadow-sm" onchange="handleCategoryChange(this.value)" style="border-radius: 10px; padding: 12px; font-size: 1.1rem;">
-      <option value="">All Categories</option>
-      <% categories.forEach(category => { %>
-        <option value="<%= category.name %>"><%= category.name %></option>
-      <% }) %>
-    </select>
-  </div>
-
-  <!-- Price range dropdown (hidden by default) -->
-  <div class="col-lg-3 mb-3" id="priceDropdown" style="display: none;">
-    <label for="priceSelect" class="form-label fw-semibold">💰 Price Range</label>
-    <select id="priceSelect" class="form-select shadow-sm" onchange="handlePriceFilter(this.value)" style="border-radius: 10px; padding: 12px; font-size: 1.1rem;">
-      <option value="">All Prices</option>
-      <option value="0 - 100">₹0 - ₹100</option>
-      <option value="100 - 500">₹100 - ₹500</option>
-      <option value="500 - 1000">₹500 - ₹1000</option>
-      <option value="1000 - 1500">₹1000 - ₹1500</option>
-    </select>
+  <div class="col-lg-6 mb-3 position-relative">
+    <div class="custom-dropdown">
+      <button class="dropdown-toggle-custom" onclick="toggleCustomDropdown()">
+        <span id="dropdownLabel">Sort By </span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <ul id="customDropdownMenu" class="dropdown-menu-custom">
+       
+        <li onclick="selectDropdownOption('Sort By Latest')">Sort By Latest</li>
+        <li onclick="selectDropdownOption('Sort By Price: Low To High')">Sort By Price: Low To High</li>
+        <li onclick="selectDropdownOption('Sort By Price: High To Low')">Sort By Price: High To Low</li>
+      </ul>
+    </div>
   </div>
 </div>
+
+
 
 
       <!-- Product Grid -->
@@ -162,17 +144,38 @@ const html = `
 
 
 <script>
-  function handleSortBy(value) {
-    document.getElementById('categoryDropdown').style.display = 'none';
-    document.getElementById('priceDropdown').style.display = 'none';
+function toggleCustomDropdown() {
+  const menu = document.getElementById('customDropdownMenu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
 
-    if (value === "category") {
-      document.getElementById('categoryDropdown').style.display = 'block';
-    } else if (value === "price") {
-      document.getElementById('priceDropdown').style.display = 'block';
-    }
+function selectDropdownOption(optionText) {
+  document.getElementById('dropdownLabel').innerText = optionText;
+  document.getElementById('customDropdownMenu').style.display = 'none';
+
+  // You can add your actual sorting function here:
+  if (optionText === "Sort By Price: Low To High") {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (optionText === "Sort By Price: High To Low") {
+    filtered.sort((a, b) => b.price - a.price);
+  } else if (optionText === "Sort By Latest") {
+    // Optional: implement logic
+  } else if (optionText === "Sort By Popularity") {
+    // Optional: implement logic
   }
+
+  renderProducts(filtered);
+}
+
+// Close dropdown if clicked outside
+document.addEventListener('click', function(e) {
+  const dropdown = document.querySelector('.custom-dropdown');
+  if (!dropdown.contains(e.target)) {
+    document.getElementById('customDropdownMenu').style.display = 'none';
+  }
+});
 </script>
+
 
 <style>
 @media (max-width: 479.98px) {
@@ -205,6 +208,56 @@ const html = `
     font-size: 0.9rem;
     padding: 4px 8px;
   }
+
+.custom-dropdown {
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+
+.dropdown-toggle-custom {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1.1rem;
+  text-align: left;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-menu-custom {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+}
+
+.dropdown-menu-custom li {
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdown-menu-custom li:hover {
+  background-color: #f4f4f4;
+}
+
+
+
 
 /* Responsive Select Box Fix *
 /* Mobile adjustments */

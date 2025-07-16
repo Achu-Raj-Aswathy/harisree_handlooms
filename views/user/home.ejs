@@ -199,7 +199,8 @@
 <% bestDeals.forEach(offer => { 
            const product = offer.productId;
       %>
-      <div class="col-md-3">
+     <div class="col-6 col-sm-6 col-md-3">
+
         <div class="deal-card">
           <a href="/product?id=<%= product._id %>"><img src="<%= product.images[0] %>" class="deal-img" alt="<%= product.name %>" /></a>
           <h5 class="deal-title"><%= product.name %></h5>
@@ -742,5 +743,39 @@
     });
   });
 </script>
+
+<script>
+  $(document).ready(function () {
+    $('.new-arrivals-product-activation').slick({
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 3000, // 3 seconds
+      arrows: true,
+      dots: false,
+      responsive: [
+        {
+          breakpoint: 1200,
+          settings: {
+            slidesToShow: 3
+          }
+        },
+        {
+          breakpoint: 992,
+          settings: {
+            slidesToShow: 2
+          }
+        },
+        {
+          breakpoint: 576,
+          settings: {
+            slidesToShow: 1
+          }
+        }
+      ]
+    });
+  });
+</script>
+
 
 <%- include('./partials/footer') %>
