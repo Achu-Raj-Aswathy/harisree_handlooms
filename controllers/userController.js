@@ -27,6 +27,12 @@ const viewHomepage = async (req, res) => {
     const homeEdits = await UserHome.find({}, { sliderImages: 1, _id: 0 });
     const products = await Products.find();
     const newArrivals = await Products.find().sort({ createdAt: -1 });
+    let userWishlistProductIds = [];
+
+    if (req.session.user) {
+  const user = await Users.findById(req.session.user);
+  userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
+}
 
     // Get all products with offers (for offers area)
     const offersArea = await Offers.find()
@@ -47,7 +53,8 @@ const viewHomepage = async (req, res) => {
       products,
       newArrivals,
       offersArea,
-      bestDeals
+      bestDeals,
+      userWishlistProductIds
     });
   } catch (error) {
     console.error(error);
@@ -226,11 +233,26 @@ const viewCheckout = async (req, res) => {
 };
 
 const viewWishlist = async (req, res) => {
+  const userId = req.session.user;
+
   try {
-    res.render("user/wishList", { });
+    if (!userId) {
+      return res.redirect("/signin"); // or show a friendly message
+    }
+
+    const user = await Users.findById(userId).populate("wishlist.productId");
+
+    if (!user) {
+      return res.status(404).render("error", { error: "User not found" });
+    }
+
+    const wishlists = user.wishlist || [];
+
+    res.render("user/wishList", { wishlists });
+
   } catch (error) {
-    console.error(error);
-    res.render("error", { error });
+    console.error("Error in viewWishlist:", error);
+    res.status(500).render("error", { error: "Something went wrong" });
   }
 };
 
@@ -316,6 +338,85 @@ const getApiCountries = async (req, res) => {
   res.json(finalList);
 };
 
+const addToWishlist = async (req, res) => {
+  const productId = req.query.id;
+  const userId = req.session.user; // Assuming this contains the user's MongoDB _id
+  console.log(productId, userId);
+
+  try {
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not logged in" });
+    }
+
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "Product ID is required" });
+    }
+
+    const user = await Users.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Check if product already exists in wishlist
+    const alreadyInWishlist = user.wishlist.some(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (alreadyInWishlist) {
+      return res.status(409).json({ success: false, message: "Product already in wishlist" });
+    }
+
+    // Add product to wishlist
+    user.wishlist.push({ productId });
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Product added to wishlist" });
+
+  } catch (error) {
+    console.error("Error adding to wishlist:", error);
+    res.status(500).render("error", { error });
+  }
+};
+
+const addToCart = async (req, res) => {
+  const productId = req.query.id;
+  const userId = req.session.user;
+
+  try {
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not logged in" });
+    }
+
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "Product ID is required" });
+    }
+
+    const user = await Users.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const alreadyInCart = user.cart.some(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (alreadyInCart) {
+      return res.status(409).json({ success: false, message: "Product already in cart" });
+    }
+
+    user.cart.push({ productId });
+    await user.save();
+
+    return res.status(200).json({ success: true, message: "Product added to cart" });
+
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -339,5 +440,7 @@ module.exports = {
   viewPrivacyPolicy,
   viewTermsofService,
   getApiCountries,
+  addToCart,
+  addToWishlist,
 
 }

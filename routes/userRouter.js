@@ -11,7 +11,10 @@ userRouter.use(async(req, res, next) => {
       
       if (req.session.user) {
           try {
-            res.locals.user = await Users.findById(req.session.user).populate("orders").populate("wishlist").populate("cart"); 
+            res.locals.user = await Users.findById(req.session.user)
+            .populate("orders.orderId")
+            .populate("wishlist.productId")
+            .populate("cart.productId");
           } catch (error) {
               console.error('Error fetching user details:', error);
               res.locals.user = null;
@@ -69,5 +72,7 @@ userRouter.get("/api/countries", userController.getApiCountries);
 
 userRouter.post("/signin", userController.signIn);
 userRouter.post("/signup", userController.signUp);
+userRouter.post("/cart/add", userController.addToCart);
+userRouter.post("/wishlist/add", userController.addToWishlist)
 
 module.exports = userRouter;
