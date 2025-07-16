@@ -931,6 +931,17 @@ const editOffer = async (req, res) => {
   }
 };
 
+const returnUpdate = async (req, res) => {
+  try {
+    const { status } = req.body;
+    await Requests.findByIdAndUpdate(req.params.id, { status });
+    res.redirect("/admin/view-return"); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Update failed");
+  }
+};
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -972,4 +983,6 @@ module.exports = {
   viewEditOffer,
   deleteOffer,
   editOffer,
+  returnUpdate,
+
 };

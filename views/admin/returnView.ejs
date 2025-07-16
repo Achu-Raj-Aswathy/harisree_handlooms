@@ -26,62 +26,41 @@
           </tr>
         </thead>
         <tbody>
-          
-         <%
-  const returnRequests = [
-    {
-      id: 1,
-      orderId: 'ORD001',
-      productName: 'Cotton Saree',
-      customerName: 'Lakshmi',
-      phone: '9876543210',
-      reason: 'Wrong size',
-      status: 'Pending',
-      date: '2025-07-07'
-    },
-    {
-      id: 2,
-      orderId: 'ORD002',
-      productName: 'Silk Dhoti',
-      customerName: 'Ravi',
-      phone: '9123456780',
-      reason: 'Color mismatch',
-      status: 'Approved',
-      date: '2025-07-06'
-    }
-  ];
-%>
-
+         
 <% returnRequests.forEach((request, index) => { %>
   <tr>
     <td><%= index + 1 %></td>
     <td><%= request.orderId %></td>
     <td><%= request.productName %></td>
-    <td><%= request.customerName %> <br/><small><%= request.phone %></small></td>
+    <td>
+      <%= request.userId?.name || "N/A" %> <br />
+      <small><%= request.userId?.mobile || "N/A" %></small>
+    </td>
     <td><%= request.reason %></td>
     <td>
       <span class="badge 
-        <% if(request.status === 'Pending') { %> bg-warning 
-           <% } else if(request.status === 'Approved') { %> bg-success 
-           <% } else if(request.status === 'Rejected') { %> bg-danger 
+        <% if (request.status === 'Pending') { %> bg-warning 
+           <% } else if (request.status === 'Approved') { %> bg-success 
+           <% } else if (request.status === 'Rejected') { %> bg-danger 
            <% } else { %> bg-secondary <% } %>">
         <%= request.status %>
       </span>
     </td>
-    <td><%= request.date %></td>
+    <td><%= request.createdAt.toDateString() %></td>
     <td>
-      <form action="#" method="POST" class="d-flex gap-2">
+      <form action="/admin/return-update/<%= request._id %>" method="POST" class="d-flex gap-2">
         <select name="status" class="form-select form-select-sm" required>
           <option value="" disabled selected>Change Status</option>
           <option value="Approved">Approve</option>
           <option value="Rejected">Reject</option>
-          <option value="Resolved">Resolved</option>
+          <option value="Resolved">Resolve</option>
         </select>
         <button class="btn btn-sm btn-primary">Update</button>
       </form>
     </td>
   </tr>
 <% }) %>
+
 
         </tbody>
       </table>

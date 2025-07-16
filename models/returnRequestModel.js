@@ -16,6 +16,10 @@ const requestSchema = mongoose.Schema(
       required : true
     },
     image: { type: String, required: true },
+    status: { type: String, 
+      enum:["Pending", "Approved", "Rejected"],
+      default: "Pending"
+    }
   },
   { timestamps: true }
 );
