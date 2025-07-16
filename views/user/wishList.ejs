@@ -22,31 +22,42 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="product-remove"><a href="#" class="remove-wishlist"><i class="fal fa-times"></i></a></td>
-                                <td class="product-thumbnail"><a href="single-product.html"><img src="assets/images/product/electric/product-01.png" alt="Digital Product"></a></td>
-                                <td class="product-title"><a href="single-product.html">Wireless PS Handler</a></td>
-                                <td class="product-price" data-title="Price"><span class="currency-symbol">$</span>124.00</td>
-                                <td class="product-stock-status" data-title="Status">In Stock</td>
-                                <td class="product-add-cart"><a href="/cart" class="axil-btn btn-outline">Add to Cart</a></td>
-                            </tr>
-                            <tr>
-                                <td class="product-remove"><a href="#" class="remove-wishlist"><i class="fal fa-times"></i></a></td>
-                                <td class="product-thumbnail"><a href="single-product-2.html"><img src="assets/images/product/electric/product-02.png" alt="Digital Product"></a></td>
-                                <td class="product-title"><a href="single-product-2.html">Gradient Light Keyboard</a></td>
-                                <td class="product-price" data-title="Price"><span class="currency-symbol">$</span>124.00</td>
-                                <td class="product-stock-status" data-title="Status">In Stock</td>
-                                <td class="product-add-cart"><a href="/cart" class="axil-btn btn-outline">Add to Cart</a></td>
-                            </tr>
-                            <tr>
-                                <td class="product-remove"><a href="#" class="remove-wishlist"><i class="fal fa-times"></i></a></td>
-                                <td class="product-thumbnail"><a href="single-product-3.html"><img src="assets/images/product/electric/product-03.png" alt="Digital Product"></a></td>
-                                <td class="product-title"><a href="single-product-3.html">HD CC Camera</a></td>
-                                <td class="product-price" data-title="Price"><span class="currency-symbol">$</span>124.00</td>
-                                <td class="product-stock-status" data-title="Status">In Stock</td>
-                                <td class="product-add-cart"><a href="/cart" class="axil-btn btn-outline">Add to Cart</a></td>
-                            </tr>
-                        </tbody>
+  <% if (wishlists.length === 0) { %>
+    <tr>
+      <td colspan="6" class="text-center">Your wishlist is empty.</td>
+    </tr>
+  <% } else { %>
+    <% wishlists.forEach(item => { 
+         const product = item.productId;
+    %>
+      <tr>
+        <td class="product-remove">
+          <a href="/wishlist/remove?id=<%= product._id %>" class="remove-wishlist">
+            <i class="fal fa-times"></i>
+          </a>
+        </td>
+        <td class="product-thumbnail">
+          <a href="/product?id=<%= product._id %>">
+            <img src="<%= product.images[0] %>" alt="<%= product.name %>" />
+          </a>
+        </td>
+        <td class="product-title">
+          <a href="/product?id=<%= product._id %>"><%= product.name %></a>
+        </td>
+        <td class="product-price" data-title="Price">
+          ₹<%= product.discount || product.price %>
+        </td>
+        <td class="product-stock-status" data-title="Status">
+          <%= product.isAvailable ? "In Stock" : "Out of Stock" %>
+        </td>
+        <td class="product-add-cart">
+          <a href="/cart/add?id=<%= product._id %>" class="axil-btn btn-outline">Add to Cart</a>
+        </td>
+      </tr>
+    <% }) %>
+  <% } %>
+</tbody>
+
                     </table>
                 </div>
             </div>

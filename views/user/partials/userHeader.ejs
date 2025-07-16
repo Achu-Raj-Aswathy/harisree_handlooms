@@ -157,7 +157,7 @@
                              <% if(user) { %>
                             <li class="shopping-cart">
                                 <a href="#" class="cart-dropdown-btn">
-                                    <span class="cart-count">2</span>
+                                    <span class="cart-count"><%= user.cart.length %></span>
                                     <i class="fas fa-shopping-cart"></i>
                                 </a>
                             </li>
@@ -168,7 +168,7 @@
                             </li>
                             
                            
-<li class="my-account">
+                            <li class="my-account">
                                 <a href="javascript:void(0)">
                                     <i class="far fa-user"></i>
                                 </a>
@@ -445,16 +445,13 @@
 </div>
 <!-- Header Search Modal End -->
 
-
-
-
 <div class="cart-dropdown" id="cart-dropdown">
     <div class="cart-content-wrap">
         <div class="cart-header">
             <h2 class="header-title">Cart review</h2>
             <button class="cart-close sidebar-close"><i class="fas fa-times"></i></button>
         </div>
-        <div class="cart-body">
+        <!-- <div class="cart-body">
             <ul class="cart-item-list">
                 <li class="cart-item">
                     <div class="item-img">
@@ -529,8 +526,39 @@
                     </div>
                 </li>
             </ul>
-        </div>
-        <div class="cart-footer">
+        </div> -->
+        <div class="cart-body">
+  <ul class="cart-item-list">
+    <% if (user && user.cart && user.cart.length > 0) { %>
+      <% user.cart.forEach(item => {
+        const product = item.productId;
+      %>
+        <li class="cart-item">
+          <div class="item-img">
+            <a href="/product?id=<%= product._id %>">
+              <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+            </a>
+            <button class="close-btn remove-from-cart" data-id="<%= product._id %>">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="item-content">
+            <h3 class="item-title">
+              <a href="/product?id=<%= product._id %>"><%= product.name %></a>
+            </h3>
+            <div class="item-price">₹<%= product.discount || product.price %></div>
+            <!-- Optionally show quantity if implemented -->
+          </div>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li class="cart-item text-center">
+        <p>Your cart is empty.</p>
+      </li>
+    <% } %>
+  </ul>
+</div>
+        <!-- <div class="cart-footer">
             <h3 class="cart-subtotal">
                 <span class="subtotal-title">Subtotal:</span>
                 <span class="subtotal-amount">$610.00</span>
@@ -539,51 +567,59 @@
                 <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
                 <a href="/checkout" class="axil-btn btn-bg-secondary checkout-btn">Checkout</a>
             </div>
-        </div>
+        </div> -->
+        <%
+  let subtotal = 0;
+  if (user && user.cart && user.cart.length > 0) {
+    user.cart.forEach(item => {
+      const price = item.productId.discount || item.productId.price || 0;
+      subtotal += price;
+    });
+  }
+%>
+
+<div class="cart-footer">
+  <h3 class="cart-subtotal">
+    <span class="subtotal-title">Subtotal:</span>
+    <span class="subtotal-amount">₹<%= subtotal %></span>
+  </h3>
+  <div class="group-btn">
+    <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
+    <a href="/checkout" class="axil-btn btn-bg-secondary checkout-btn">Checkout</a>
+  </div>
+</div>
     </div>
 </div>
-<!-- <style>
-  @media (max-width: 767px) {
-    /* FIXED: Reduce top padding to match exact height of offer bar + header */
-    .mainmenu-nav {
-      padding-top: 50px !important; /* adjust only if your header+offer bar is taller/shorter */
-      background-color: #fff !important;
-      position: relative;
-      z-index: 10000;
-    }
-
-    .mobile-nav-brand {
-      padding: 0; /* Remove extra padding around logo */
-      margin: 0;
-      background-color: #fff;
-      text-align: center;
-      border-bottom: 1px solid #eee;
-    }
-
-    .mobile-nav-brand img {
-      max-height: 40px;
-      object-fit: contain;
-      margin: 0 5px;
-      padding: 5px 0;
-    }
-
-  
-    .mobile-close-btn {
-      position: absolute;
-      top: 50px; /* Push it below offer bar (40px) + header (30px) */
-      right: 20px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #333;
-      z-index: 10001;
-    }
-  
-
-
-    }
-  
-</style> -->
 
 
 
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".remove-from-cart").forEach((el) => {
+      el.addEventListener("click", async function (e) {
+        e.preventDefault();
+        const productId = this.dataset.id;
+
+        try {
+          const res = await fetch(`/cart/remove?id=${productId}`, {
+            method: "DELETE",
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            alert("Removed from cart");
+            window.location.reload();
+          } else {
+            alert(data.message || "Could not remove item.");
+          }
+        } catch (err) {
+          console.error("Error:", err);
+          alert("Something went wrong.");
+        }
+      });
+    });
+  });
+</script>
