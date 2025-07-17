@@ -349,14 +349,32 @@ const viewTermsofService = async (req, res) => {
   }
 };
  
-const viewRefundPolicy = async (req, res) => {
-  try {
-    res.render("user/refundpolicy", { });
-  } catch (error) {
-    console.error(error);
-    res.render("error", { error });
-  }
-};
+// const viewRefundPolicy = async (req, res) => {
+//   try {
+//     res.render("user/refund-policy", { });
+//   } catch (error) {
+//     console.error(error);
+//     res.render("error", { error });
+//   }
+// };
+
+// const viewReturnPolicy = async (req, res) => {
+//   try {
+//     res.render("user/return-policy", { });
+//   } catch (error) {
+//     console.error(error);
+//     res.render("error", { error });
+//   }
+// };
+
+// const viewShippingPolicy = async (req, res) => {
+//   try {
+//     res.render("user/shipping-policy", { });
+//   } catch (error) {
+//     console.error(error);
+//     res.render("error", { error });
+//   }
+// };
 
 const getApiCountries = async (req, res) => {
   const countryList = Object.values(countries).map(c => c.name).sort();
@@ -548,6 +566,8 @@ module.exports = {
   viewPrivacyPolicy,
   viewTermsofService,
   viewRefundPolicy,
+  viewReturnPolicy,
+  viewShippingPolicy,
   getApiCountries,
   addToCart,
   addToWishlist,

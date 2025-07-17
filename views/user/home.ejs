@@ -117,7 +117,7 @@
                         <h2 class="title">New Arrivals</h2>
                     </div>
                     <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
-                
+                <% if(newArrivals.length > 0) { %>
                 <% newArrivals.forEach(product => { %>
                 <div class="slick-single-layout">
                     <div class="axil-product product-style-four">
@@ -167,6 +167,11 @@
                     </div>
                 </div>
                 <% }) %>
+                <% } else { %>
+                  <div class="text-center">
+    <p>No new arrivals available at the moment.</p>
+  </div>
+                <% } %>
                 <!-- End .slick-single-layout -->
                 
             </div>
@@ -196,6 +201,7 @@
           <p class="deal-price">₹999</p>
         </div>
       </div> -->
+    <% if(bestDeals.length > 0) { %>
 <% bestDeals.forEach(offer => { 
            const product = offer.productId;
       %>
@@ -213,6 +219,11 @@
         </div>
       </div>
       <% }) %>
+      <% } else { %>
+                  <div class="text-center">
+    <p>No new best deals available at the moment.</p>
+  </div>
+                <% } %>
     </div>
   </div>
 </div>
@@ -263,6 +274,7 @@
                             </div>
                         </div> -->
                         <!-- End .slick-single-layout -->
+                         <% if(offersArea.length > 0) { %>
                         <% offersArea.forEach(offer => {
        const product = offer.productId;
        const discountedPrice = Math.round(product.price * (1 - offer.discountPercentage / 100));
@@ -310,6 +322,11 @@
     </div>
   </div>
   <% }) %>
+  <% } else { %>
+                  <div class="text-center">
+    <p>No offers available at the moment.</p>
+  </div>
+                <% } %>
                     </div>
                 </div>
             </div>

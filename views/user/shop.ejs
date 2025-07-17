@@ -34,9 +34,6 @@
   </div>
 </div>
 
-
-
-
       <!-- Product Grid -->
       <div class="row gy-4" id="productGrid">
         <!-- Products will be rendered here -->
@@ -46,19 +43,7 @@
 </div>
 
 <script>
-  const allProducts = [
-    { id: 1, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees1.jpg", price: 399, oldPrice: 499, discount: "20% OFF" },
-    { id: 2, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees2.jpg", price: 999, oldPrice: 1499 },
-    { id: 3, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees3.jpg", price: 450, oldPrice: 600, discount: "25% OFF" },
-    { id: 4, name: "Guys Bomber Jacket", image: "/assets/images/handlooms/sarees4.jpg", price: 700, oldPrice: 1000 },
-    { id: 5, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees5.jpg", price: 380, oldPrice: 499 },
-    { id: 6, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees7.jpg", price: 1500, oldPrice: 2000, discount: "5% OFF" },
-    { id: 7, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees8.jpg", price: 600, oldPrice: 800 },
-    { id: 8, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees9.jpg", price: 300, oldPrice: 390 },
-    { id: 9, name: "Zone Headphone", image: "/assets/images/handlooms/sarees11.jpg", price: 45, oldPrice: 60, discount: "30% OFF" },
-    { id: 10, name: "Kasavu Set Mundu", image: "/assets/images/handlooms/sarees12.jpg", price: 700, oldPrice: 1000 }
-  ];
-
+  const allProducts = <%- JSON.stringify(products) %>;
   let filtered = [...allProducts];
 
   function renderProducts(products) {
@@ -70,44 +55,56 @@
       return;
     }
 
-    products.forEach(product => {
-//       const html = `
-// <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-aos="fade-up product-card" data-aos-duration="800">
-//           <div class="axil-product product-style-one has-color-pick">
-//             <div class="thumbnail position-relative" style="width: 100%; height: 460px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-//               <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
-//               ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
-//             </div>
-//             <div class="product-content text-center mt-2">
-//               <h5 class="title">${product.name}</h5>
-//               <div class="product-price-variant">
-//                 ${product.oldPrice ? `<span class="price old-price" style="text-decoration: line-through; margin-right: 8px; color: #888;">₹${product.oldPrice}</span>` : ""}
-//                 <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
-//               </div>
-//               <a href="/product/${product.id}" class="axil-btn mt-2 btn btn-warning text-white fw-semibold">View Details</a>
-//             </div>
-//           </div>
-//         </div>`;
-const html = `
-  <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-card" data-aos="fade-up" data-aos-duration="800">
-    <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
-      <div class="thumbnail flex-shrink-0" style="width: 100%; height: 250px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
-        ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
-      </div>
-      <div class="product-content text-center text-sm-start px-2">
-        <h5 class="title">${product.name}</h5>
-        <div class="product-price-variant mb-1">
-          ${product.oldPrice ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${product.oldPrice}</span>` : ""}
-          <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
-        </div>
-        <a href="/product" class="axil-btn btn btn-warning text-white fw-semibold">View Details</a>
-      </div>
-    </div>
-  </div>`;
+//     products.forEach(product => {
+// const html = `
+//   <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-card" data-aos="fade-up" data-aos-duration="800">
+//     <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
+//       <div class="thumbnail flex-shrink-0" style="width: 100%; height: 250px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+//         <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+//         ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
+//       </div>
+//       <div class="product-content text-center text-sm-start px-2">
+//         <h5 class="title">${product.name}</h5>
+//         <div class="product-price-variant mb-1">
+//           ${product.oldPrice ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${product.oldPrice}</span>` : ""}
+//           <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
+//         </div>
+//         <a href="/product" class="axil-btn btn btn-warning text-white fw-semibold">View Details</a>
+//       </div>
+//     </div>
+//   </div>`;
 
-      grid.innerHTML += html;
-    });
+//       grid.innerHTML += html;
+//     });
+
+  products.forEach(product => {
+    const imageUrl = product.images && product.images.length > 0 ? product.images[0] : "/assets/images/default.jpg";
+    const discountAmount = product.discount || 0;
+    const oldPrice = product.price;
+    const finalPrice = product.discount;
+    const discountPrice = oldPrice - finalPrice;
+    const discountPercentage = Math.floor((discountPrice/oldPrice)*100);
+    const discountLabel = discountPercentage ? `${discountPercentage}% OFF` : '';
+
+    const html = `
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-card" data-aos="fade-up" data-aos-duration="800">
+        <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
+          <div class="thumbnail flex-shrink-0" style="width: 100%; height: 250px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <img src="${imageUrl}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+            ${discountLabel ? `<div class="label-block label-right"><div class="product-badget">${discountLabel}</div></div>` : ""}
+          </div>
+          <div class="product-content text-center text-sm-start px-2">
+            <h5 class="title">${product.name}</h5>
+            <div class="product-price-variant mb-1">
+              ${discountAmount ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${oldPrice}</span>` : ""}
+              <span class="price current-price fw-bold" style="color: #000;">₹${finalPrice}</span>
+            </div>
+            <a href="/product?id=${product._id}" class="axil-btn btn btn-warning text-white fw-semibold">View Details</a>
+          </div>
+        </div>
+      </div>`;
+    grid.innerHTML += html;
+  });
 
     // Reinitialize AOS after DOM update
     AOS.init();
@@ -367,42 +364,6 @@ document.addEventListener('click', (e) => {
 
 
 </style>
-<!-- /* Responsive Select Box Fix *
-/* Mobile adjustments */
-/* @media (max-width: 767.98px) {
-  .container,
-  .row,
-  .col-lg-9,
-  .col-lg-3 {
-    max-width: 100% !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    box-sizing: border-box;
-  }
-
-  select.form-select {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-
-  
-  html, body {
-    overflow-x: hidden !important;
-  }
-
-  .main-wrapper {
-    overflow-x: hidden;
-  }
-}
- */ -->
-
 
 
 <%- include('./partials/footer') %>
