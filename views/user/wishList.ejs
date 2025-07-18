@@ -22,43 +22,36 @@
                             </tr>
                         </thead>
                         <tbody>
-  <% if (wishlists.length === 0) { %>
-    <tr>
-      <td colspan="6" class="text-center">Your wishlist is empty.</td>
-    </tr>
-  <% } else { %>
-    <% wishlists.forEach(item => { 
-         const product = item.productId;
-    %>
-      <tr>
-        <td class="product-remove">
-          <a href="#" class="remove-from-wishlist" data-id="<%= product._id %>">
-            <i class="fal fa-times"></i>
-          </a>
-          <!-- <a href="" class="close-btn remove-from-wishlist" data-id="<%= product._id %>">
-              <i class="fas fa-times"></i>
-          </a> -->
-        </td>
-        <td class="product-thumbnail">
-          <a href="/product?id=<%= product._id %>">
-            <img src="<%= product.images[0] %>" alt="<%= product.name %>" />
-          </a>
-        </td>
-        <td class="product-title">
-          <a href="/product?id=<%= product._id %>"><%= product.name %></a>
-        </td>
-        <td class="product-price" data-title="Price">
-          ₹<%= product.discount || product.price %>
-        </td>
-        <td class="product-stock-status" data-title="Status">
-          <%= product.isAvailable ? "In Stock" : "Out of Stock" %>
-        </td>
-        <td class="product-add-cart">
-          <a href="/cart/add?id=<%= product._id %>" class="axil-btn btn-outline">Add to Cart</a>
-        </td>
-      </tr>
-    <% }) %>
-  <% } %>
+ <% wishlists.forEach(item => { 
+     const product = item.productId;
+     if (!product) return; // Prevent rendering null products
+%>
+  <tr>
+    <td class="product-remove">
+      <a href="#" class="remove-from-wishlist" data-id="<%= product._id %>">
+        <i class="fal fa-times"></i>
+      </a>
+    </td>
+    <td class="product-thumbnail">
+      <a href="/product?id=<%= product._id %>">
+        <img src="<%= product.images[0] %>" alt="<%= product.name %>" />
+      </a>
+    </td>
+    <td class="product-title">
+      <a href="/product?id=<%= product._id %>"><%= product.name %></a>
+    </td>
+    <td class="product-price" data-title="Price">
+      ₹<%= product.discount || product.price %>
+    </td>
+    <td class="product-stock-status" data-title="Status">
+      <%= product.isAvailable ? "In Stock" : "Out of Stock" %>
+    </td>
+    <td class="product-add-cart">
+      <a  href="#"  data-id="<%= product._id %>" class="add-to-cart axil-btn btn-outline">Add to Cart</a>
+    </td>
+  </tr>
+<% }) %>
+
 </tbody>
 
                     </table>
@@ -90,6 +83,37 @@
           }
         } catch (err) {
           console.error("Error:", err);
+          alert("Something went wrong.");
+        }
+      });
+    });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Add to Cart
+    document.querySelectorAll(".add-to-cart").forEach((el) => {
+      el.addEventListener("click", async function (e) {
+        e.preventDefault();
+
+        const productId = this.dataset.id;
+
+        try {
+          const res = await fetch(`/cart/add?id=${productId}`, {
+            method: "POST",
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            alert("Product added to cart!");
+            // You can also reload or update cart count here
+            window.location.reload(); // Or just update the icon/UI
+          } else {
+            alert(data.message || "Failed to add to cart.");
+          }
+        } catch (err) {
+          console.error("Error adding to cart:", err);
           alert("Something went wrong.");
         }
       });
