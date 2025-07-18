@@ -67,7 +67,19 @@ const loginAdmin = async (req, res) => {
 
 const viewDashboard = async (req, res) => {
   try {
-    res.render("admin/dashboard", {});
+    const orders = await Orders.find();
+    const products = await Products.find();
+    const customers = await Users.find();
+
+    const totalOrders = orders.length;
+    const totalProducts = products.length;
+    const totalCustomers = customers.length;
+
+    res.render("admin/dashboard", {
+      totalOrders,
+      totalProducts,
+      totalCustomers,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });

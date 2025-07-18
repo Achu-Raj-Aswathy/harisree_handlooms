@@ -13,7 +13,7 @@
                                         <div class="card">
                                              <div class="card-body">
                                                   <!-- Crossfade Carousel -->
-                                                  <div id="carouselExampleFade" class="carousel slide carousel-fade"
+                                                  <!-- <div id="carouselExampleFade" class="carousel slide carousel-fade"
                                                        data-bs-ride="carousel">
                                                        <div class="carousel-inner" role="listbox">
                                                             <% if (product.images && product.images.length> 0) { %>
@@ -34,7 +34,6 @@
                                                                                 <% } %>
                                                        </div>
 
-                                                       <!-- Carousel Indicators -->
                                                        <div
                                                             class="carousel-indicators m-0 mt-2 d-lg-flex d-none position-static h-100">
                                                             <% product.images.forEach((image, index)=> { %>
@@ -50,7 +49,79 @@
                                                                  </button>
                                                                  <% }); %>
                                                        </div>
-                                                  </div>
+                                                  </div> -->
+                                                  <!-- <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                         <div class="carousel-inner" role="listbox">
+                                              <div class="carousel-item active">
+                                                   <img src="assets/images/product/p-1.png" alt="" class="img-fluid bg-light rounded">
+                                              </div>
+                                              <div class="carousel-item">
+                                                   <img src="assets/images/product/p-10.png" alt="" class="img-fluid bg-light rounded">
+                                              </div>
+                                              <div class="carousel-item">
+                                                   <img src="assets/images/product/p-13.png" alt="" class="img-fluid bg-light rounded">
+                                              </div>
+                                              <div class="carousel-item">
+                                                   <img src="assets/images/product/p-14.png" alt="" class="img-fluid bg-light rounded">
+                                              </div>
+                                              <a class="carousel-control-prev rounded" href="#carouselExampleFade" role="button" data-bs-slide="prev">
+                                                   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                   <span class="visually-hidden">Previous</span>
+                                              </a>
+                                              <a class="carousel-control-next rounded" href="#carouselExampleFade" role="button" data-bs-slide="next">
+                                                   <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                   <span class="visually-hidden">Next</span>
+                                              </a>
+                                         </div>
+                                         <div class="carousel-indicators m-0 mt-2 d-lg-flex d-none position-static h-100">
+                                              <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="0" aria-current="true" aria-label="Slide 1" class="w-auto h-auto rounded bg-light active">
+                                                   <img src="assets/images/product/p-1.png" class="d-block avatar-xl" alt="swiper-indicator-img">
+                                              </button>
+                                              <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="1" aria-label="Slide 2" class="w-auto h-auto rounded bg-light">
+                                                   <img src="assets/images/product/p-10.png" class="d-block avatar-xl" alt="swiper-indicator-img">
+                                              </button>
+                                              <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="2" aria-label="Slide 3" class="w-auto h-auto rounded bg-light">
+                                                   <img src="assets/images/product/p-13.png" class="d-block avatar-xl" alt="swiper-indicator-img">
+                                              </button>
+                                              <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="3" aria-label="Slide 3" class="w-auto h-auto rounded bg-light">
+                                                   <img src="assets/images/product/p-14.png" class="d-block avatar-xl" alt="swiper-indicator-img">
+                                              </button>
+                                         </div>
+                                    </div> -->
+                                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+  <div class="carousel-inner" role="listbox">
+    <% product.images.forEach((img, index) => { %>
+      <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+        <img src="<%= img %>" alt="Product Image <%= index + 1 %>" class="img-fluid bg-light rounded">
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- Optional carousel controls (uncomment if needed) -->
+  <!--
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+  -->
+
+  <div class="carousel-indicators m-0 mt-2 d-lg-flex d-none position-static h-100">
+    <% product.images.forEach((img, index) => { %>
+      <button type="button"
+              data-bs-target="#carouselExampleFade"
+              data-bs-slide-to="<%= index %>"
+              class="w-auto h-auto rounded bg-light <%= index === 0 ? 'active' : '' %>"
+              aria-label="Slide <%= index + 1 %>">
+        <img src="<%= img %>" class="d-block avatar-xl" alt="indicator-<%= index + 1 %>">
+      </button>
+    <% }) %>
+  </div>
+</div>
+
                                              </div>
                                         </div>
                                    </div>
@@ -84,9 +155,9 @@
                                          </ul>
                                          <p class="mb-0 fw-medium fs-18 text-dark">4.5 <span class="text-muted fs-13">(55 Review)</span></p>
                                     </div> -->
-                                                  <h2 class="fw-medium my-3">Discount Price:<%= product.discount %>
+                                                  <h2 class="fw-medium my-3">Discount Price:₹ <%= product.discount %>
                                                             <span class="fs-16 text-decoration-line-through">Old Price :
-                                                                 <%= product.price %></span><small
+                                                                  ₹ <%= product.price %></span><small
                                                                  class="text-danger ms-2"></small></h2>
 
                                                   <div class="row align-items-center g-2 mt-3">
@@ -113,7 +184,7 @@
                                                        <div class="col-lg-3">
                                                             <div class="">
                                                                  <h5 class="text-dark fw-medium">Specification: <%=
-                                                                           product.Specifications %> <span
+                                                                           product.specifications %> <span
                                                                                 class="text-muted"></span></h5>
                                                                  <!-- <div class="d-flex flex-wrap gap-2" role="group" aria-label="Basic checkbox toggle button group">
                                                         <input type="checkbox" class="btn-check" id="size-s2">
@@ -133,6 +204,7 @@
                                                        </div>
                                                   </div>
 
+                                                  <div class="row align-items-center g-2">
                                                   <div class="col-lg-3">
                                                        <div class="">
                                                             <h5 class="text-dark fw-medium">HSN Code : <%=
@@ -175,17 +247,26 @@
                                                    </div> -->
                                                        </div>
                                                   </div>
-                                             </div>
-                                             <div class="quantity mt-1">
-                                                  <h4 class="text-dark fw-medium mt-3">Quantity : <input type="number"
-                                                            class="text-dark text-center border-0 bg-body-secondary rounded h-100"
-                                                            value="<%= product.stock %>"></h4>
+</div>
+                                                  <div class="row align-items-center g-2 mb-3">
+                                                        <div class="col-lg-3">
+                                                       <div class="">
+                                                            <h5 class="text-dark fw-medium mt-3">Ideal for: <%= product.gender %></h5>
+                                                       </div>
+                                                        </div>
+
+                                                       <div class="col-lg-3">
+                                                       <div class="">
+                                                            <h5 class="text-dark fw-medium mt-3">Quantity : <%= product.stock %></h5>
                                                   <!-- <div class="input-step border bg-body-secondary p-1 mt-1 rounded d-inline-flex overflow-visible"> -->
                                                   <!-- <button type="button" class="minus bg-light text-dark border-0 rounded-1 fs-20 lh-1 h-100"></button> -->
 
                                                   <!-- <button type="button" class="plus bg-light text-dark border-0 rounded-1 fs-20 lh-1 h-100">+</button> -->
                                                   <!-- </div>  -->
                                              </div>
+                                             </div>
+                                             </div>
+
                                              <!-- <ul class="d-flex flex-column gap-2 list-unstyled fs-15 my-3">
                                          <li>
                                               <i class='bx bx-check text-success'></i> In Stock
