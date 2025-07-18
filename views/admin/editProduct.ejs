@@ -24,9 +24,10 @@
                         
 
                          <div class="col-xl-12 col-lg-12 ">
+                          <form id="editProductForm" method="POST" action="/admin/edit-product?id=<%= product._id %>">
                               <div class="card">
                                    <div class="card-header">
-                                        <h4 class="card-title">Add Product Photo</h4>
+                                        <h4 class="card-title">Edit Product Photo</h4>
                                    </div>
                                     <div class="card-body">
                 <input type="file" name="thumbnail[]" class="filepond" multiple
@@ -53,7 +54,7 @@
                     </div>
                   </div>
 
-                  <div class="col-lg-6">
+                  <!-- <div class="col-lg-6">
                     <div class="mb-3">
                       <label for="categoryId" class="form-label">Select Category</label>
                       <select id="categoryId" name="categoryId" class="form-select" required>
@@ -64,7 +65,22 @@
                       </select>
                     </div>
                   </div>
-                </div>
+                </div> -->
+                <div class="col-lg-6">
+  <div class="mb-3">
+    <label for="categoryId" class="form-label">Select Category</label>
+    <select id="categoryId" name="categoryId" class="form-select" required>
+      <option value="">-- Choose a Category --</option>
+      <% categories.forEach(category => { %>
+        <option 
+          value="<%= category._id %>" 
+          <%= category._id.toString() === product.categoryId._id.toString() ? 'selected' : '' %>>
+          <%= category.name %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+</div>
 
                 <div class="row">
                   <div class="col-lg-8">
@@ -132,7 +148,7 @@
                   <div class="col-lg-4">
                     <div class="mb-3">
                       <label for="lowStockAlert" class="form-label">Low Stock Alert</label>
-                      <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" value="<%= product.lowStockAlert %>">
+                      <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" value="<%= product.lowStockLimit %>">
                     </div>
                   </div>
                 </div>
@@ -211,7 +227,7 @@
 <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
 
-<script>
+<!-- <script>
   FilePond.registerPlugin(FilePondPluginImagePreview);
 
   const pond = FilePond.create(document.querySelector('.filepond'), {
@@ -221,6 +237,16 @@
     acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
     labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
   });
+
+    // 🖼️ Preload existing images
+  const existingImages = <%- JSON.stringify(product.images || []) %>;
+
+  existingImages.forEach((image, index) => {
+    pond.addFile(image).catch(err => {
+      console.error('Error preloading image:', err);
+    });
+  });
+
    document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("CategoryForm");
 
@@ -234,8 +260,70 @@
       });
      });
   });
-      </script>
-      <style>
+      </script> -->
+   
+   <script>
+  FilePond.registerPlugin(FilePondPluginImagePreview);
+
+  const pond = FilePond.create(document.querySelector('.filepond'), {
+    allowMultiple: true,
+    maxFiles: 5,
+    imagePreviewHeight: 170,
+    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+    labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+  });
+
+  // 🟡 Optional: preload images (from earlier answer)
+  const existingImages = <%- JSON.stringify(product.images.map(img => ({
+    source: '/uploads/' + img,
+    options: {
+      type: 'local',
+      file: {
+        name: img,
+        size: 123456,
+        type: 'image/jpeg',
+      }
+    }
+  }))) %>;
+  pond.files = existingImages;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("editProductForm");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      // Add new FilePond images
+      pond.getFiles().forEach(fileItem => {
+        formData.append("thumbnail[]", fileItem.file);
+      });
+
+      // Send form data via fetch POST
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert("Product updated successfully!");
+          window.location.href = "/admin/products"; // or wherever you want to redirect
+        } else {
+          alert(result.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Edit failed:", error);
+        alert("An error occurred while submitting the form.");
+      }
+    });
+  });
+</script>
+
+   <style>
   .filepond--item {
     width: calc(25% - 0.5em);
   }

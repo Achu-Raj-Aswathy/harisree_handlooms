@@ -50,5 +50,6 @@ adminRouter.post("/update-slider", isLogin, upload.fields([
 ]), adminController.updateSlider);
 adminRouter.post("/update-offer-tag", isLogin, adminController.updateOfferTagline);
 adminRouter.post("/return-update/:id", isLogin, adminController.returnUpdate)
+adminRouter.post("/edit-product", isLogin, upload.array("thumbnail[]", 5), adminController.editProduct);
 
 module.exports = adminRouter;

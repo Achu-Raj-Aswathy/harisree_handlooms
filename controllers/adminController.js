@@ -943,6 +943,10 @@ const returnUpdate = async (req, res) => {
   }
 };
 
+const editProduct = async (req, res) => {
+
+}
+
 module.exports = {
   viewLogin,
   logoutAdmin,
@@ -985,5 +989,5 @@ module.exports = {
   deleteOffer,
   editOffer,
   returnUpdate,
-
+  editProduct,
 };
