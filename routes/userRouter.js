@@ -52,19 +52,18 @@ userRouter.use(async (req, res, next) => {
 userRouter.get("/", userController.viewHomepage);
 userRouter.get("/signin", isLogout, userController.viewSignin);
 userRouter.get("/signup", isLogout, userController.viewSignup);
-userRouter.get("/signout", userController.signOut);
+userRouter.get("/signout", isLogin, userController.signOut);
 userRouter.get("/forgot-password", isLogout, userController.viewForgotPassword);
 userRouter.get("/reset-password", isLogout, userController.viewResetPassword);
 userRouter.get("/shop", userController.viewShop);
 userRouter.get("/product", userController.viewProduct);
-userRouter.get("/cart", userController.viewCart);
-userRouter.get("/wishlist", userController.viewWishlist);
-userRouter.get("/account", userController.viewAccount);
+userRouter.get("/cart", isLogin, userController.viewCart);
+userRouter.get("/wishlist", isLogin, userController.viewWishlist);
+userRouter.get("/account", isLogin, userController.viewAccount);
 userRouter.get("/contact", userController.viewContact);
-userRouter.get("/order-tracking", userController.viewOrderTracking);
-userRouter.get("/product-return", userController.viewProductReturn);
-userRouter.get("/payment", userController.viewPayment);
-userRouter.get("/address",userController.viewAddress);
+userRouter.get("/order-tracking", isLogin, userController.viewOrderTracking);
+userRouter.get("/product-return", isLogin, userController.viewProductReturn);
+userRouter.get("/payment", isLogin, userController.viewPayment);
 userRouter.get("/privacy-policy", userController.viewPrivacyPolicy);
 userRouter.get("/terms-of-service",userController.viewTermsofService);
 userRouter.get("/refund-policy", userController.viewRefundPolicy);
@@ -72,15 +71,15 @@ userRouter.get("/return-policy", userController.viewReturnPolicy);
 userRouter.get("/shipping-policy", userController.viewShippingPolicy);
 userRouter.get("/api/countries", userController.getApiCountries);
 
-userRouter.post("/signin", userController.signIn);
-userRouter.post("/signup", userController.signUp);
-userRouter.post("/cart/add", userController.addToCart);
-userRouter.post("/wishlist/add", userController.addToWishlist)
-userRouter.post("/return",upload.single('image'),userController.returnRequest);
-userRouter.post("/checkout", userController.viewCheckout);
+userRouter.post("/signin", isLogout, userController.signIn);
+userRouter.post("/signup", isLogout, userController.signUp);
+userRouter.post("/cart/add", isLogin, userController.addToCart);
+userRouter.post("/wishlist/add", isLogin, userController.addToWishlist)
+userRouter.post("/return", isLogin, upload.single('image'),userController.returnRequest);
+userRouter.post("/checkout", isLogin, userController.viewCheckout);
 
 
-userRouter.delete("/cart/remove", userController.removeFromCart);
-userRouter.delete("/wishlist/remove", userController.removeFromWishlist);
+userRouter.delete("/cart/remove", isLogin, userController.removeFromCart);
+userRouter.delete("/wishlist/remove", isLogin, userController.removeFromWishlist);
 
 module.exports = userRouter;

@@ -322,15 +322,6 @@ const viewPayment = async (req, res) => {
   }
 };
 
-const viewAddress = async (req, res) => {
-  try {
-    res.render("user/address", { });
-  } catch (error) {
-    console.error(error);
-    res.render("error", { error });
-  }
-};
-
 const viewPrivacyPolicy = async (req, res) => {
   try {
     res.render("user/privacypolicy", { });
@@ -562,7 +553,6 @@ module.exports = {
   viewOrderTracking,
   viewProductReturn,
   viewPayment,
-  viewAddress,
   viewPrivacyPolicy,
   viewTermsofService,
   viewRefundPolicy,

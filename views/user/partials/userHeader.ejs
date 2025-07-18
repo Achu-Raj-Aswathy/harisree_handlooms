@@ -532,6 +532,7 @@
     <% if (user && user.cart && user.cart.length > 0) { %>
       <% user.cart.forEach(item => {
         const product = item.productId;
+        if (product) { 
       %>
         <li class="cart-item">
           <div class="item-img">
@@ -550,6 +551,7 @@
             <!-- Optionally show quantity if implemented -->
           </div>
         </li>
+        <%  } %>
       <% }) %>
     <% } else { %>
       <li class="cart-item text-center">
@@ -572,8 +574,10 @@
   let subtotal = 0;
   if (user && user.cart && user.cart.length > 0) {
     user.cart.forEach(item => {
+    if (item.productId) {
       const price = item.productId.discount || item.productId.price || 0;
       subtotal += price;
+    }
     });
   }
 %>
