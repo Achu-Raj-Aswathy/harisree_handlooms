@@ -204,6 +204,7 @@
     <% if(bestDeals.length > 0) { %>
 <% bestDeals.forEach(offer => { 
            const product = offer.productId;
+           if(product){
       %>
      <div class="col-6 col-sm-6 col-md-3">
 
@@ -218,7 +219,7 @@
           </p>
         </div>
       </div>
-      <% }) %>
+      <% } }) %>
       <% } else { %>
                   <div class="text-center">
     <p>No new best deals available at the moment.</p>
@@ -277,6 +278,7 @@
                          <% if(offersArea.length > 0) { %>
                         <% offersArea.forEach(offer => {
        const product = offer.productId;
+       if(product){
        const discountedPrice = Math.round(product.price * (1 - offer.discountPercentage / 100));
   %>
   <div class="slick-single-layout">
@@ -321,7 +323,7 @@
       </div>
     </div>
   </div>
-  <% }) %>
+  <% } }) %>
   <% } else { %>
                   <div class="text-center">
     <p>No offers available at the moment.</p>

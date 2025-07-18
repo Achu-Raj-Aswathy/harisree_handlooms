@@ -47,15 +47,15 @@
         </thead>
         <tbody>
          <tbody>
-  <%
+  <!-- <%
     const orders = [
       { orderId: 'ORD1001', customerName: 'Lakshmi', customerPhone: '9876543210', productName: 'Cotton Saree', courier: 'DTDC', trackingId: 'DTDC123456789', status: 'Shipped', updatedAt: '2025-07-07' },
       { orderId: 'ORD1002', customerName: 'Ravi', customerPhone: '9123456780', productName: 'Silk Dhoti', courier: 'Blue Dart', trackingId: 'BLUED456789012', status: 'Delivered', updatedAt: '2025-07-06' },
       { orderId: 'ORD1003', customerName: 'Anjali', customerPhone: '9988776655', productName: 'Kurta Set', courier: 'India Post', trackingId: 'INDPST00112233', status: 'Out for Delivery', updatedAt: '2025-07-07' }
     ];
-  %>
+  %> -->
 
-  <% orders.forEach((order, index) => { %>
+  <!-- <% orders.forEach((order, index) => { %>
     <tr>
       <td><%= index + 1 %></td>
       <td><%= order.orderId %></td>
@@ -81,8 +81,10 @@
       </td>
     </tr>
   <% }) %>
-</tbody>
-
+</tbody> -->
+<tr>
+  <td>No Recent Orders</td>
+</tr>
         </tbody>
       </table>
     </div>

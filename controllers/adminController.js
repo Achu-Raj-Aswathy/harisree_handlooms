@@ -289,7 +289,8 @@ const viewInventory = async (req, res) => {
 
 const viewSalesReport = async (req, res) => {
   try {
-    res.render("admin/reportAndAnalysis", {});
+     const products = await Products.find().populate("categoryId");
+    res.render("admin/reportAndAnalysis", {products});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
