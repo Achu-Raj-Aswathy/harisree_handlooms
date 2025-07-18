@@ -11,22 +11,20 @@
     <div class="col-lg-6 mb--40">
       <div class="position-sticky sticky-top">
         <div class="product-image-slider mb-4">
-          <% const images = [
-            "assets/images/product/product-18.png",
-            "assets/images/product/product-17.png",
-            "assets/images/product/product-14.png",
-            "assets/images/product/product-15.png",
-            "assets/images/product/product-16.png",
-            "assets/images/product/product-19.png",
-            "assets/images/product/product-20.png",
-            "assets/images/product/product-21.png",
-            "assets/images/product/product-22.png"
-          ]; %>
-          <% images.forEach(image => { %>
-            <div>
-              <img class="img-fluid w-100" src="<%= image %>" alt="Product Image" style="border-radius: 10px;" />
-            </div>
-          <% }) %>
+          
+          <!-- 🖼️ Image Slider -->
+<% if (product.images && product.images.length > 0) { %>
+  <% product.images.forEach(image => { %>
+    <div>
+      <img class="img-fluid w-100" src="<%= image %>" alt="<%= product.name %>" style="border-radius: 10px; height: 700px" />
+    </div>
+  <% }) %>
+<% } else { %>
+  <div>
+    <img class="img-fluid w-100" src="/assets/images/placeholder.jpg" alt="No Image Available" style="border-radius: 10px;" />
+  </div>
+<% } %>
+
         </div>
       </div>
     </div>
@@ -35,8 +33,8 @@
     <div class="col-lg-6 mb--40">
       <div class="single-product-content">
         <div class="inner">
-          <h2 class="product-title">Ella Everyday Tote</h2>
-          <span class="price-amount">₹155.00 - ₹255.00</span>
+          <h2 class="product-title"><%= product.name %></h2>
+          <span class="price-amount"><span style="text-decoration: line-through; color: grey">₹<%= product.price %></span>&nbsp;₹<%= product.discount %></span>
           <div class="product-rating my-2">
            
             
@@ -45,10 +43,17 @@
           <ul class="product-meta mb-3">
             <li><i class="fal fa-check"></i> In stock</li>
             <li><i class="fal fa-check"></i> Free delivery available</li>
-            <li><i class="fal fa-check"></i> Sales 30% Off Use Code: <strong>MOTIVE30</strong></li>
+            <!-- <li><i class="fal fa-check"></i> Sales 30% Off Use Code: <strong>MOTIVE30</strong></li> -->
           </ul>
 
-          <p class="description mb-4">In ornare lorem ut est dapibus, ut tincidunt nisi pretium...</p>
+          <p class="description mb-4"><%= product.description %></p>
+
+          <h6>Product Details</h6>
+          <ul class="list-unstyled">
+            <li><span>Length: </span><%= product.size %></li>
+            <li><span>Specifications: </span><%= product.specification %></li>
+            
+          </ul>
 
           <!-- 🎨 Variants -->
          
