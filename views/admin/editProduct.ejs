@@ -24,7 +24,7 @@
                         
 
                          <div class="col-xl-12 col-lg-12 ">
-                          <form id="editProductForm" method="POST" action="/admin/edit-product?id=<%= product._id %>">
+<form id="editProductForm" enctype="multipart/form-data">
                               <div class="card">
                                    <div class="card-header">
                                         <h4 class="card-title">Edit Product Photo</h4>
@@ -102,9 +102,9 @@
   <div class="col-lg-4">
     <label for="specification" class="form-label">Specifications</label>
     <select class="form-control" name="specification" id="specification">
-      <option value="Not Applicable" <%= product.specification === 'Not Applicable' ? 'selected' : '' %>>Not Applicable</option>
-      <option value="With Blouse" <%= product.specification === 'With Blouse' ? 'selected' : '' %>>With Blouse</option>
-      <option value="Without Blouse" <%= product.specification === 'Without Blouse' ? 'selected' : '' %>>Without Blouse</option>
+      <option value="Not Applicable" <%= product.specifications === 'Not Applicable' ? 'selected' : '' %>>Not Applicable</option>
+      <option value="With Blouse" <%= product.specifications === 'With Blouse' ? 'selected' : '' %>>With Blouse</option>
+      <option value="Without Blouse" <%= product.specifications === 'Without Blouse' ? 'selected' : '' %>>Without Blouse</option>
     </select>
   </div>
 
@@ -157,8 +157,11 @@
                   <div class="col-lg-12">
                     <div class="mb-3">
                       <label for="description" class="form-label">Description</label>
-                      <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
-                        placeholder="Short description about the product"  value="<%= product.description %>"> <%= product.description %></textarea>
+                      <!-- <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
+                        placeholder="Short description about the product"  value="<%= product.description %>"> <%= product.description %></textarea> -->
+                        <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
+  placeholder="Short description about the product"><%= product.description %></textarea>
+
                     </div>
                   </div>
                 </div>
@@ -193,7 +196,7 @@
             <div class="p-3 bg-light mb-3 rounded">
               <div class="row justify-content-end g-2">
                 <div class="col-lg-2">
-                  <button type="submit" class="btn btn-outline-secondary w-100">Create Product</button>
+                  <button type="submit" class="btn btn-outline-secondary w-100">Edit Product</button>
                 </div>
                 <div class="col-lg-2">
                   <button type="reset" class="btn btn-primary w-100">Cancel</button>
@@ -205,10 +208,6 @@
       </div>
     </div>
                <!-- End Container Fluid -->
-
-             
-
-         
           <!-- ==================================================== -->
           <!-- End Page Content -->
           <!-- ==================================================== -->
@@ -262,7 +261,7 @@
   });
       </script> -->
    
-   <script>
+<!-- <script>
   FilePond.registerPlugin(FilePondPluginImagePreview);
 
   const pond = FilePond.create(document.querySelector('.filepond'), {
@@ -273,14 +272,14 @@
     labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
   });
 
-  // 🟡 Optional: preload images (from earlier answer)
+  // 🖼️ Preload existing images
   const existingImages = <%- JSON.stringify(product.images.map(img => ({
     source: '/uploads/' + img,
     options: {
       type: 'local',
       file: {
         name: img,
-        size: 123456,
+        size: 123456, // placeholder size
         type: 'image/jpeg',
       }
     }
@@ -295,14 +294,16 @@
 
       const formData = new FormData(form);
 
-      // Add new FilePond images
+      // Append FilePond images
       pond.getFiles().forEach(fileItem => {
         formData.append("thumbnail[]", fileItem.file);
       });
 
-      // Send form data via fetch POST
+      // 🟡 Dynamic URL
+      const url = `/admin/edit-product?id=<%= product._id %>`;
+
       try {
-        const response = await fetch(form.action, {
+        const response = await fetch(url, {
           method: "POST",
           body: formData,
         });
@@ -311,7 +312,78 @@
 
         if (response.ok) {
           alert("Product updated successfully!");
-          window.location.href = "/admin/products"; // or wherever you want to redirect
+          window.location.href = "/admin/products";
+        } else {
+          alert(result.message || "Something went wrong.");
+        }
+      } catch (error) {
+        console.error("Edit failed:", error);
+        alert("An error occurred while submitting the form.");
+      }
+    });
+  });
+</script> -->
+
+<script>
+  FilePond.registerPlugin(FilePondPluginImagePreview);
+
+  const pond = FilePond.create(document.querySelector('.filepond'), {
+    allowMultiple: true,
+    maxFiles: 5,
+    imagePreviewHeight: 170,
+    acceptedFileTypes: ['image/png', 'image/jpeg', 'image/gif'],
+    labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+  });
+
+  const existingImages = <%- JSON.stringify(product.images.map(img => ({
+    source: '/uploads/' + img,
+    options: {
+      type: 'local',
+      file: {
+        name: img,
+        size: 123456,
+        type: 'image/jpeg',
+      }
+    }
+  }))) %>;
+  pond.files = existingImages;
+
+  // ✅ Fix: run only after everything is loaded
+  window.addEventListener("load", () => {
+  console.log("✅ Script Loaded");
+
+  const form = document.getElementById("editProductForm");
+  if (!form) {
+    console.error("❌ Form not found");
+    return;
+  }
+
+  console.log("✅ Form found");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    console.log("✅ Submit triggered");
+
+      const formData = new FormData(form);
+
+      // Attach FilePond images
+      pond.getFiles().forEach(fileItem => {
+        formData.append("thumbnail[]", fileItem.file);
+      });
+
+      const url = `/admin/edit-product?id=<%= product._id %>`;
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert("Product updated successfully!");
+          window.location.href = "/admin/list-product";
         } else {
           alert(result.message || "Something went wrong.");
         }

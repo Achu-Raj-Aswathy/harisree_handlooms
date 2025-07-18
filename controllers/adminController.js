@@ -944,7 +944,63 @@ const returnUpdate = async (req, res) => {
 };
 
 const editProduct = async (req, res) => {
+ try {
+    const productId = req.query.id;
+    if (!productId) return res.status(400).json({ message: "Product ID is required" });
 
+    const existingProduct = await Products.findById(productId);
+    if (!existingProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Extract fields from body
+    const {
+      productName,
+      hsnCode,
+      price,
+      discount,
+      description,
+      stock,
+      lowStockAlert,
+      skuId,
+      categoryId,
+      specification,
+      gender,
+      size
+    } = req.body;
+
+    // Handle uploaded images (new ones only)
+    let uploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      uploadedImages = req.files.map(file => "/uploads/" + file.filename); // assuming you serve images from /uploads/
+    }
+
+    // Merge new images with existing ones (optional)
+    const finalImages = uploadedImages.length > 0 ? uploadedImages : existingProduct.images;
+
+    // Update product fields
+    existingProduct.name = productName;
+    existingProduct.hsnCode = hsnCode;
+    existingProduct.price = price;
+    existingProduct.discount = discount;
+    existingProduct.description = description;
+    existingProduct.stock = stock;
+    existingProduct.availableStock = stock; // optional: sync available stock
+    existingProduct.lowStockLimit = lowStockAlert;
+    existingProduct.skuId = skuId;
+    existingProduct.categoryId = categoryId;
+    existingProduct.specification = specification;
+    existingProduct.gender = gender;
+    existingProduct.size = size;
+    existingProduct.images = finalImages;
+
+    await existingProduct.save();
+
+    res.status(200).json({ success: true, message: "Product updated successfully" });
+  } catch (error) {
+    console.error("Edit Product Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
 }
 
 module.exports = {
