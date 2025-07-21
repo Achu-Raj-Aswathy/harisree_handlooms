@@ -98,11 +98,10 @@
 
 
                         <!-- ❤️ Wishlist -->
-                        <a href="/wishlist"
+                        <button
                           class="add-to-wishlist btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
-                          style="width: 44px; height: 44px; data-id=" <%=product._id %>">
-                          <i class="fas fa-heart text-danger"></i></a>
-
+                          style="width: 44px; height: 44px"; data-id="<%=product._id %>">
+                          <i class="fas fa-heart text-danger"></i></button>
 
                         <!-- 🛒 Add to Cart -->
                         <button data-id="<%= product._id %>"
@@ -113,7 +112,6 @@
 
                       </div>
                     </div>
-
 
                     <!-- 📢 Customer Reviews -->
                     <!-- Review Form -->
@@ -130,9 +128,6 @@
                           });
                         }
                       </script>
-
-
-
 
                       <div class="form-group  mt-5">
                         <div class="d-flex justify-content-between">
