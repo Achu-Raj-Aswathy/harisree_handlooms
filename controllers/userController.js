@@ -534,6 +534,20 @@ const returnRequest = async (req, res) => {
   }
 };
 
+
+
+const getApiSearch= async (req, res) => {
+  const query = req.query.query.toLowerCase();
+  const products = await Products.find(); // Replace with real DB query
+
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(query)
+  );
+
+  res.json(filtered);
+};
+
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -564,5 +578,6 @@ module.exports = {
   removeFromCart,
   removeFromWishlist,
   returnRequest,
+  getApiSearch,
 
 }

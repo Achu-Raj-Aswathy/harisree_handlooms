@@ -70,6 +70,10 @@ userRouter.get("/refund-policy", userController.viewRefundPolicy);
 userRouter.get("/return-policy", userController.viewReturnPolicy);
 userRouter.get("/shipping-policy", userController.viewShippingPolicy);
 userRouter.get("/api/countries", userController.getApiCountries);
+userRouter.get("/api/search", userController.getApiSearch);
+
+
+
 
 userRouter.post("/signin", isLogout, userController.signIn);
 userRouter.post("/signup", isLogout, userController.signUp);
