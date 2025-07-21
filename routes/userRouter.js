@@ -73,8 +73,8 @@ userRouter.get("/api/countries", userController.getApiCountries);
 
 userRouter.post("/signin", isLogout, userController.signIn);
 userRouter.post("/signup", isLogout, userController.signUp);
-userRouter.post("/cart/add", isLogin, userController.addToCart);
-userRouter.post("/wishlist/add", isLogin, userController.addToWishlist)
+userRouter.post("/cart/add",  userController.addToCart);
+userRouter.post("/wishlist/add", userController.addToWishlist)
 userRouter.post("/return", isLogin, upload.single('image'),userController.returnRequest);
 userRouter.post("/checkout", isLogin, userController.viewCheckout);
 
