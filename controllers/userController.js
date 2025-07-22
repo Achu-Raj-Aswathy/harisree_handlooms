@@ -422,17 +422,38 @@ const viewProduct = async (req, res) => {
     const product = await Products.findOne({ _id: productId })
    const reviews = await Reviews.find({ productId });
 
+
     // Calculate average rating
     let avgRating = 0;
     if (reviews.length > 0) {
       const total = reviews.reduce((sum, review) => sum + review.rating, 0);
       avgRating = (total / reviews.length).toFixed(1);
     }
+ if (!product) return res.status(404).send('Product not found');
+
+    // Save recently viewed products in session
+    if (!req.session.recentlyViewed) req.session.recentlyViewed = [];
+
+    // Remove if already exists
+    req.session.recentlyViewed = req.session.recentlyViewed.filter(
+      (id) => id !== productId
+    );
+
+    // Add to beginning
+    req.session.recentlyViewed.unshift(productId);
+
+    // Limit to last 10 items
+    req.session.recentlyViewed = req.session.recentlyViewed.slice(0, 10);
+
+
+    const recentlyViewedIds = req.session.recentlyViewed.filter(id => id !== productId);
+const recentlyViewedProducts = await Products.find({ _id: { $in: recentlyViewedIds } }); 
 
     res.render("user/product", {
       product,
       reviews,
       avgRating,
+      recentlyViewedProducts,
     });
   } catch (error) {
     console.error(error);
@@ -786,6 +807,10 @@ const getApiSearch= async (req, res) => {
 };
 
 
+
+
+
+
 const addReview = async (req, res) => {
   try {
     const { rating, comment } = req.body;
@@ -841,6 +866,7 @@ module.exports = {
   status,
   getApiSearch,
   addReview,
+
   // viewSuccess,
   // viewFailure,
 }

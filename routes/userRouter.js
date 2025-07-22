@@ -74,8 +74,6 @@ userRouter.get("/api/search", userController.getApiSearch);
 
 
 
-
-
 userRouter.post("/signin", isLogout, userController.signIn);
 userRouter.post("/signup", isLogout, userController.signUp);
 userRouter.post("/cart/add",  userController.addToCart);
