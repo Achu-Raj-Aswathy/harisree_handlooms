@@ -100,12 +100,8 @@
 
                 <div class="row mb-3">
   <div class="col-lg-4">
-    <label for="specification" class="form-label">Specifications</label>
-    <select class="form-control" name="specification" id="specification">
-      <option value="Not Applicable" <%= product.specifications === 'Not Applicable' ? 'selected' : '' %>>Not Applicable</option>
-      <option value="With Blouse" <%= product.specifications === 'With Blouse' ? 'selected' : '' %>>With Blouse</option>
-      <option value="Without Blouse" <%= product.specifications === 'Without Blouse' ? 'selected' : '' %>>Without Blouse</option>
-    </select>
+    <label for="specification" class="form-label">Blouse Details(if no,type nil)</label>
+    <input type="text" name="specification" id="specification" class="form-control" placeholder="Blouse Details" value="<%= product.blouseDetails %>">
   </div>
 
   <div class="col-lg-4">
@@ -121,13 +117,8 @@
   </div>
 
   <div class="col-lg-4">
-    <label for="size" class="form-label">Size</label>
-    <select class="form-control" name="size" id="size">
-      <option value="Free Size" <%= product.size === 'Free Size' ? 'selected' : '' %>>Free Size</option>
-      <option value="2 meters" <%= product.size === '2 meters' ? 'selected' : '' %>>2 Meters</option>
-      <option value="4 meters" <%= product.size === '4 meters' ? 'selected' : '' %>>4 Meters</option>
-      <option value="6.25 meters" <%= product.size === '6.25 meters' ? 'selected' : '' %>>6.25 Meters</option>
-    </select>
+    <label for="size" class="form-label">Length</label>
+    <input type="text" name="size" id="size" class="form-control" placeholder="Length" value="<%= product.length %>">
   </div>
 </div>
 
@@ -152,6 +143,32 @@
                     </div>
                   </div>
                 </div>
+
+
+
+                 <div class="row">
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="fabric" class="form-label">Fabric</label>
+                      <input type="text" name="fabric" id="fabric" class="form-control" placeholder="fabric"  value="<%= product.fabric %>">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="design" class="form-label">Design(if no,type nil)</label>
+                      <input type="text" name="design" id="design" class="form-control" placeholder="design"  value="<%= product.design %>">
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="colour" class="form-label">Colour</label>
+                      <input type="text" name="colour" id="colour" class="form-control" placeholder="colour"  value="<%= product.colour %>">
+                    </div>
+                  </div>
+                </div>
+
+
+
 
                 <div class="row">
                   <div class="col-lg-12">

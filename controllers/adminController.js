@@ -1018,7 +1018,10 @@ const editProduct = async (req, res) => {
       categoryId,
       specification,
       gender,
-      size
+      size,
+      fabric,
+      design,
+      colour,
     } = req.body;
 
     // Handle uploaded images (new ones only)
@@ -1043,8 +1046,12 @@ const editProduct = async (req, res) => {
     existingProduct.categoryId = categoryId;
     existingProduct.specification = specification;
     existingProduct.gender = gender;
-    existingProduct.size = size;
+    existingProduct.length = size;
     existingProduct.images = finalImages;
+    existingProduct.design = design;
+    existingProduct.colour = colour;
+    existingProduct.fabric = fabric;
+    
 
     await existingProduct.save();
 

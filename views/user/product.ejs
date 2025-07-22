@@ -59,12 +59,31 @@
                     <h6>Product Details</h6>
                     <ul class="list-unstyled">
                       <li><span>Length: </span>
-                        <%= product.size %>
+                        <%= product.length %>
                       </li>
-                      <li><span>Specifications: </span>
-                        <%= product.specifications %>
+                    <% if (product.blouseDetails && product.blouseDetails.toLowerCase() !== "nil") { %>
+  <li>
+    <span>Blouse Details: </span>
+    <%= product.blouseDetails %>
+  </li>
+<% } %>
+
+
+                    <li><span>Fabric: </span>
+                        <%= product.fabric %>
                       </li>
 
+                   <% if (product.design && product.design.toLowerCase() !== "nil") { %>
+  <li>
+    <span>Design: </span>
+    <%= product.design %>
+  </li>
+<% } %>
+
+
+                      <li><span>Colour: </span>
+                        <%= product.colour %>
+                      </li>
                     </ul>
 
                     <!-- 🎨 Variants -->
