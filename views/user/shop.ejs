@@ -207,9 +207,9 @@ function selectDropdownOption(optionText) {
 
   // You can add your actual sorting function here:
   if (optionText === "Sort By Price: Low To High") {
-    filtered.sort((a, b) => a.price - b.price);
+    filtered.sort((a, b) => a.discount - b.discount);
   } else if (optionText === "Sort By Price: High To Low") {
-    filtered.sort((a, b) => b.price - a.price);
+    filtered.sort((a, b) => b.discount - a.discount);
   } else if (optionText === "Sort By Latest") {
     // Optional: implement logic
   } else if (optionText === "Sort By Popularity") {
