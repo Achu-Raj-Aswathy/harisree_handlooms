@@ -9,8 +9,17 @@ const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
 const Requests = require('../models/returnRequestModel');
 const Reviews = require('../models/reviewModel');
+const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
-const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node')
+const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node');
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // ===================
 // PhonePe Config
