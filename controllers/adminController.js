@@ -789,6 +789,8 @@ const updateOfferTagline = async (req, res) => {
 
 const editCoupon = async (req, res) => {
   const couponId = req.query.id;
+  console.log("Coupon ID from URL:", req.query.id);
+
 
   try {
     const {

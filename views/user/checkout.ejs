@@ -211,8 +211,38 @@
                   </div>
                 </div>
                 <!-- Coupon END -->
+<div class="order-payment-method mt-5">
 
-                <div class="order-payment-method mt-5">
+  <!-- Cash on Delivery Option -->
+  <!-- <div class="single-payment mb-3">
+    <div class="input-group justify-content-between align-items-center">
+      <input type="radio" id="radioCod" name="payment" value="cod">
+      <label for="radioCod">Cash on Delivery</label>
+    </div>
+    <p>Pay with cash upon product delivery.</p> -->
+
+    <!-- Cash on Delivery Checkbox -->
+    <!-- <div class="mt-2 ms-3">
+  <button type="button" class="btn btn-outline-success" id="codConfirmBtn">
+    Confirm Cash on Delivery
+  </button>
+</div> -->
+
+  </div>
+
+  <!-- PhonePe Option -->
+  <div class="single-payment">
+    <div class="input-group justify-content-between align-items-center">
+      <input type="radio" id="radioPhonepe" name="payment" value="phonepe" checked>
+      <label for="radioPhonepe">PhonePe</label>
+      <img src="assets/images/others/payment.png" alt="PhonePe payment">
+    </div>
+    <p>Pay via PhonePe; use UPI or credit card to complete your order.</p>
+  </div>
+</div>
+
+                <!-- <div class="order-payment-method mt-5">
+
                   <div class="single-payment">
                     <div class="input-group justify-content-between align-items-center">
                       <input type="radio" id="radio6" name="payment" checked>
@@ -221,7 +251,7 @@
                     </div>
                     <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
                   </div>
-                </div>
+                </div> -->
               <button type="submit" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button>
                 <!-- <button type="button" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button> -->
               </div>
@@ -360,36 +390,46 @@
         console.log("DOM fully loaded and parsed");
         const checkoutBtn = document.querySelector(".checkout-btn");
         const checkoutForm = document.getElementById("checkoutForm");
-        checkoutForm.addEventListener("submit", function (e) {
-          
+      checkoutForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-        // checkoutBtn.addEventListener("click", async function (e) {
-          e.preventDefault(); // ✅ Prevent default button behavior
+  const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+  const codChecked = document.getElementById("codConfirm")?.checked;
+  const cartData = <%- JSON.stringify({ items: cart, total }) %>;
 
-          const cartData = <% - JSON.stringify({ items: cart, total }) %>; // Injected from backend
-          console.log(cartData);
-          try {
-            const response = await fetch("/create-phonepe-order", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                cartData: JSON.stringify(cartData)
-              })
-            });
+  if (selectedPayment === "cod") {
+    if (!codChecked) {
+      alert("Please check the box to confirm Cash on Delivery.");
+      return;
+    }
+    // Redirect to COD confirmation page
+    window.location.href = "/cod-confirmation";
+    return;
+  }
 
-            const result = await response.json();
+  // If PhonePe is selected
+  try {
+    const response = await fetch("/create-phonepe-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        cartData: JSON.stringify(cartData)
+      })
+    });
 
-            if (result.checkoutPageUrl) {
-              window.location.href = result.checkoutPageUrl; // ✅ Redirect to PhonePe
-            } else {
-              alert("Payment initiation failed");
-            }
-          } catch (err) {
-            console.error("PhonePe error:", err);
-            alert("Something went wrong during payment");
-          }
-        });
-      });
+    const result = await response.json();
+
+    if (result.checkoutPageUrl) {
+      window.location.href = result.checkoutPageUrl;
+    } else {
+      alert("Payment initiation failed");
+    }
+  } catch (err) {
+    console.error("PhonePe error:", err);
+    alert("Something went wrong during payment");
+  }
+});
+
     </script>
