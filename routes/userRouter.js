@@ -75,15 +75,19 @@ userRouter.get("/api/search", userController.getApiSearch);
 
 
 
+
 userRouter.post("/signin", isLogout, userController.signIn);
 userRouter.post("/signup", isLogout, userController.signUp);
 userRouter.post("/cart/add",  userController.addToCart);
 userRouter.post("/wishlist/add", userController.addToWishlist)
 userRouter.post("/return", isLogin, upload.single('image'),userController.returnRequest);
 userRouter.post("/checkout", isLogin, userController.viewCheckout);
+userRouter.post('/product/:id/review',isLogin, upload.array('images'),userController.addReview);
+
 
 
 userRouter.delete("/cart/remove", isLogin, userController.removeFromCart);
 userRouter.delete("/wishlist/remove", isLogin, userController.removeFromWishlist);
+
 
 module.exports = userRouter;

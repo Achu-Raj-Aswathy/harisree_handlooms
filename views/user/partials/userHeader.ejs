@@ -494,8 +494,9 @@ document.addEventListener("DOMContentLoaded", function () {
           (product) => `
         <div class="axil-product-list">
           <div class="thumbnail">
-            <a href="/product/${product.slug}">
-              <img src="${product.image}" alt="${product.name}" />
+            <a href="/product?id=${product._id}">
+             <img src="${product.images[0]}" alt="${product.name}" style="width: 80px; height: auto;" />
+
             </a>
           </div>
           <div class="product-content">
@@ -511,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function () {
               </span>
               <span class="rating-number"><span>${product.reviews}+ </span> Reviews</span>
             </div>
-            <h6 class="product-title"><a href="/product/${product.slug}">${product.name}</a></h6>
+            <h6 class="product-title"><a href="/product?id=${product._id}">${product.name}</a></h6>
             <div class="product-price-variant">
               <span class="price current-price">₹ ${product.discount}</span>
               ${

@@ -30,6 +30,11 @@ adminRouter.get("/view-return", isLogin, adminController.viewReturn);
 adminRouter.get('/products/by-category/:categoryId', isLogin,adminController.viewProductsByCategory);
 adminRouter.get("/edit-coupon", isLogin, adminController.viewEditCoupon);
 adminRouter.get("/edit-offer", isLogin, adminController.viewEditOffer);
+adminRouter.get("/view-review",isLogin,adminController.viewReview);
+adminRouter.post('/delete-review/:id',isLogin,adminController.deleteReview);
+
+
+
 
 adminRouter.delete("/delete-category/:id", isLogin, adminController.deleteCategory);
 adminRouter.delete('/delete-product/:id', isLogin, adminController.deleteProduct);

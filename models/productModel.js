@@ -17,17 +17,20 @@ const productSchema = mongoose.Schema(
     lowStockLimit: { type: Number, default: 0 },
     skuId: { type: String, required: true },
     isAvailable: { type: Boolean, default: true },
-    specifications: {
-      type: String,
-      enum: ["Not Applicable", "With Blouse", "Without Blouse"],
+    fabric:{ type:String, required:true  },
+    colour:{ type:String, required:true },
+    design:{ type:String, required:true },
+    blouseDetails: {
+      type: String,required:true
+     
     },
     gender: {
       type: String,
       enum: ["Women", "Men", "Girls", "Boys", "Unisex"],
     },
-    size: {
+    length: {
       type: String,
-      enum: ["Free Size", "2 meters", "4 meters", "6.25 meters"],
+      required:true
     },
     images: [
       {

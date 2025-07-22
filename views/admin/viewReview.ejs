@@ -1,0 +1,116 @@
+<%- include('./partials/header') %>
+
+  <div class="wrapper">
+    <%- include('./partials/adminHeader') %>
+      <%- include('./partials/sidebar') %>
+
+        <main class="content-area" style=" padding: 2rem;">
+          <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="text-danger fw-bold"> Review List</h2>
+              <!-- <a href="/admin/add-offers" class="btn btn-primary fw-semibold">➕ Add Offer</a> -->
+            </div>
+
+            <!-- 🔧 MOCK STATIC DATA since backend is not working -->
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th>#</th>
+                    <th>UserId</th>
+                    <th>ProductId</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+               <% if (reviews.length > 0) { %>
+  <% reviews.forEach((review, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= review.userId.userId %></td>
+      <td><%= review.productId.productId %></td>
+      <td><%= review.rating %></td>
+      <td><%= review.review %></td>
+     
+      <!-- <td>
+       <% if (review.productId.image) { %>
+  <img src="/uploads/<%= review.productId.image %>" alt="Offer Image" class="avatar-md" />
+<% } else { %>
+  <img src="/assets/images/default.jpg" alt="Default Image" class="avatar-md" />
+<% } %>
+
+      </td> -->
+      <td>
+
+       <form action="/admin/delete-review/<%= review._id %>" method="POST" style="display:inline;">
+  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">
+    🗑️ Delete
+  </button>
+</form>
+
+      </td>
+    </tr>
+ 
+
+                       
+  <% }) %>
+<% } else { %>
+  <tr><td colspan="8" class="text-center">No Reviews found</td></tr>
+<% } %>
+
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </main>
+  </div>
+
+ 
+    <style>
+      .content-area {
+        margin-left: 250px;
+        padding: 2rem;
+        transition: margin-left 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .content-area {
+          margin-left: 0 !important;
+          padding: 1rem;
+        }
+      }
+    </style>
+
+   <script>
+  document.querySelectorAll('.delete-offer-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+      const offerId = this.dataset.offerId;
+
+      if (confirm('Are you sure you want to delete this offer?')) {
+        try {
+          const response = await fetch(`/admin/delete-offer/${offerId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            // Remove the row or card from the DOM
+            this.closest('.offer-row').remove(); // Make sure each offer is wrapped in a div with class "offer-row"
+          } else {
+            alert('Failed to delete offer.');
+          }
+        } catch (error) {
+          console.error('Delete failed:', error);
+          alert('Something went wrong.');
+        }
+      }
+    });
+  });
+</script>

@@ -11,6 +11,7 @@ const Coupons = require("../models/couponModel");
 const Orders = require("../models/orderModel");
 const Offers = require("../models/offerModel");
 const Requests = require("../models/returnRequestModel")
+const Reviews = require("../models/reviewModel");
 
 const viewLogin = async (req, res) => {
   try {
@@ -415,6 +416,9 @@ const addProduct = async (req, res) => {
       specification,
       size,
       discount,
+      fabric,
+      design,
+      colour,
     } = req.body;
 
     // Collect uploaded file paths
@@ -433,9 +437,12 @@ const addProduct = async (req, res) => {
       lowStockLimit: lowStockAlert,
       gender,
       hsnCode,
-      specifications: specification,
+      blouseDetails: specification,
       skuId,
-      size,
+      length:size,
+      colour,
+      design,
+      fabric,
       images: thumbnails, // Store image paths array
     });
 
@@ -955,6 +962,39 @@ const returnUpdate = async (req, res) => {
   }
 };
 
+
+const viewReview = async (req, res) => {
+  try {
+    const reviews = await Reviews.find().populate("userId").populate("productId");
+    res.render("admin/viewReview", { reviews });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server error" });
+  }
+};
+
+
+
+
+const deleteReview =async (req, res) => {
+  try {
+    const reviewId = req.params.id;
+
+    // Find the review to get productId for redirect
+    const review = await Reviews.findById(reviewId);
+    if (!review) return res.status(404).send("Review not found");
+
+    
+    await Reviews.findByIdAndDelete(reviewId);
+    res.redirect('/admin/view-review'); // Or wherever your admin sees the product
+  } catch (err) {
+    console.error("Delete Review Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
 const editProduct = async (req, res) => {
  try {
     const productId = req.query.id;
@@ -1013,6 +1053,8 @@ const editProduct = async (req, res) => {
     console.error("Edit Product Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
+
+
 }
 
 module.exports = {
@@ -1058,4 +1100,6 @@ module.exports = {
   editOffer,
   returnUpdate,
   editProduct,
+  viewReview,
+  deleteReview,
 };

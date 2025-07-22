@@ -115,74 +115,68 @@
 
                     <!-- 📢 Customer Reviews -->
                     <!-- Review Form -->
-                    <form id="reviewForm" enctype="multipart/form-data">
-                      <!-- Star Rating Component -->
-                      <script>
-                        function setRating(inputId, rating) {
-                          document.getElementById(inputId).value = rating;
-                          const stars = document.querySelectorAll(
-                            `#${inputId}-stars .star`
-                          );
-                          stars.forEach((star, index) => {
-                            star.classList.toggle("active", index < rating);
-                          });
-                        }
-                      </script>
+                   <!-- ⭐ Submit Review Form -->
+<form id="reviewForm" action="/product/<%= product._id %>/review" method="POST" enctype="multipart/form-data">
+  <div class="form-group mt-5">
+    <div class="d-flex justify-content-between">
+      <div class="rating-container d-flex">
+        <p>Rate Your Product:</p>
+        <div id="overallRating-stars">
+          <% for(let i = 1; i <= 5; i++) { %>
+            <span class="star" onclick="setRating('overallRating', <%= i %>)">★</span>
+          <% } %>
+        </div>
+        <input type="hidden" id="overallRating" name="rating" required />
+      </div>
+      <div class="toggle-bar">
+        <a href="javascript:void(0)" class="toggle-btn">Write a Review..?</a>
+      </div>
+    </div>
 
-                      <div class="form-group  mt-5">
-                        <div class="d-flex justify-content-between">
-                          <div class="rating-container d-flex">
-                            <p>Rate Your Product:</p>
-                            <div id="overallRating-stars">
-                              <span class="star" onclick="setRating('overallRating', 1)">★</span>
-                              <span class="star" onclick="setRating('overallRating', 2)">★</span>
-                              <span class="star" onclick="setRating('overallRating', 3)">★</span>
-                              <span class="star" onclick="setRating('overallRating', 4)">★</span>
-                              <span class="star" onclick="setRating('overallRating', 5)">★</span>
-                            </div>
-                            <input type="hidden" id="overallRating" name="overallRating" required />
-                          </div>
+    <div class="toggle-open">
+      <div class="form-group mt-4">
+        <p>Your Review</p>
+        <textarea id="review" name="comment" class="form-control" rows="4" placeholder="Write your experience..."></textarea>
+      </div>
 
-                          <div class="toggle-bar">
-                            <a href="javascript:void(0)" class="toggle-btn">
-                              Write a Review..?
-                            </a>
-                          </div>
+      <div class="form-group">
+        <p>Upload Images</p>
+        <input type="file" name="images" class="form-control" multiple />
+      </div>
 
-                        </div>
+      <ul class="list-inline mt-4">
+        <li class="list-inline-item">
+          <button type="submit" class="btn btn-success">Submit</button>
+        </li>
+        <li class="list-inline-item">
+          <button type="reset" class="btn btn-danger">Cancel</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</form>
+<!-- ⭐ View Reviews -->
+<div class="mt-5">
+  <h4>Customer Reviews</h4>
+  <% if (product.reviews && product.reviews.length > 0) { %>
+    <% product.reviews.forEach(review => { %>
+      <div class="border p-3 mb-3 rounded shadow-sm bg-light">
+        <strong>⭐ <%= review.rating %>/5</strong>
+        <p class="mb-1"><%= review.comment %></p>
+        <% if (review.images && review.images.length > 0) { %>
+          <div class="d-flex gap-2 flex-wrap mt-2">
+            <% review.images.forEach(img => { %>
+              <img src="<%= img %>" alt="Review Image" style="height: 80px; width: auto; border-radius: 5px;" />
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No reviews yet. Be the first to review!</p>
+  <% } %>
+</div>
 
-                        <div class="toggle-open">
-
-                          <div class="form-group mt-4">
-                            <p>Your Review</p>
-                            <textarea id="review" name="review" class="form-control" rows="4"
-                              placeholder="Write your experience..."></textarea>
-                          </div>
-
-                          <div class="form-group">
-                            <p>Upload Images</p>
-                            <input type="file" id="images" name="images" class="form-control" multiple />
-                          </div>
-
-                          <ul class="list-inline mt-4">
-                            <li class="list-inline-item">
-                              <button type="submit" class="btn btn-success" id="submit">
-                                Submit
-                              </button>
-                            </li>
-                            <li class="list-inline-item">
-                              <button type="reset" class="btn btn-danger" id="cancelBtn">
-                                Cancel
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                  
-
-
-
-                  </form>
 
                    <div class="form-group  mt-5">
                         <div class="d-flex justify-content-between">

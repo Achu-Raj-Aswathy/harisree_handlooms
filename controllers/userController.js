@@ -8,6 +8,7 @@ const Products = require("../models/productModel");
 const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
 const Requests = require('../models/returnRequestModel');
+const Reviews=require('../models/reviewModel');
 
 
 const viewHomepage = async (req, res) => {
@@ -548,6 +549,27 @@ const getApiSearch= async (req, res) => {
 };
 
 
+const addReview = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const productId = req.params.id;
+    const userId = req.session.user; // Or wherever you're storing logged-in user
+
+    const newReview = new Reviews({
+      userId,
+      productId,
+      rating,
+      review: comment
+    });
+
+    await newReview.save();
+    res.redirect(`/product?id=${productId}`);
+  } catch (err) {
+    console.error("Review Save Error:", err);
+    res.status(500).send("Review submission failed.");
+  }
+};
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -579,5 +601,6 @@ module.exports = {
   removeFromWishlist,
   returnRequest,
   getApiSearch,
+  addReview,
 
 }
