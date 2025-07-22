@@ -339,7 +339,7 @@
                   <ul class="cart-action">
                     <li class="select-option">
                       <a href="/product/<%= product._id %>">
-                        <i class="far fa-shopping-cart"></i> Add to Cart
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
                       </a>
                     </li>
                   </ul>
@@ -351,13 +351,9 @@
                     <a href="/product/<%= product._id %>"><%= product.name || 'Untitled' %></a>
                   </h5>
                   <div class="product-price-variant">
-                    <% if (product.discount && product.discount > 0) { 
-                         const discounted = (product.price - (product.price * product.discount / 100)).toFixed(2); %>
-                      <span class="price old-price">₹<%= product.price %></span>
-                      <span class="price current-price">₹<%= discounted %></span>
-                    <% } else { %>
-                      <span class="price current-price">₹<%= product.price %></span>
-                    <% } %>
+                   
+                      <span class="price current-price">₹<%= product.discount %></span>
+                   
                   </div>
                 </div>
               </div>
