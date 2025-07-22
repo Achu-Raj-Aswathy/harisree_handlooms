@@ -41,10 +41,8 @@
                     </h2>
                     <span class="price-amount"><span style="text-decoration: line-through; color: grey">₹<%=
                           product.price %></span>&nbsp;₹<%= product.discount %></span>
-                    <div class="product-rating my-2">
-
-
-                    </div>
+                   <!-- ⭐ Overall Rating Display (Place this here) -->
+    
 
                     <ul class="product-meta mb-3">
                       <li><i class="fal fa-check"></i> In stock</li>
@@ -148,11 +146,11 @@
         <input type="hidden" id="overallRating" name="rating" required />
       </div>
       <div class="toggle-bar">
-        <a href="javascript:void(0)" class="toggle-btn">Write a Review..?</a>
+        <a href="javascript:void(0)" class="toggle-btn-write">Write a Review..?</a>
       </div>
     </div>
 
-    <div class="toggle-open">
+    <div class="toggle-open-write">
       <div class="form-group mt-4">
         <p>Your Review</p>
         <textarea id="review" name="comment" class="form-control" rows="4" placeholder="Write your experience..."></textarea>
@@ -174,76 +172,61 @@
     </div>
   </div>
 </form>
-<!-- ⭐ View Reviews -->
-<div class="mt-5">
-  <h4>Customer Reviews</h4>
-  <% if (product.reviews && product.reviews.length > 0) { %>
-    <% product.reviews.forEach(review => { %>
-      <div class="border p-3 mb-3 rounded shadow-sm bg-light">
-        <strong>⭐ <%= review.rating %>/5</strong>
-        <p class="mb-1"><%= review.comment %></p>
-        <% if (review.images && review.images.length > 0) { %>
-          <div class="d-flex gap-2 flex-wrap mt-2">
-            <% review.images.forEach(img => { %>
-              <img src="<%= img %>" alt="Review Image" style="height: 80px; width: auto; border-radius: 5px;" />
-            <% }) %>
-          </div>
-        <% } %>
-      </div>
-    <% }) %>
-  <% } else { %>
-    <p>No reviews yet. Be the first to review!</p>
-  <% } %>
-</div>
+
 
 
                    <div class="form-group  mt-5">
                         <div class="d-flex justify-content-between">
                           <div class="rating-container d-flex">
                             <p>Overall Rating:</p>
-                            <div id="overallRating-stars">
+                            <div class="d-flex">
+  <% for (let i = 1; i <= 5; i++) { %>
+    <i class="fa-star <%= i <= Math.round(avgRating) ? 'fas text-warning' : 'far text-muted' %>"></i>
+  <% } %>
+</div>
+
+                            <!-- <div id="overallRating-stars">
                               <span class="star" onclick="setRating('overallRating', 1)">★</span>
                               <span class="star" onclick="setRating('overallRating', 2)">★</span>
                               <span class="star" onclick="setRating('overallRating', 3)">★</span>
                               <span class="star" onclick="setRating('overallRating', 4)">★</span>
                               <span class="star" onclick="setRating('overallRating', 5)">★</span>
-                            </div>
+                            </div> -->
                             <input type="hidden" id="overallRating" name="overallRating" required />
                           </div>
 
                           <div class="toggle-bar">
-                            <a href="javascript:void(0)" class="toggle-btn">
+                            <a href="javascript:void(0)" class="toggle-btn-view">
                               View Reviews..!
                             </a>
                           </div>
 
                         </div>
 
-                        <div class="toggle-open">
+                        <div class="toggle-open-view">
 
-                          <div class="form-group mt-4">
-                            <p>Your Review</p>
-                            <textarea id="review" name="review" class="form-control" rows="4"
-                              placeholder="Write your experience..."></textarea>
-                          </div>
+                          <!-- ⭐ View Reviews -->
+<div class="form-group">
+  <h4>Customer Reviews</h4>
+  <% if (reviews && reviews.length > 0) { %>
+  <% reviews.forEach(review => { %>
+    <div class="border p-3 mb-3 rounded shadow-sm bg-light">
+      <strong>⭐ <%= review.rating %>/5</strong>
+      <p class="mb-1"><%= review.review %></p>
+      <% if (review.images && review.images.length > 0) { %>
+        <div class="d-flex gap-2 flex-wrap mt-2">
+          <% review.images.forEach(img => { %>
+            <img src="<%= img %>" alt="Review Image" style="height: 80px; width: auto; border-radius: 5px;" />
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  <% }) %>
+<% } else { %>
+  <p>No reviews yet. Be the first to review!</p>
+<% } %>
 
-                          <div class="form-group">
-                            <p>Upload Images</p>
-                            <input type="file" id="images" name="images" class="form-control" multiple />
-                          </div>
-
-                          <ul class="list-inline mt-4">
-                            <li class="list-inline-item">
-                              <button type="submit" class="btn btn-success" id="submit">
-                                Submit
-                              </button>
-                            </li>
-                            <li class="list-inline-item">
-                              <button type="reset" class="btn btn-danger" id="cancelBtn">
-                                Cancel
-                              </button>
-                            </li>
-                          </ul>
+</div>
                         </div>
                       </div>
                    <style>
@@ -282,6 +265,47 @@
     to { opacity: 1; transform: translateY(0); }
   }
 </style>
+
+
+<style>
+  .toggle-open-write,
+  .toggle-open-view {
+    display: none;
+  }
+
+  .toggle-open-write.show,
+  .toggle-open-view.show {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .rating-container {
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rating-container p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  #overallRating-stars .star {
+    font-size: 20px;
+    color: #ccc;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+  #overallRating-stars .star.selected {
+    color: gold;
+  }
+</style>
+
                 </div>
               </div>
             </div>
@@ -467,6 +491,33 @@
       }
     </script>
 
+<script>
+  // ⭐ Toggle "Write a Review"
+  document.querySelector(".toggle-btn-write").addEventListener("click", function () {
+    document.querySelector(".toggle-open-write").classList.toggle("show");
+  });
+
+  // ⭐ Toggle "View Reviews"
+  document.querySelector(".toggle-btn-view").addEventListener("click", function () {
+    document.querySelector(".toggle-open-view").classList.toggle("show");
+  });
+
+  // ⭐ Star rating selection
+  function setRating(fieldId, rating) {
+    const starContainer = document.getElementById(fieldId + "-stars");
+    const stars = starContainer.querySelectorAll(".star");
+
+    stars.forEach((star, index) => {
+      if (index < rating) {
+        star.classList.add("selected");
+      } else {
+        star.classList.remove("selected");
+      }
+    });
+
+    document.getElementById(fieldId).value = rating;
+  }
+</script>
 
 
     <%- include('./partials/footer') %>

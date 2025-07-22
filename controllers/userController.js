@@ -196,7 +196,20 @@ const viewProduct = async (req, res) => {
   const productId = req.query.id;
   try {
     const product = await Products.findOne({ _id: productId })
-    res.render("user/product", { product });
+   const reviews = await Reviews.find({ productId });
+
+    // Calculate average rating
+    let avgRating = 0;
+    if (reviews.length > 0) {
+      const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+      avgRating = (total / reviews.length).toFixed(1);
+    }
+
+    res.render("user/product", {
+      product,
+      reviews,
+      avgRating,
+    });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
