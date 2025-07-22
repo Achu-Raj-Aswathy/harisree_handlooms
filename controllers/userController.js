@@ -308,8 +308,10 @@ const signIn = async (req, res) => {
     req.session.token = token;
     req.session.user = user._id;
 
-    res.redirect("/");
-    
+        const redirectUrl = req.session?.originalUrl || "/";
+    if (req.session) delete req.session.originalUrl;
+
+    return res.redirect(redirectUrl);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

@@ -6,7 +6,7 @@
         <div class="single-product-thumb axil-section-gap pb--20 pb_sm--0 bg-vista-white">
 
           <div class="container">
-            <div class="row row--25 align-items-center">
+            <div class="row row--25 align-items-start">
               <!-- 🖼️ Image Slider - LEFT (Desktop) -->
               <div class="col-lg-5 mb--40">
                 <div class="position-sticky sticky-top">
@@ -45,10 +45,13 @@
     
 
                     <ul class="product-meta mb-3">
-                      <li><i class="fal fa-check"></i> In stock</li>
-                      <li><i class="fal fa-check"></i> Free delivery available</li>
-                      <!-- <li><i class="fal fa-check"></i> Sales 30% Off Use Code: <strong>MOTIVE30</strong></li> -->
-                    </ul>
+  <% if (product.isAvailable) { %>
+    <li><i class="fal fa-check text-success"></i> In stock</li>
+  <% } else { %>
+    <li><i class="fal fa-times text-danger"></i> Out of stock</li>
+  <% } %>
+  <li><i class="fal fa-check"></i> Free delivery available</li>
+</ul>
 
                     <p class="description mb-4">
                       <%= product.description %>
@@ -84,51 +87,53 @@
                       </li>
                     </ul>
 
-                    <!-- 🎨 Variants -->
+<div class="product-action-wrapper mt-4">
+  <div class="d-flex align-items-center gap-3 flex-wrap flex-lg-nowrap" style="flex-wrap: nowrap;">
+    
+    <!-- 📦 Quantity Selector -->
+    <div class="d-flex align-items-center border rounded-pill px-3 py-1 bg-light"
+      style="height: 44px; white-space: nowrap;">
+      <button class="btn btn-sm px-2 py-0 border-0 bg-transparent" onclick="adjustQty(-1)">
+        <i class="fas fa-minus"></i>
+      </button>
+      <span id="qty-value" class="mx-3 fw-bold"
+        style="min-width: 20px; text-align: center; font-size: 16px; color: #000;">1</span>
+      <button class="btn btn-sm px-2 py-0 border-0 bg-transparent" onclick="adjustQty(1)">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- 🛍️ Buy Now -->
+    <button
+      type="button"
+      class="btn btn-danger fw-semibold px-4 py-2 rounded-pill"
+      style="height: 44px;"
+      onclick="buyNow('<%= product._id %>', '<%= product.name %>', <%= product.discount || product.price %>)">
+      Buy Now
+    </button>
+
+    <!-- ❤️ Wishlist -->
+    <button
+      class="add-to-wishlist btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
+      style="width: 55px; height: 44px;" data-id="<%=product._id %>">
+      <i class="fas fa-heart text-danger"></i>
+    </button>
+
+    <!-- 🛒 Add to Cart -->
+    <button data-id="<%= product._id %>"
+      class="add-to-cart btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
+      style="width: 55px; height: 44px;">
+      <i class="fas fa-cart-plus"></i>
+    </button>
+
+  </div>
+</div>
 
 
-                    <!-- 🛒 Actions -->
-                    <!-- ⭐ Stylish Single-Row Action Panel -->
-                    <div class="product-action-wrapper mt-4">
-                      <div class="d-flex flex-row flex-wrap align-items-center justify-content-start gap-3">
+<form id="buyNowForm" action="/checkout" method="POST">
+  <input type="hidden" name="cartData" id="productCartDataInput" />
+</form>
 
-                        <!-- 📦 Quantity Selector -->
-                        <!-- 📦 Quantity Selector -->
-                        <div class="d-flex align-items-center border rounded-pill px-3 py-1 bg-light"
-                          style="height: 44px;">
-                          <button class="btn btn-sm px-2 py-0 border-0 bg-transparent" onclick="adjustQty(-1)">
-                            <i class="fas fa-minus"></i>
-                          </button>
-                          <span id="qty-value" class="mx-3 fw-bold"
-                            style="min-width: 20px; text-align: center; font-size: 16px; color: #000;">1</span>
-                          <button class="btn btn-sm px-2 py-0 border-0 bg-transparent" onclick="adjustQty(1)">
-                            <i class="fas fa-plus"></i>
-                          </button>
-                        </div>
-
-
-                        <!-- 🛍️ Buy Now -->
-                        <a href="/cart" class="btn btn-danger fw-semibold px-4 py-2 rounded-pill"
-                          style="height: 44px; display: flex; align-items: center;">
-                          Buy Now
-                        </a>
-
-
-                        <!-- ❤️ Wishlist -->
-                        <button
-                          class="add-to-wishlist btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
-                          style="width: 44px; height: 44px"; data-id="<%=product._id %>">
-                          <i class="fas fa-heart text-danger"></i></button>
-
-                        <!-- 🛒 Add to Cart -->
-                        <button data-id="<%= product._id %>"
-                          class="add-to-cart btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
-                          style="width: 44px; height: 44px;">
-                          <i class="fas fa-cart-plus"></i>
-                        </button>
-
-                      </div>
-                    </div>
 
                     <!-- 📢 Customer Reviews -->
                     <!-- Review Form -->
@@ -509,6 +514,30 @@
   }
 </script>
 
+<script>
+  function buyNow(productId, name, price) {
+    const qty = parseInt(document.getElementById("qty-value").innerText) || 1;
+    const subtotal = (price * qty).toFixed(2);
+
+    const cartSummary = {
+      items: [
+        {
+          productId,
+          name,
+          quantity: qty,
+          price: price,
+          subtotal: subtotal
+        }
+      ],
+      total: subtotal
+    };
+
+    const cartDataInput = document.getElementById("productCartDataInput");
+    cartDataInput.value = JSON.stringify(cartSummary);
+
+    document.getElementById("buyNowForm").submit();
+  }
+</script>
 
     <%- include('./partials/footer') %>
       </div>
