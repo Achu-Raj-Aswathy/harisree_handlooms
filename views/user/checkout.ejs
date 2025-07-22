@@ -3,7 +3,7 @@
  
  <div class="axil-checkout-area axil-section-gap">
             <div class="container">
-                <form action="#">
+                <form id="checkoutForm">
                     <div class="row">
                         <div class="col-lg-6">
                             <!-- <div class="axil-checkout-notice">
@@ -247,7 +247,8 @@
                                         <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
                                     </div>
                                 </div>
-                                <button type="submit" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button>
+                                <!-- <button type="submit" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button> -->
+                                 <button type="button" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button>
                             </div>
                         </div>
                     </div>
@@ -384,3 +385,40 @@ return;
     setTimeout(populateCountryDropdowns, 200);
   });
 </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const checkoutBtn = document.querySelector(".checkout-btn");
+
+    checkoutBtn.addEventListener("click", async function (e) {
+      e.preventDefault(); // ✅ Prevent default button behavior
+
+      const cartData = <%- JSON.stringify({ items: cart, total }) %>; // Injected from backend
+
+      try {
+        const response = await fetch("/create-phonepe-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            cartData: JSON.stringify(cartData)
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.checkoutPageUrl) {
+          window.location.href = result.checkoutPageUrl; // ✅ Redirect to PhonePe
+        } else {
+          alert("Payment initiation failed");
+        }
+      } catch (err) {
+        console.error("PhonePe error:", err);
+        alert("Something went wrong during payment");
+      }
+    });
+  });
+</script>
+
+

@@ -26,9 +26,9 @@ const ENV = Env.UAT;
 
 const client = StandardCheckoutClient.getInstance(CLIENT_ID, CLIENT_SECRET, SALT_INDEX, ENV);
 
-// const redirectUrl = "https://hariseehandlooms.com/status";
-// const successUrl = "https://hariseehandlooms.com/success";
-// const failureUrl = "https://hariseehandlooms.com/failure";
+const redirectUrl = "https://hariseehandlooms.com/status";
+const successUrl = "https://hariseehandlooms.com/success";
+const failureUrl = "https://hariseehandlooms.com/failure";
 
 const tempBookingStore = {}; // Temporary store for booking data
 
@@ -37,18 +37,20 @@ const tempBookingStore = {}; // Temporary store for booking data
 // ==========================
 const createPhonePeOrder = async (req, res) => {
   try {
-    const {
-      amount,
-      name,
-      email,
-      phone,
-      roomType,
-      arrival,
-      departure,
-      adults,
-      children,
-      bookingType,
-    } = req.body;
+    const { cartData } = req.body;
+    const userId = req.session.user;
+
+    if (!cartData || !userId) {
+      return res.status(400).json({ error: "Missing cart data or user session" });
+    }
+
+    const parsed = JSON.parse(cartData);
+    const { items, total } = parsed;
+
+    const user = await Users.findById(userId);
+    if (!user || !items.length || !total) {
+      return res.status(400).json({ error: "Invalid user/cart" });
+    }
 
     const orderId = uuidv4();
 
@@ -58,16 +60,14 @@ const createPhonePeOrder = async (req, res) => {
     }
 
     // Save to temp store using orderId
-    tempBookingStore[orderId] = {
-      roomType,
-      name,
-      email,
-      contact: phone,
-      price: amount,
-      arrival,
-      departure,
-      noOfPerson: adults + children,
-      bookingType,
+        tempBookingStore[orderId] = {
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.mobile,
+      },
+      items,
+      total,
       paid: 1,
     };
 
@@ -104,121 +104,39 @@ const status = async (req, res) => {
     const status = response.state;
 
     if (status === "COMPLETED") {
-      const bookingDetails = tempBookingStore[merchantOrderId];
+      const orderData = tempBookingStore[merchantOrderId];
 
-      if (!bookingDetails) {
-        console.error("❌ Booking data not found in temp store");
+      if (!orderData) {
+        console.error("❌ Order data not found in temp store");
         return res.redirect(failureUrl);
       }
 
-      const newBooking = new Bookings(bookingDetails);
-      await newBooking.save();
+       const newOrder = new Orders({
+        userId: req.session.user,
+        items: orderData.items,
+        total: orderData.total,
+        status: "Paid",
+        paymentMethod: "PhonePe",
+        createdAt: new Date(),
+      });
+
+      await newOrder.save();
 
       // Send mail to user
-      await transporter.sendMail({
+     await transporter.sendMail({
         from: process.env.EMAIL,
-        to: bookingDetails.email,
-        subject: "✅ Booking Confirmed",
+        to: orderData.user.email,
+        subject: "🧺 Order Confirmed",
         html: `
-  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-    <h2 style="color: #4CAF50;">🎉 Booking Confirmed!</h2>
-    <p>Hi <strong>${bookingDetails.name}</strong>,</p>
-    <p>Thank you for your booking! Here are your details:</p>
-
-    <table style="width: 100%; max-width: 500px; border-collapse: collapse;">
-      <tr>
-        <td style="padding: 8px;">🏨 Room Type:</td>
-        <td style="padding: 8px;"><strong>${bookingDetails.roomType}</strong></td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">📅 Arrival:</td>
-        <td style="padding: 8px;">${bookingDetails.arrival}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">📅 Departure:</td>
-        <td style="padding: 8px;">${bookingDetails.departure}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">👥 Guests:</td>
-        <td style="padding: 8px;">${bookingDetails.noOfPerson}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">💰 Total Paid:</td>
-        <td style="padding: 8px;">₹${bookingDetails.price}</td>
-      </tr>
-    </table>
-
-    <p style="margin-top: 20px;">We'll be in touch soon with more information.</p>
-    <p>Thanks,<br>The Kosher Livings Holiday Team</p>
-  </div>
-`
+          <p>Hi <strong>${orderData.user.name}</strong>,</p>
+          <p>Thank you for your order! Total: ₹${orderData.total}</p>
+          <p>We'll start processing your order shortly.</p>
+        `
       });
 
-      // Mail to admin
-      await transporter.sendMail({
-        from: process.env.EMAIL,
-        to: process.env.EMAIL,
-        subject: "📢 New Order Received",
-        html: `
-  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-    <h2 style="color: #2196F3;">📢 New Booking Received</h2>
-    <p>A new booking has been confirmed with the following details:</p>
+            delete tempBookingStore[merchantOrderId];
 
-    <table style="width: 100%; max-width: 500px; border-collapse: collapse;">
-      <tr>
-        <td style="padding: 8px;">👤 Name:</td>
-        <td style="padding: 8px;"><strong>${bookingDetails.name}</strong></td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">✉️ Email:</td>
-        <td style="padding: 8px;">${bookingDetails.email}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">📞 Phone:</td>
-        <td style="padding: 8px;">${bookingDetails.contact}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">🏨 Room Type:</td>
-        <td style="padding: 8px;">${bookingDetails.roomType}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">📅 Arrival:</td>
-        <td style="padding: 8px;">${bookingDetails.arrival}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">📅 Departure:</td>
-        <td style="padding: 8px;">${bookingDetails.departure}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">👥 Guests:</td>
-        <td style="padding: 8px;">${bookingDetails.noOfPerson}</td>
-      </tr>
-      <tr>
-        <td style="padding: 8px;">💰 Paid Amount:</td>
-        <td style="padding: 8px;">₹${bookingDetails.price}</td>
-      </tr>
-    </table>
-
-    <p style="margin-top: 20px;">Check the admin panel for more details.</p>
-  </div>
-`
-
-      });
-
-      delete tempBookingStore[merchantOrderId]; // clean up
-
-      const queryParams = new URLSearchParams({
-        name: bookingDetails.name,
-        email: bookingDetails.email,
-        phone: bookingDetails.contact,
-        roomType: bookingDetails.roomType,
-        arrival: bookingDetails.arrival,
-        departure: bookingDetails.departure,
-        guests: bookingDetails.noOfPerson,
-        price: bookingDetails.price,
-      }).toString();
-      
-      return res.redirect(`${successUrl}?${queryParams}`);
+      return res.redirect(`${successUrl}?order=${merchantOrderId}`);
       
     } else {
       return res.redirect(failureUrl);
