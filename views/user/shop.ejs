@@ -34,6 +34,15 @@
   </div>
 </div>
 
+<div class="d-flex justify-content-end mb-3 d-md-none">
+  <button class="btn btn-outline-dark me-2" id="gridViewBtn" onclick="setMobileView('grid')">
+    <i class="fa fa-th-large"></i> Grid
+  </button>
+  <button class="btn btn-outline-dark" id="detailViewBtn" onclick="setMobileView('detail')">
+    <i class="fa fa-bars"></i> Detail
+  </button>
+</div>
+
       <!-- Product Grid -->
       <div class="row gy-4" id="productGrid">
         <!-- Products will be rendered here -->
@@ -46,6 +55,17 @@
   const allProducts = <%- JSON.stringify(products) %>;
   let filtered = [...allProducts];
 
+  let mobileView = 'detail'; // Default view mode on small screens
+
+function setMobileView(view) {
+  mobileView = view;
+  renderProducts(filtered);
+
+  // Update active button styling (optional UX improvement)
+  document.getElementById('gridViewBtn').classList.toggle('active', view === 'grid');
+  document.getElementById('detailViewBtn').classList.toggle('active', view === 'detail');
+}
+
   function renderProducts(products) {
     const grid = document.getElementById('productGrid');
     grid.innerHTML = "";
@@ -54,28 +74,6 @@
       grid.innerHTML = `<div class="text-center"><p>No products in this range.</p></div>`;
       return;
     }
-
-//     products.forEach(product => {
-// const html = `
-//   <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-card" data-aos="fade-up" data-aos-duration="800">
-//     <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
-//       <div class="thumbnail flex-shrink-0" style="width: 100%; height: 250px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-//         <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
-//         ${product.discount ? `<div class="label-block label-right"><div class="product-badget">${product.discount}</div></div>` : ""}
-//       </div>
-//       <div class="product-content text-center text-sm-start px-2">
-//         <h5 class="title">${product.name}</h5>
-//         <div class="product-price-variant mb-1">
-//           ${product.oldPrice ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${product.oldPrice}</span>` : ""}
-//           <span class="price current-price fw-bold" style="color: #000;">₹${product.price}</span>
-//         </div>
-//         <a href="/product" class="axil-btn btn btn-warning text-white fw-semibold">View Details</a>
-//       </div>
-//     </div>
-//   </div>`;
-
-//       grid.innerHTML += html;
-//     });
 
   products.forEach(product => {
     const imageUrl = product.images && product.images.length > 0 ? product.images[0] : "/assets/images/default.jpg";
@@ -86,11 +84,36 @@
     const discountPercentage = Math.floor((discountPrice/oldPrice)*100);
     const discountLabel = discountPercentage ? `${discountPercentage}% OFF` : '';
 
-    const html = `
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-card" data-aos="fade-up" data-aos-duration="800">
+// const responsiveColClass = window.innerWidth < 576 ? 'col-xs-6'
+//                         : window.innerWidth < 768 ? 'col-sm-6'
+//                         : window.innerWidth < 992 ? 'col-md-4'
+//                         : window.innerWidth < 1200 ? 'col-lg-3'
+//                         : 'col-xl-2-4';
+
+const responsiveColClass = 'responsive-col';
+
+const mobileViewClass = window.innerWidth < 768
+  ? (mobileView === 'grid' ? 'grid-mobile' : 'detail-mobile')
+  : '';
+
+const colClass = mobileView === 'detail' && window.innerWidth < 768
+  ? 'col-12'
+  : responsiveColClass;
+
+const html = `
+  <div class="${colClass} product-card ${mobileViewClass}" data-aos="fade-up" has-color-pick data-aos-duration="800">
         <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
           <div class="thumbnail flex-shrink-0" style="width: 100%; height: 250px; overflow: hidden; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <a href="/product?id=${product._id}">
             <img src="${imageUrl}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+            </a>
+            <div class="product-hover-action">
+              <ul class="cart-action">
+                <li class="wishlist"><a href="wishlist.html"><i class="far fa-heart"></i></a></li>
+                <li class="select-option"><a href="cart.html">Add to Cart</a></li>
+                <li class="quickview"><a href="/product?id=${product._id}"><i class="far fa-eye"></i></a></li>
+              </ul>
+            </div>
             ${discountLabel ? `<div class="label-block label-right"><div class="product-badget">${discountLabel}</div></div>` : ""}
           </div>
           <div class="product-content text-center text-sm-start px-2">
@@ -99,7 +122,6 @@
               ${discountAmount ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${oldPrice}</span>` : ""}
               <span class="price current-price fw-bold" style="color: #000;">₹${finalPrice}</span>
             </div>
-            <a href="/product?id=${product._id}" class="axil-btn btn btn-warning text-white fw-semibold">View Details</a>
           </div>
         </div>
       </div>`;
@@ -181,12 +203,22 @@ function selectDropdownOption(optionText) {
 }
 
 // Close dropdown if clicked outside
-document.addEventListener('click', function(e) {
-  const dropdown = document.querySelector('.custom-dropdown');
-  if (!dropdown.contains(e.target)) {
-    document.getElementById('customDropdownMenu').style.display = 'none';
-  }
+// document.addEventListener('click', function(e) {
+//   const dropdown = document.querySelector('.custom-dropdown');
+//   if (!dropdown.contains(e.target)) {
+//     document.getElementById('customDropdownMenu').style.display = 'none';
+//   }
+// });
+document.addEventListener("DOMContentLoaded", function () {
+  // Always start in grid view
+  mobileView = 'grid';
+  renderProducts(filtered);
+
+  // Set button styling
+  document.getElementById('gridViewBtn').classList.add('active');
+  document.getElementById('detailViewBtn').classList.remove('active');
 });
+
 </script>
 
 <script>
@@ -280,7 +312,9 @@ document.addEventListener('click', (e) => {
     font-size: 0.9rem;
     padding: 4px 8px;
   }
+}
 </style>
+
 <style>
 .custom-dropdown {
   position: relative;
@@ -328,7 +362,7 @@ document.addEventListener('click', (e) => {
 .dropdown-menu-custom li:hover {
   background-color: #f4f4f4;
 }
-}
+
 </style>
 
 <style>
@@ -362,8 +396,198 @@ document.addEventListener('click', (e) => {
   }
 }
 
+</style>
+
+<!-- <style>
+  /* GRID/DIV responsive columns */
+@media (max-width: 575.98px) {
+  .col-xs-6 {
+    width: 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .col-sm-6 {
+    width: 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .col-md-4 {
+    width: 33.33%;
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .col-lg-3 {
+    width: 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .col-xl-2-4 {
+    width: 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
+
+/* Detail View Styling */
+.detail-mobile .axil-product {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.detail-mobile .thumbnail {
+  width: 45% !important;
+  height: 120px !important;
+}
+
+.detail-mobile .product-content {
+  flex: 1;
+  padding-left: 10px;
+  text-align: left !important;
+}
+
+/* Grid View Styling */
+.grid-mobile .axil-product {
+  flex-direction: column !important;
+  align-items: center;
+}
+
+.grid-mobile .thumbnail {
+  width: 100% !important;
+  height: 180px !important;
+}
+
+.grid-mobile .product-content {
+  text-align: center !important;
+  padding: 10px 0;
+}
+
+/* Active view button */
+#gridViewBtn.active,
+#detailViewBtn.active {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+</style> -->
+
+<style>
+  /* Grid view responsive columns */
+@media (max-width: 575.98px) {
+  .responsive-col {
+    width: 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .responsive-col {
+    width: 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .responsive-col {
+    width: 33.33%;
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .responsive-col {
+    width: 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .responsive-col {
+    width: 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
+
+/* Detail View */
+.detail-mobile .axil-product {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.detail-mobile .thumbnail {
+  width: 45% !important;
+  height: 120px !important;
+}
+
+.detail-mobile .product-content {
+  flex: 1;
+  padding-left: 10px;
+  text-align: left !important;
+}
+
+/* Grid View */
+.grid-mobile .axil-product {
+  flex-direction: column !important;
+  align-items: center;
+}
+
+.grid-mobile .thumbnail {
+  width: 100% !important;
+  height: 180px !important;
+}
+
+.grid-mobile .product-content {
+  text-align: center !important;
+  padding: 10px 0;
+}
+
+/* Highlight active button */
+#gridViewBtn.active,
+#detailViewBtn.active {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
 
 </style>
+
+<!-- <script>
+  // Monitor resize and reset to grid if necessary
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && mobileView === 'detail') {
+      setMobileView('grid');
+    }
+  });
+</script> -->
+<script>
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && mobileView === 'detail') {
+      mobileView = 'grid';
+      renderProducts(filtered);
+
+      document.getElementById('gridViewBtn').classList.add('active');
+      document.getElementById('detailViewBtn').classList.remove('active');
+    }
+  });
+</script>
+
 
 
 <%- include('./partials/footer') %>
