@@ -23,6 +23,7 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "nocache": "^4.0.0",
+    "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
     "pg-sdk-node": "^2.0.2",
     "uuid": "^11.1.0"

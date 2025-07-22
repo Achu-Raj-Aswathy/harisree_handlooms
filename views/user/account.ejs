@@ -321,8 +321,19 @@
                                                         <li>Name: <%= user.name %></li>
                                                         <li>Email: <%= user.email %></li>
                                                         <li>Phone: <%= user.mobile %> </li>
-                                                        <li class="mt--30"><%= user.address[0].billing?.name %><br> <%= user.address[0].billing?.addressLine %> <br>
-                                                      <%= user.address[0].billing?.city %> <br> <%= user.address[0].billing?.state %><br><%= user.address[0].billing?.pincode %> <br> <%= user.address[0].billing?.phone %></li>
+                                                        <% if (user.address && user.address.length > 0 && user.address[0].billing) { %>
+  <li class="mt--30">
+    <%= user.address[0].billing.name %><br>
+    <%= user.address[0].billing.addressLine %> <br>
+    <%= user.address[0].billing.city %> <br>
+    <%= user.address[0].billing.state %> <br>
+    <%= user.address[0].billing.pincode %> <br>
+    <%= user.address[0].billing.phone %>
+  </li>
+<% } else { %>
+  <li class="mt--30">No billing address available.</li>
+<% } %>
+
                                                     </ul>
                                                 </div>
                                             </div>
@@ -336,8 +347,20 @@
                                                         <li>Name:<%= user.name %></li>
                                                         <li>Email: <%= user.email %></li>
                                                         <li>Phone: <%= user.mobile %></li>
-                                                        <li class="mt--30"><%= user.address[0].shipping?.name %><br>
-                                                       <%= user.address[0].shipping?.addressLine %> <br> <%= user.address[0].shipping?.city %> <br> <%= user.address[0].shipping?.state %> <br> <%= user.address[0].shipping?.country %> <br> <%= user.address[0].shipping?.pincode %> <br> <%= user.address[0].shipping?.phone %> </li>
+                                                        <% if (user.address && user.address.length > 0 && user.address[0].shipping) { %>
+  <li class="mt--30">
+    <%= user.address[0].shipping.name %><br>
+    <%= user.address[0].shipping.addressLine %> <br>
+    <%= user.address[0].shipping.city %> <br>
+    <%= user.address[0].shipping.state %> <br>
+    <%= user.address[0].shipping.country %> <br>
+    <%= user.address[0].shipping.pincode %> <br>
+    <%= user.address[0].shipping.phone %>
+  </li>
+<% } else { %>
+  <li class="mt--30">No shipping address available.</li>
+<% } %>
+
                                                     </ul>
                                                 </div>
                                             </div>

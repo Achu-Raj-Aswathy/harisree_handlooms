@@ -9,8 +9,17 @@ const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
 const Requests = require('../models/returnRequestModel');
 const Reviews = require('../models/reviewModel');
+const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
-const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node')
+const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node');
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // ===================
 // PhonePe Config
@@ -734,11 +743,6 @@ const getApiSearch= async (req, res) => {
   res.json(filtered);
 };
 
-
-
-
-
-
 const addReview = async (req, res) => {
   try {
     const { rating, comment } = req.body;
@@ -759,6 +763,110 @@ const addReview = async (req, res) => {
     res.status(500).send("Review submission failed.");
   }
 };
+
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const { email } = req.body;
+    const user = await Users.findOne({ email });
+    if (!user) {
+      return res.render("user/forgotPassword", {
+        message: "User not found",
+        messageType: "danger",
+      });
+    }
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "10m",
+    });
+    user.resetToken = token;
+    user.resetTokenExpiry = Date.now() + 600000; // 10 minutes
+    await user.save();
+
+    const resetLink = `${process.env.BASE_URL}/reset-password?token=${token}`;
+
+    const mailOptions = {
+      from: `"Support Team" <${process.env.EMAIL}>`,
+      to: email,
+      subject: "Password Reset Request",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2 style="color: #333;">Password Reset Request</h2>
+          <p>Hello <strong>${user.email}</strong>,</p>
+          <p>We received a request to reset your password. Click the button below to set a new password:</p>
+          <p style="text-align: center;">
+            <a href="${resetLink}" 
+               style="background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+              Reset Your Password
+            </a>
+          </p>
+          <p>If you did not request a password reset, please ignore this email. This link will expire in <strong>10 minutes</strong>.</p>
+          <p>For security reasons, do not share this email or the reset link with anyone.</p>
+          <p>Best Regards,</p>
+          <p><strong>Harisree Handlooms</strong></p>
+        </div>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err)
+        return res.render("user/forgotPassword", {
+          message: "Error sending email",
+          messageType: "danger",
+        });
+      return res.render("user/forgotPassword", {
+        message: "Reset email sent!",
+        messageType: "success",
+      });
+    });
+    // Send email with token
+  }catch (error) {
+    console.error(error);
+    res.render("error", { error });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const token = req.query.token;
+  const { password, confirmPassword } = req.body;
+  console.log(token);
+
+  if (password != confirmPassword) {
+    return res.status(400).render("user/resetPassword", {
+      message: "Passwords do not match",
+      messageType: "danger",
+      token,
+    });
+  }
+
+  try {
+    const user = await Users.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).render("user/resetPassword", {
+        message: "Invalid or expired token",
+        messageType: "danger",
+        token,
+      });
+    }
+
+    user.password = password;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+    await user.save();
+
+    res.render("user/signin", {
+      message: "Password reset successful. Login here",
+      messageType: "success",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 module.exports = {
   viewHomepage,
@@ -794,7 +902,8 @@ module.exports = {
   status,
   getApiSearch,
   addReview,
-
+  forgotPassword,
+  resetPassword,
   // viewSuccess,
   // viewFailure,
 }
