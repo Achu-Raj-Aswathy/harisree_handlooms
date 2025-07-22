@@ -12,7 +12,9 @@
   <div class="col-lg-6 mb-3 position-relative">
     <div class="custom-dropdown">
       <button class="dropdown-toggle-custom" onclick="toggleCustomDropdown()">
-        <span id="dropdownLabel">Sort By </span>
+        <span id="dropdownLabel">
+  Sort By <%= typeof selectedCategory !== 'undefined' ? `- ${selectedCategory}` : '' %>
+</span>
         <i class="fa-solid fa-chevron-down"></i>
       </button>
       <ul id="customDropdownMenu" class="dropdown-menu-custom">
@@ -177,12 +179,12 @@ const html = `
 
 <script>
   function handleCategoryChange(category) {
-    if (category) {
-      window.location.href = `/shop?category=${encodeURIComponent(category)}`;
-    } else {
-      window.location.href = `/shop`;
-    }
+  if (category) {
+    window.location.href = `/shop?category=${encodeURIComponent(category)}`;
+  } else {
+    window.location.href = `/shop`;
   }
+}
 </script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
