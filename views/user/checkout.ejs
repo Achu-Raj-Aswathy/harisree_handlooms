@@ -1,207 +1,183 @@
- <%- include('./partials/header') %>
-<%- include('./partials/userHeader') %>
- 
- <div class="axil-checkout-area axil-section-gap">
-            <div class="container">
-                <form action="#">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <!-- <div class="axil-checkout-notice">
-                               
-                                   
-                                <div class="axil-toggle-box">
-                                    <div class="toggle-bar"><i class="fas fa-pencil"></i> Have a coupon? <a href="javascript:void(0)" class="toggle-btn">Click here to enter your code</a>
+<%- include('./partials/header') %>
+  <%- include('./partials/userHeader') %>
+
+    <div class="axil-checkout-area axil-section-gap">
+      <div class="container">
+        <form id="checkoutForm" method="" action="">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="axil-checkout-billing">
+                <h4 class="title mb--40">Billing details</h4>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      <label> Name <span>*</span></label>
+                      <input type="text" id="first-name" placeholder="Name" value="<%- user.name %>">
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+                  <label>Country/ Region <span>*</span></label>
+                  <select id="billingCountry" name="billingCountry">
+                    <option value="">Select Country</option>
+                    <!-- Add more countries -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>State <span>*</span></label>
+                  <input type="text" name="state" id="address1" class="mb--15" placeholder="State"
+                    value="<%= user.address[0]?.billing?.state || '' %>">
+                  <input type="text" name="addressLine2" id="address2"
+                    placeholder="Apartment, suite, unit, etc. (optional)"
+                    value="<%= user.address[0]?.billing?.addressLine || '' %>">
+                </div>
+
+                <div class="form-group">
+                  <label>Town/ City <span>*</span></label>
+                  <input type="text" name="city" id="town" placeholder="Town/City"
+                    value="<%= user.address[0]?.billing?.city || '' %>">
+                </div>
+
+                <div class="form-group">
+                  <label>PIN Code / ZIP Code <span>*</span></label>
+                  <input type="text" name="pincode" id="town" placeholder="ZIP Code"
+                    value="<%= user.address[0]?.billing?.pincode || '' %>">
+                </div>
+
+                <div class="form-group">
+                  <label>Phone <span>*</span></label>
+                  <input type="tel" id="phone" value="<%- user.mobile %>" placeholder="Phone">
+                </div>
+                <div class="form-group">
+                  <label>Email Address <span>*</span></label>
+                  <input type="email" id="email" value="<%- user.email %>" placeholder="Email">
+                </div>
+                <div class="form-group different-shippng">
+                  <div class="toggle-bar">
+                    <a href="javascript:void(0)" class="toggle-btn">
+                      <input type="checkbox" id="checkbox2" name="diffrent-ship">
+                      <label for="checkbox2">Ship to a different address?</label>
+                    </a>
+                  </div>
+                  <div class="toggle-open">
+                    <div class="form-group">
+                      <label>Country/ Region <span>*</span></label>
+                      <select id="shippingCountry" name="shippingCountry">
+                        <option value="">Select Country</option>
+                        <!-- Add more countries -->
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>State <span>*</span></label>
+                      <input type="text" name="state" id="address1" class="mb--15" placeholder="State"
+                        value="<%= user.address[0]?.shipping?.state || '' %>">
+                      <input type="text" name="addressLine2" id="address2"
+                        placeholder="Apartment, suite, unit, etc. (optional)"
+                        value="<%= user.address[0]?.shipping?.addressLine || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                      <label>Town/ City <span>*</span></label>
+                      <input type="text" name="city" id="town" placeholder="Town/City"
+                        value="<%= user.address[0]?.shipping.city || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                      <label>PIN Code / ZIP Code <span>*</span></label>
+                      <input type="text" name="pincode" id="town" placeholder="ZIP Code"
+                        value="<%= user.address[0]?.shipping?.pincode || '' %>">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Other Notes (optional)</label>
+                  <textarea id="notes" rows="2"
+                    placeholder="Notes about your order, e.g. speacial notes for delivery."></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="axil-order-summery order-checkout-summery">
+                <h5 class="title mb--20">Your Order</h5>
+                <div class="summery-table-wrap">
+                  <table class="table summery-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (cart && cart.length> 0) { %>
+                        <% cart.forEach(item=> { %>
+                          <tr class="order-product">
+                            <td>
+                              <%= item.name %> <span class="quantity">x<%= item.quantity %></span>
+                            </td>
+                            <td>₹<%= item.subtotal %>
+                            </td>
+                          </tr>
+                          <% }) %>
+                            <% } else { %>
+                              <tr>
+                                <td colspan="2">No products in cart.</td>
+                              </tr>
+                              <% } %>
+
+                                <tr class="order-subtotal">
+                                  <td>Subtotal</td>
+                                  <td>₹<%= total %>
+                                  </td>
+                                </tr>
+
+                                <tr class="order-shipping">
+                                  <td colspan="2">
+                                    <div class="shipping-amount">
+                                      <span class="title">Shipping Charge</span>
+                                      <span class="amount">₹0.00</span>
                                     </div>
-
-                                    <div class="axil-checkout-coupon toggle-open">
-                                        <p>If you have a coupon code, please apply it below.</p>
-                                        <div class="input-group">
-                                            <input placeholder="Enter coupon code" type="text">
-                                            <div class="apply-btn">
-                                                <button type="submit" class="axil-btn btn-bg-primary">Apply</button>
-                                            </div>
-                                        </div>
+                                    <div class="shipping-amount">
+                                      <span class="title">Coupon Discount</span>
+                                      <span class="amount">₹0.00</span>
                                     </div>
-                                </div>
-                            </div> -->
-                            <div class="axil-checkout-billing">
-                                <h4 class="title mb--40">Billing details</h4>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label> Name <span>*</span></label>
-                                            <input type="text" id="first-name" placeholder="Name" value="<%- user.name %>">
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                              
-                               <div class="form-group">
-  <label>Country/ Region <span>*</span></label>
-  <select id="billingCountry" name="billingCountry">
-    <option value="">Select Country</option>
-    <!-- Add more countries -->
-  </select>
-</div>
+                                  </td>
 
-<div class="form-group">
-  <label>State <span>*</span></label>
-  <input type="text" name="state" id="address1" class="mb--15" placeholder="State"
-         value="<%= user.address[0]?.billing?.state || '' %>">
-  <input type="text" name="addressLine2" id="address2" placeholder="Apartment, suite, unit, etc. (optional)"
-  value="<%= user.address[0]?.billing?.addressLine || '' %>">
-</div>
+                                </tr>
 
-<div class="form-group">
-  <label>Town/ City <span>*</span></label>
-  <input type="text" name="city" id="town" placeholder="Town/City"
-         value="<%= user.address[0]?.billing?.city || '' %>">
-</div>
+                                <tr class="order-total">
+                                  <td>Total</td>
+                                  <td class="order-total-amount">₹<%= total %>
+                                  </td>
+                                </tr>
 
-<div class="form-group">
-  <label>PIN Code / ZIP Code <span>*</span></label>
-  <input type="text" name="pincode" id="town" placeholder="ZIP Code"
-         value="<%= user.address[0]?.billing?.pincode || '' %>">
-</div>
-                                
-                                <div class="form-group">
-                                    <label>Phone <span>*</span></label>
-                                    <input type="tel" id="phone" value="<%- user.mobile %>" placeholder="Phone">
-                                </div>
-                                <div class="form-group">
-                                    <label>Email Address <span>*</span></label>
-                                    <input type="email" id="email" value="<%- user.email %>" placeholder="Email">
-                                </div>
-                                <!-- <div class="form-group input-group">
-                                    <input type="checkbox" id="checkbox1" name="account-create">
-                                    <label for="checkbox1">Create an account</label>
-                                </div> -->
-                                <div class="form-group different-shippng">
-                                    <div class="toggle-bar">
-                                        <a href="javascript:void(0)" class="toggle-btn">
-                                            <input type="checkbox" id="checkbox2" name="diffrent-ship">
-                                            <label for="checkbox2">Ship to a different address?</label>
-                                        </a>
-                                    </div>
-                                    <div class="toggle-open">
-                                        <div class="form-group">
-                                            <label>Country/ Region <span>*</span></label>
-                                             <select id="shippingCountry" name="shippingCountry">
-    <option value="">Select Country</option>
-    <!-- Add more countries -->
-  </select>
-                                        </div>
-                                        <div class="form-group">
-  <label>State <span>*</span></label>
-  <input type="text" name="state" id="address1" class="mb--15" placeholder="State"
-         value="<%= user.address[0]?.shipping?.state || '' %>">
-  <input type="text" name="addressLine2" id="address2" placeholder="Apartment, suite, unit, etc. (optional)"
-  value="<%= user.address[0]?.shipping?.addressLine || '' %>">
-</div>
+                    </tbody>
+                  </table>
+                </div>
 
-<div class="form-group">
-  <label>Town/ City <span>*</span></label>
-  <input type="text" name="city" id="town" placeholder="Town/City"
-         value="<%= user.address[0]?.shipping.city || '' %>">
-</div>
 
-<div class="form-group">
-  <label>PIN Code / ZIP Code <span>*</span></label>
-  <input type="text" name="pincode" id="town" placeholder="ZIP Code"
-         value="<%= user.address[0]?.shipping?.pincode || '' %>">
-</div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Other Notes (optional)</label>
-                                    <textarea id="notes" rows="2" placeholder="Notes about your order, e.g. speacial notes for delivery."></textarea>
-                                </div>
-                            </div>
+                <!-- Coupon START -->
+                <div class="col-md-6 col-xl-12">
+                  <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <h5 class="mb-3 fw-bold">Offer & Discount</h5>
+
+                    <!-- None Option -->
+                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-between p-3 mb-3">
+                      <div>
+                        <div class="form-check mb-1">
+                          <input class="form-check-input" type="radio" name="selectedCoupon" id="noneCoupon"
+                            value="none" checked>
+                          <label class="form-check-label fw-bold" for="noneCoupon">None</label>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="axil-order-summery order-checkout-summery">
-                                <h5 class="title mb--20">Your Order</h5>
-                                <div class="summery-table-wrap">
-                                    <table class="table summery-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% if (cart && cart.length > 0) { %>
-  <% cart.forEach(item => { %>
-    <tr class="order-product">
-      <td><%= item.name %> <span class="quantity">x<%= item.quantity %></span></td>
-      <td>₹<%= item.subtotal %></td>
-    </tr>
-  <% }) %>
-<% } else { %>
-  <tr><td colspan="2">No products in cart.</td></tr>
-<% } %>
-
-                                            <tr class="order-subtotal">
-  <td>Subtotal</td>
-  <td>₹<%= total %></td>
-</tr>
-
-                                            <tr class="order-shipping">
-                                                <td colspan="2">
-                                                    <div class="shipping-amount">
-                                                        <span class="title">Shipping Charge</span>
-                                                        <span class="amount">₹0.00</span>
-                                                    </div>
-                                                    <div class="shipping-amount">
-                                                        <span class="title">Coupon Discount</span>
-                                                        <span class="amount">₹0.00</span>
-                                                    </div>
-                                                    <!-- <div class="input-group">
-                                                        <input type="radio" id="radio1" name="shipping" checked>
-                                                        <label for="radio1">Free Shippping</label>
-                                                    </div>
-                                                    <div class="input-group">
-                                                        <input type="radio" id="radio2" name="shipping">
-                                                        <label for="radio2">Local</label>
-                                                    </div>
-                                                    <div class="input-group">
-                                                        <input type="radio" id="radio3" name="shipping">
-                                                        <label for="radio3">Flat rate</label>
-                                                    </div> -->
-                                                </td>
-
-                                            </tr>
-
-                                           <tr class="order-total">
-  <td>Total</td>
-  <td class="order-total-amount">₹<%= total %></td>
-</tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                  
-                               
-                                   <!-- Coupon START -->
-                  <div class="col-md-6 col-xl-12">
-                    <div class="card border-0 shadow-sm rounded-4 p-3">
-                      <h5 class="mb-3 fw-bold">Offer & Discount</h5>
-
-                      <!-- None Option -->
-                      <div class="bg-light rounded-3 d-flex align-items-center justify-content-between p-3 mb-3">
-                        <div>
-                          <div class="form-check mb-1">
-                            <input class="form-check-input" type="radio" name="selectedCoupon" id="noneCoupon"
-                              value="none" checked>
-                            <label class="form-check-label fw-bold" for="noneCoupon">None</label>
-                          </div>
-                          <p class="mb-0 small text-muted">No discount applied.</p>
-                        </div>
-                        <div class="text-muted fw-bold fs-5">₹0</div>
+                        <p class="mb-0 small text-muted">No discount applied.</p>
                       </div>
+                      <div class="text-muted fw-bold fs-5">₹0</div>
+                    </div>
 
-                      <!-- Loop through valid coupons -->
-                       <% let coupons=[] %>
+                    <!-- Loop through valid coupons -->
+                    <% let coupons=[] %>
                       <% if (coupons.length> 0) { %>
                         <% coupons.forEach((coupon, index)=> { %>
                           <div class="bg-light rounded-3 d-flex align-items-center justify-content-between p-3 mb-3">
@@ -214,7 +190,9 @@
                                 </label>
                               </div>
                               <p class="mb-0 small text-muted">
-                                Save <strong id="discountAmountDisplay"><%= coupon.discount %> %</strong> with <%= coupon.code %>
+                                Save <strong id="discountAmountDisplay">
+                                  <%= coupon.discount %> %
+                                </strong> with <%= coupon.code %>
                               </p>
                             </div>
                             <div class="text-success fw-bold fs-5">–<%= coupon.discount %> %
@@ -230,157 +208,188 @@
                                   <input class="form-control" placeholder="Coupon code" id="couponCodeInput" />
                                   <button type="button" class="btn btn-primary" id="applyCouponBtn">Apply</button>
                                 </div>
-                    </div>
                   </div>
-                  <!-- Coupon END -->
-                               
-                            
-                                <div class="order-payment-method" >
-                                  
-                                        
-                                    <div class="single-payment">
-                                        <div class="input-group justify-content-between align-items-center">
-                                            <input type="radio" id="radio6" name="payment" checked>
-                                            <label for="radio6">Phonepe</label>
-                                            <img src="assets/images/others/payment.png" alt="Paypal payment">
-                                        </div>
-                                        <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
-                                    </div>
-                                </div>
-                                <button type="submit" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button>
-                            </div>
-                        </div>
+                </div>
+                <!-- Coupon END -->
+
+                <div class="order-payment-method mt-5">
+                  <div class="single-payment">
+                    <div class="input-group justify-content-between align-items-center">
+                      <input type="radio" id="radio6" name="payment" checked>
+                      <label for="radio6">Phonepe</label>
+                      <img src="assets/images/others/payment.png" alt="Paypal payment">
                     </div>
-                </form>
+                    <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+                  </div>
+                </div>
+              <button type="submit" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button>
+                <!-- <button type="button" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button> -->
+              </div>
             </div>
+          </div>
+        </form>
+      </div>
 
-<style>
+      <style>
 
-</style>
-             <%- include('./partials/footer') %>
-        </div>
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            const couponRadios = document.querySelectorAll('input[name="selectedCoupon"]');
-            const discountDisplay = document.getElementById("discount");
-            const totalFareDisplay = document.getElementById("total-fare");
-            const manualInput = document.getElementById("couponCodeInput");
-            const applyBtn = document.getElementById("applyCouponBtn");
+      </style>
+      <%- include('./partials/footer') %>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const couponRadios = document.querySelectorAll('input[name="selectedCoupon"]');
+        const discountDisplay = document.getElementById("discount");
+        const totalFareDisplay = document.getElementById("total-fare");
+        const manualInput = document.getElementById("couponCodeInput");
+        const applyBtn = document.getElementById("applyCouponBtn");
 
-           
+        const discountAmountDisplay = document.getElementById("discountAmountDisplay");
+        const coupons = <% - JSON.stringify(coupons) %>;
 
-           
-            const discountAmountDisplay = document.getElementById("discountAmountDisplay");
-            const coupons = <%- JSON.stringify(coupons) %>;
+        function updateFareDisplay(discountValue) {
+          discountDisplay.innerText = `–₹${discountValue}`;
+          //   const total = baseFare + otherServices - discountValue;
+          //   totalFareDisplay.innerText = `₹${total.toLocaleString()}`;
+        }
 
-            function updateFareDisplay(discountValue) {
-              discountDisplay.innerText = `–₹${discountValue}`;
-            //   const total = baseFare + otherServices - discountValue;
-            //   totalFareDisplay.innerText = `₹${total.toLocaleString()}`;
-            }
+        function applyCoupon(code) {
+          if (code === "none") {
+            updateFareDisplay(0);
+            return;
+          }
 
-            function applyCoupon(code) {
-              if (code === "none") {
-                updateFareDisplay(0);
-                return;
-              }
+          const selected = coupons.find(c => c.code.toLowerCase() === code.toLowerCase());
+          if (!selected) {
+            alert('No coupon found with that code or it may have expired.');
 
-              const selected = coupons.find(c => c.code.toLowerCase() === code.toLowerCase());
-              if (!selected) {
-               alert('No coupon found with that code or it may have expired.');
-              
-                updateFareDisplay(0);
-                document.getElementById("noneCoupon").checked = true; // fallback
-                return;
-              }
+            updateFareDisplay(0);
+            document.getElementById("noneCoupon").checked = true; // fallback
+            return;
+          }
+        }
 
-            //   const discountAmount = Math.round(((baseFare + otherServices) * selected.discount) / 100);
-            //   discountAmountDisplay.innerText = `₹${discountAmount}`;
-            //   updateFareDisplay(discountAmount);
-            }
+        // Auto-apply first coupon if available
+        if (couponRadios.length > 0) {
+          applyCoupon(couponRadios[0].value);
+        }
 
-            // Auto-apply first coupon if available
-            if (couponRadios.length > 0) {
-              applyCoupon(couponRadios[0].value);
-            }
-
-            // Radio button change
-            couponRadios.forEach(radio => {
-              radio.addEventListener("change", function () {
-                applyCoupon(this.value);
-              });
-            });
-
-            // Manual apply button
-            applyBtn.addEventListener("click", function () {
-              const code = manualInput.value.trim();
-              if (code === "") {
-alert('Enter a coupon code') ;            
-return;
-              }
-              applyCoupon(code);
-
-              // Auto-select radio if it exists
-              couponRadios.forEach(radio => {
-                if (radio.value.toLowerCase() === code.toLowerCase()) {
-                  radio.checked = true;
-                } else {
-                  radio.checked = false;
-                }
-              });
-            });
+        // Radio button change
+        couponRadios.forEach(radio => {
+          radio.addEventListener("change", function () {
+            applyCoupon(this.value);
           });
-        </script>
-
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            function calculateTotalFare() {
-              // Get the values of Base Fare, Discount, and Other Services
-              let baseFare = parseFloat(document.getElementById("base-fare").innerText.replace("₹", "")) || 0;
-              let discount = parseFloat(document.getElementById("discount").innerText.replace("₹", "")) || 0;
-              let otherServices = parseFloat(document.getElementById("other-services").innerText.replace("₹", "")) || 0;
-
-              // Calculate total fare
-              let totalFare = baseFare + otherServices - discount;
-
-              // Update the Total Fare display
-              document.getElementById("total-fare").innerText = `₹${totalFare.toLocaleString()}`;
-            }
-
-            // Call function to initialize the total fare calculation
-            calculateTotalFare();
-          });
-
-        </script>
-
-        <script>
-  async function populateCountryDropdowns() {
-    try {
-      const response = await fetch("/api/countries");
-      const countries = await response.json();
-
-      const shippingCountrys = document.querySelectorAll("#shippingCountry");
-      const billingCountrys = document.querySelectorAll("#billingCountry");
-
-      countries.forEach(country => {
-        const option = document.createElement("option");
-        option.value = country;
-        option.textContent = country;
-
-        shippingCountrys.forEach(select => {
-          select.appendChild(option.cloneNode(true));
         });
 
-        billingCountrys.forEach(select => {
-          select.appendChild(option.cloneNode(true));
+        // Manual apply button
+        applyBtn.addEventListener("click", function () {
+          const code = manualInput.value.trim();
+          if (code === "") {
+            alert('Enter a coupon code');
+            return;
+          }
+          applyCoupon(code);
+
+          // Auto-select radio if it exists
+          couponRadios.forEach(radio => {
+            if (radio.value.toLowerCase() === code.toLowerCase()) {
+              radio.checked = true;
+            } else {
+              radio.checked = false;
+            }
+          });
         });
       });
-    } catch (err) {
-      console.error("Error fetching country list:", err);
-    }
-  }
+    </script>
 
-  document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(populateCountryDropdowns, 200);
-  });
-</script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function calculateTotalFare() {
+          // Get the values of Base Fare, Discount, and Other Services
+          let baseFare = parseFloat(document.getElementById("base-fare").innerText.replace("₹", "")) || 0;
+          let discount = parseFloat(document.getElementById("discount").innerText.replace("₹", "")) || 0;
+          let otherServices = parseFloat(document.getElementById("other-services").innerText.replace("₹", "")) || 0;
+
+          // Calculate total fare
+          let totalFare = baseFare + otherServices - discount;
+
+          // Update the Total Fare display
+          document.getElementById("total-fare").innerText = `₹${totalFare.toLocaleString()}`;
+        }
+
+        // Call function to initialize the total fare calculation
+        calculateTotalFare();
+      });
+
+    </script>
+
+    <script>
+      async function populateCountryDropdowns() {
+        try {
+          const response = await fetch("/api/countries");
+          const countries = await response.json();
+
+          const shippingCountrys = document.querySelectorAll("#shippingCountry");
+          const billingCountrys = document.querySelectorAll("#billingCountry");
+
+          countries.forEach(country => {
+            const option = document.createElement("option");
+            option.value = country;
+            option.textContent = country;
+
+            shippingCountrys.forEach(select => {
+              select.appendChild(option.cloneNode(true));
+            });
+
+            billingCountrys.forEach(select => {
+              select.appendChild(option.cloneNode(true));
+            });
+          });
+        } catch (err) {
+          console.error("Error fetching country list:", err);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(populateCountryDropdowns, 200);
+      });
+    </script>
+
+    <script>
+      console.log("Checkout page script loaded");
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM fully loaded and parsed");
+        const checkoutBtn = document.querySelector(".checkout-btn");
+        const checkoutForm = document.getElementById("checkoutForm");
+        checkoutForm.addEventListener("submit", function (e) {
+          
+
+        // checkoutBtn.addEventListener("click", async function (e) {
+          e.preventDefault(); // ✅ Prevent default button behavior
+
+          const cartData = <% - JSON.stringify({ items: cart, total }) %>; // Injected from backend
+          console.log(cartData);
+          try {
+            const response = await fetch("/create-phonepe-order", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                cartData: JSON.stringify(cartData)
+              })
+            });
+
+            const result = await response.json();
+
+            if (result.checkoutPageUrl) {
+              window.location.href = result.checkoutPageUrl; // ✅ Redirect to PhonePe
+            } else {
+              alert("Payment initiation failed");
+            }
+          } catch (err) {
+            console.error("PhonePe error:", err);
+            alert("Something went wrong during payment");
+          }
+        });
+      });
+    </script>
