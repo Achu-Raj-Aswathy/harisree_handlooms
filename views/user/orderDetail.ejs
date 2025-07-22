@@ -1,0 +1,63 @@
+<%- include('./partials/header') %>
+<%- include('./partials/userHeader') %>
+
+<div class="container my-5">
+  <div class="card shadow-lg">
+    <div class="card-body">
+      <h3 class="mb-4 text-primary">Order Details - <%= order.orderId %></h3>
+
+      <!-- Order Status & Date -->
+      <div class="mb-4">
+        <p><strong>Status:</strong> <%= order.status %></p>
+        <p><strong>Placed On:</strong> <%= order.createdAt.toLocaleDateString('en-IN') %></p>
+      </div>
+
+      <!-- Products List -->
+      <div class="table-responsive mb-4">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price (₹)</th>
+              <th>Qty</th>
+              <th>Subtotal (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.items.forEach(item => { %>
+              <tr>
+                <td><%= item.productId.name %></td>
+                <td><%= item.price.toFixed(2) %></td>
+                <td><%= item.quantity %></td>
+                <td><%= (item.price * item.quantity).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Total -->
+      <div class="text-end fs-5 mb-4">
+        <strong>Total Paid:</strong> ₹<%= order.totalAmount.toFixed(2) %>
+      </div>
+
+      <!-- Shipping Address -->
+      <% if (user && user.address && user.address[0]?.shipping) { %>
+        <div class="mb-4">
+          <h5 class="text-secondary">Shipping Address</h5>
+          <p>
+            <%= user.address[0].shipping.name %><br>
+            <%= user.address[0].shipping.addressLine %><br>
+            <%= user.address[0].shipping.city %>, <%= user.address[0].shipping.state %> - <%= user.address[0].shipping.pincode %><br>
+            <%= user.address[0].shipping.country %><br>
+            Phone: <%= user.address[0].shipping.phone %>
+          </p>
+        </div>
+      <% } %>
+
+      <a href="/accounts#nav-orders" class="btn btn-outline-primary">← Back to Orders</a>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

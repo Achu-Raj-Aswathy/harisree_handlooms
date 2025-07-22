@@ -29,6 +29,7 @@
                                     <% } else { %>
                                         <% carts.forEach(item=> {
                                             const product = item.productId;
+                                             if (!product) return;
                                             %>
                                             <tr data-id="<%= product._id %>" class="cart-row">
                                                 <td class="product-remove">
@@ -101,102 +102,13 @@
         <%- include('./partials/footer') %>
             </div>
 
-            <!-- <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Init totals
-    updateCartTotals();
-
-    // Listen for input/change on quantity input
-    document.querySelectorAll(".quantity-input").forEach(input => {
-        input.addEventListener("input", updateCartTotals);
-        input.addEventListener("change", updateCartTotals);
-    });
-
-    // Listen for clicks on +/– buttons
-    document.querySelectorAll(".pro-qty .qtybtn").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const input = this.parentElement.querySelector(".quantity-input");
-            let value = parseInt(input.value) || 1;
-            if (this.classList.contains("inc")) {
-                value++;
-            } else if (this.classList.contains("dec") && value > 1) {
-                value--;
-            }
-            input.value = value;
-            updateCartTotals();
-        });
-    });
-
-    // Remove from cart (your code)
-    document.querySelectorAll(".remove-from-cart").forEach(el => {
-        el.addEventListener("click", async function (e) {
-            e.preventDefault();
-            const productId = this.dataset.id;
-
-            try {
-                const res = await fetch(`/cart/remove?id=${productId}`, {
-                    method: "DELETE",
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    this.closest(".cart-row").remove();
-                    updateCartTotals();
-                } else {
-                    alert(data.message || "Could not remove item.");
-                }
-            } catch (err) {
-                console.error("Error:", err);
-                alert("Something went wrong.");
-            }
-        });
-    });
-});
-</script> -->
-
-<!-- <script>
-function updateCartTotals() {
-  let total = 0;
-  const cartSummary = [];
-
-  document.querySelectorAll(".cart-row").forEach(row => {
-    const productName = row.querySelector(".product-title a").textContent.trim();
-    const price = parseFloat(row.querySelector(".product-price").dataset.price);
-    const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
-    const subtotal = price * qty;
-
-    row.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
-
-    total += subtotal;
-
-    cartSummary.push({
-      name: productName,
-      quantity: qty,
-      price: price,
-      subtotal: subtotal.toFixed(2)
-    });
-  });
-
-  document.getElementById("cart-total").textContent = total.toFixed(2);
-
-  // Also update hidden input with full cart data
-  const cartDataInput = document.getElementById("cartDataInput");
-  if (cartDataInput) {
-    cartDataInput.value = JSON.stringify({
-      items: cartSummary,
-      total: total.toFixed(2)
-    });
-  }
-}
-</script> -->
-
 <script>
 function updateCartTotals() {
   let total = 0;
   const cartSummary = [];
 
   document.querySelectorAll(".cart-row").forEach(row => {
+    const productId = row.dataset.id;
     const productName = row.querySelector(".product-title a").textContent.trim();
     const price = parseFloat(row.querySelector(".product-price").dataset.price);
     const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
@@ -207,6 +119,7 @@ function updateCartTotals() {
     total += subtotal;
 
     cartSummary.push({
+      productId: productId, 
       name: productName,
       quantity: qty,
       price: price,

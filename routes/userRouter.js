@@ -71,8 +71,7 @@ userRouter.get("/return-policy", userController.viewReturnPolicy);
 userRouter.get("/shipping-policy", userController.viewShippingPolicy);
 userRouter.get("/api/countries", userController.getApiCountries);
 userRouter.get("/api/search", userController.getApiSearch);
-
-
+userRouter.get('/order', userController.viewOrderDetails);
 
 
 

@@ -9,6 +9,8 @@ const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
 const Requests = require('../models/returnRequestModel');
 const Reviews = require('../models/reviewModel');
+const Coupons = require('../models/couponModel');
+const Orders = require('../models/orderModel')
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node');
@@ -35,9 +37,9 @@ const ENV = Env.UAT;
 
 const client = StandardCheckoutClient.getInstance(CLIENT_ID, CLIENT_SECRET, SALT_INDEX, ENV);
 
-const redirectUrl = "https://hariseehandlooms.com/status";
-const successUrl = "https://hariseehandlooms.com/success";
-const failureUrl = "https://hariseehandlooms.com/failure";
+const redirectUrl = "http://localhost:3000/status";
+const successUrl = "http://localhost:3000/success";
+const failureUrl = "http://localhost:3000/failure";
 
 const tempBookingStore = {}; // Temporary store for booking data
 
@@ -45,52 +47,55 @@ const tempBookingStore = {}; // Temporary store for booking data
 // ▶️ Create PhonePe Order
 // ==========================
 const createPhonePeOrder = async (req, res) => {
+  
   try {
-    const { cartData } = req.body;
-    const userId = req.session.user;
 
+const { cartData, address, shippingCharge, discount, total } = req.body;
+    const userId = req.session.user;
     if (!cartData || !userId) {
       return res.status(400).json({ error: "Missing cart data or user session" });
     }
 
-    const parsed = JSON.parse(cartData);
-    const { items, total } = parsed;
+    const { items } = JSON.parse(cartData);
 
     const user = await Users.findById(userId);
     if (!user || !items.length || !total) {
       return res.status(400).json({ error: "Invalid user/cart" });
     }
 
+const amount = parseInt(total); // total should be rupees, convert to integer
+    const name = user.name;
+    const phone = user.mobile;
+    // if (!amount || !name || !phone || !/^\d{10}$/.test(phone)) {
+    //   return res.status(400).json({ error: "Invalid input" });
+    // }
+
     const orderId = uuidv4();
 
-    // Basic check
-    if (!amount || !name || !phone || !/^\d{10}$/.test(phone)) {
-      return res.status(400).json({ error: "Invalid input" });
-    }
-
-    // Save to temp store using orderId
-        tempBookingStore[orderId] = {
-      user: {
-        name: user.name,
-        email: user.email,
-        phone: user.mobile,
-      },
-      items,
-      total,
-      paid: 1,
-    };
+    tempBookingStore[orderId] = {
+  user: {
+    name,
+    email: user.email,
+    phone,
+  },
+  items,
+  total,
+  paid: 1,
+  address,
+  shippingCharge,
+  discount,
+};
 
     const redirectWithOrder = `${redirectUrl}?id=${orderId}`;
-
     const request = StandardCheckoutPayRequest.builder()
       .merchantOrderId(orderId)
       .amount(amount * 100)
       .redirectUrl(redirectWithOrder)
       .build();
-
     const response = await client.pay(request);
-
+    console.log("response",response)
     return res.json({ checkoutPageUrl: response.redirectUrl });
+
   } catch (error) {
     console.error("❌ Error in payment:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to initiate payment" });
@@ -103,36 +108,53 @@ const createPhonePeOrder = async (req, res) => {
 const status = async (req, res) => {
   try {
     const merchantOrderId = req.query.id;
-    // if (!merchantOrderId) return res.redirect(failureUrl);
     if (!merchantOrderId) {
       console.error("❌ No merchantOrderId provided in query params");
+      return res.redirect(failureUrl);
+    }
 
     const response = await client.getOrderStatus(merchantOrderId);
-    console.log("📦 Full status response:", response);
+    console.log("📦 Full status response:", JSON.stringify(response, null, 2));
 
     const status = response.state;
+    console.log(status)
 
     if (status === "COMPLETED") {
+      console.log(tempBookingStore)
       const orderData = tempBookingStore[merchantOrderId];
-
+      console.log(orderData)
       if (!orderData) {
         console.error("❌ Order data not found in temp store");
         return res.redirect(failureUrl);
       }
 
-       const newOrder = new Orders({
-        userId: req.session.user,
-        items: orderData.items,
-        total: orderData.total,
-        status: "Paid",
-        paymentMethod: "PhonePe",
-        createdAt: new Date(),
-      });
-
+      const newOrder = new Orders({
+  userId: req.session.user,
+  items: orderData.items.map(item => ({
+    productId: item.productId, // ✅ must be present
+    quantity: item.quantity,
+    price: item.price,
+    subtotal: item.subtotal,
+  })),
+  shippingCharge: orderData.shippingCharge,
+  discount: orderData.discount,
+  total: orderData.total,
+  paymentMethod: "PhonePe",
+  paymentStatus: "Paid",
+  status: "Pending", // ✅ corrected from "Paid"
+  address: orderData.address,
+});
       await newOrder.save();
 
-      // Send mail to user
-     await transporter.sendMail({
+      await Users.findByIdAndUpdate(req.session.user, {
+  $push: {
+    orders: {
+      orderId: newOrder._id
+    }
+  }
+});
+
+      await transporter.sendMail({
         from: process.env.EMAIL,
         to: orderData.user.email,
         subject: "🧺 Order Confirmed",
@@ -140,18 +162,17 @@ const status = async (req, res) => {
           <p>Hi <strong>${orderData.user.name}</strong>,</p>
           <p>Thank you for your order! Total: ₹${orderData.total}</p>
           <p>We'll start processing your order shortly.</p>
-        `
+        `,
       });
 
-            delete tempBookingStore[merchantOrderId];
-
-      return res.redirect(`${successUrl}?order=${merchantOrderId}`);
-      
+      delete tempBookingStore[merchantOrderId];
+      return res.redirect("/?success=1");
     } else {
+      console.log(`Payment status: ${status}`);
       return res.redirect(failureUrl);
     }
-  }} catch (error) {
-    console.error("Error in status check:", error.response?.data || error.message);
+  } catch (error) {
+    console.error("Error in status check:", error.response?.data || error.message, error.stack);
     return res.redirect(failureUrl);
   }
 };
@@ -363,8 +384,8 @@ const viewProduct = async (req, res) => {
     // Calculate average rating
     let avgRating = 0;
     if (reviews.length > 0) {
-      const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-      avgRating = (total / reviews.length).toFixed(1);
+      const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+      avgRating = (totalRating / reviews.length).toFixed(1);
     }
  if (!product) return res.status(404).send('Product not found');
 
@@ -425,7 +446,7 @@ const viewCheckout = async (req, res) => {
   const { cartData } = req.body;
   let parsed;
   const userId = req.session.user;
-
+  console.log("cartData:", cartData);
   try {
     parsed = JSON.parse(cartData);
     console.log("Cart Items:", parsed.items);
@@ -436,8 +457,10 @@ const viewCheckout = async (req, res) => {
       return res.status(404).render("error", { error: "User not found" });
     }
 
+    const coupons = await Coupons.find({ status: "Active" }).populate("productId").populate("categoryId");
+
     // Save to DB, session, or pass to payment gateway
-    res.render("user/checkout", { cart: parsed.items, total: parsed.total, user });
+    res.render("user/checkout", { cart: parsed.items, total: parsed.total, user, coupons });
   } catch (e) {
     console.error("Invalid cart data:", e);
     res.status(400).send("Invalid cart data");
@@ -475,6 +498,7 @@ const viewAccount = async (req, res) => {
       return res.render("user/signin"); // or show a friendly message
     }
     const user = await Users.findById(userId).populate("orders.orderId").populate("wishlist.productId").populate("cart.productId");
+
     res.render("user/account", { user });
   } catch (error) {
     console.error(error);
@@ -867,6 +891,25 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const viewOrderDetails = async (req, res) => {
+  try {
+    const userId = req.session.user;
+    const orderId = req.query.id;
+
+    const order = await Orders.findById(orderId)
+      .populate("items.productId")
+      .lean();
+
+    const user = await Users.findById(userId).lean();
+
+    if (!order) return res.status(404).render("error", { error: "Order not found" });
+
+    res.render("user/orderDetail", { order, user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render("error", { error: "Something went wrong" });
+  }
+};
 
 module.exports = {
   viewHomepage,
@@ -904,6 +947,6 @@ module.exports = {
   addReview,
   forgotPassword,
   resetPassword,
-  // viewSuccess,
-  // viewFailure,
+  viewOrderDetails,
+
 }

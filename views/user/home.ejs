@@ -726,6 +726,15 @@
   });
 </script>
 
-
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("success") === "1") {
+      alert("🎉 Booking Successful!");
+      // Optional: Remove the query from URL without reloading
+      history.replaceState({}, document.title, window.location.pathname);
+    }
+  });
+</script>
 
 <%- include('./partials/footer') %>
