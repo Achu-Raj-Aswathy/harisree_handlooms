@@ -85,6 +85,8 @@ userRouter.post("/checkout", isLogin, userController.viewCheckout);
 userRouter.post('/product/:id/review',isLogin, upload.array('images'),userController.addReview);
 
 
+userRouter.post("/create-phonepe-order", userController.createPhonePeOrder);
+userRouter.get("/status",userController.status);
 
 userRouter.delete("/cart/remove", isLogin, userController.removeFromCart);
 userRouter.delete("/wishlist/remove", isLogin, userController.removeFromWishlist);

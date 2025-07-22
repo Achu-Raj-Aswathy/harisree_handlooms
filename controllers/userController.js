@@ -8,7 +8,6 @@ const Products = require("../models/productModel");
 const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
 const Requests = require('../models/returnRequestModel');
-const Reviews=require('../models/reviewModel');
 
 
 const viewHomepage = async (req, res) => {
@@ -185,7 +184,13 @@ const viewShop = async (req, res) => {
   try {
     const categories = await Categories.find({}).select("name");
     const products = await Products.find();
-    res.render("user/shop", { products, categories });
+    let userWishlistProductIds = [];
+
+    if (req.session.user) {
+      const user = await Users.findById(req.session.user);
+      userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
+    }
+    res.render("user/shop", { products, categories, userWishlistProductIds });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -600,7 +605,5 @@ module.exports = {
   removeFromCart,
   removeFromWishlist,
   returnRequest,
-  getApiSearch,
-  addReview,
 
 }
