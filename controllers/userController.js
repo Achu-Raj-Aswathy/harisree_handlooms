@@ -839,6 +839,8 @@ module.exports = {
   returnRequest,
   createPhonePeOrder,
   status,
+  getApiSearch,
+  addReview,
   // viewSuccess,
   // viewFailure,
 }
