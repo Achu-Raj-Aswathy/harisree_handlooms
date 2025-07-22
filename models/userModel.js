@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema(
     password: { type: String, required: true },
     resetToken: { type: String, default: null },
     resetTokenExpiry: { type: Date, default: null },
-    mobile: { type: Number, default: null },
+    mobile: { type: Number, required: false },
     role: {
       type: String,
       enum: ["user", "admin"],
