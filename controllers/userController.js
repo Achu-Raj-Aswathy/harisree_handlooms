@@ -8,6 +8,7 @@ const Products = require("../models/productModel");
 const Offers = require("../models/offerModel")
 const Categories = require("../models/categoryModel");
 const Requests = require('../models/returnRequestModel');
+const Reviews = require('../models/reviewModel');
 const { v4: uuidv4 } = require("uuid");
 const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node')
 
