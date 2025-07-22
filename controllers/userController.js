@@ -158,7 +158,7 @@ const status = async (req, res) => {
       await transporter.sendMail({
         from: process.env.EMAIL,
         to: process.env.EMAIL,
-        subject: "📢 New Booking",
+        subject: "📢 New Order Received",
         html: `
   <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
     <h2 style="color: #2196F3;">📢 New Booking Received</h2>
@@ -402,14 +402,24 @@ const viewResetPassword = async (req, res) => {
 const viewShop = async (req, res) => {
   try {
     const categories = await Categories.find({}).select("name");
-    const products = await Products.find();
+     const selectedCategory = req.query.category;
+    let filter = {};
+
+    if (selectedCategory) {
+      const categoryDoc = await Categories.findOne({ name: selectedCategory });
+      if (categoryDoc) {
+        filter.categoryId = categoryDoc._id;
+      }
+    }
+
+    const products = await Products.find(filter).populate("categoryId", "name");
     let userWishlistProductIds = [];
 
     if (req.session.user) {
       const user = await Users.findById(req.session.user);
       userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
     }
-    res.render("user/shop", { products, categories, userWishlistProductIds });
+    res.render("user/shop", { products, categories, userWishlistProductIds, selectedCategory: selectedCategory || null });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
