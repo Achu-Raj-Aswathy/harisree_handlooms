@@ -408,6 +408,94 @@
 </style>
 
 
+<style>
+/* Product Detail Card Enhancements */
+.card-body {
+  padding: 2rem;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Title */
+.card-body a.fs-24 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1f2937;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+/* Price */
+.card-body h2 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.card-body h2 span {
+  font-size: 1rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+  margin-left: 10px;
+}
+
+/* Grid Layout for Product Info */
+.product-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.product-info-grid h5 {
+  font-size: 1rem;
+  margin: 0;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Description Section */
+.card-body h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  color: #111827;
+}
+
+.card-body p.text-muted {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1.2rem;
+  }
+
+  .card-body a.fs-24 {
+    font-size: 1.4rem;
+  }
+
+  .card-body h2 {
+    font-size: 1.2rem;
+  }
+
+  .product-info-grid h5 {
+    font-size: 0.95rem;
+  }
+
+  .card-body p.text-muted {
+    font-size: 0.95rem;
+  }
+}
+</style>
+
 
 
                     <%- include('./partials/footer') %>

@@ -129,7 +129,7 @@
 
                                         <% categories.forEach ((category)=>{ %>
 
-                                            <li><a class="dropdown-item" href="/shop"><%= category.name %></a></li>
+                                            <li class="dropdown-item" onclick="handleCategoryChange('<%= category.name %>')" ><%= category.name %> </li>
 
                                         <% }) %> 
                                         <% } else { %>
@@ -137,6 +137,7 @@
                                         <% } %>
                                         
                                     </ul>
+
                                 </li>
                                 <li>
                                     <a href="/shop"><i class="fas fa-shopping-bag"></i> Shop</a>
@@ -598,5 +599,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 </script>
-
-
+<script>
+  function handleCategoryChange(category) {
+  if (category) {
+    window.location.href = `/shop?category=${encodeURIComponent(category)}`;
+  } else {
+    window.location.href = `/shop`;
+  }
+}
+</script>
+        
