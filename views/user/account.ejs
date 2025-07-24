@@ -46,7 +46,7 @@
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th scope="col">Order</th>
+                                                        <th scope="col">Order ID</th>
                                                         <th scope="col">Date</th>
                                                         <th scope="col">Status</th>
                                                         <th scope="col">Total</th>
@@ -54,41 +54,26 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                  <% if (user.orders.length === 0) { %>
                                                     <tr>
-                                                        <th scope="row">#6523</th>
-                                                        <td>September 10, 2020</td>
-                                                        <td>Processing</td>
-                                                        <td>$326.63 for 3 items</td>
-                                                        <td><a href="#" class="axil-btn view-btn">View</a></td>
+                                                        <td colspan="5" class="text-center">No orders found.</td>
                                                     </tr>
-                                                    <tr>
-                                                        <th scope="row">#6523</th>
-                                                        <td>September 10, 2020</td>
-                                                        <td>On Hold</td>
-                                                        <td>$326.63 for 3 items</td>
-                                                        <td><a href="#" class="axil-btn view-btn">View</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">#6523</th>
-                                                        <td>September 10, 2020</td>
-                                                        <td>Processing</td>
-                                                        <td>$326.63 for 3 items</td>
-                                                        <td><a href="#" class="axil-btn view-btn">View</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">#6523</th>
-                                                        <td>September 10, 2020</td>
-                                                        <td>Processing</td>
-                                                        <td>$326.63 for 3 items</td>
-                                                        <td><a href="#" class="axil-btn view-btn">View</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">#6523</th>
-                                                        <td>September 10, 2020</td>
-                                                        <td>Processing</td>
-                                                        <td>$326.63 for 3 items</td>
-                                                        <td><a href="#" class="axil-btn view-btn">View</a></td>
-                                                    </tr>
+                                                  <% } else { %>
+                                                     <% user.orders.forEach(order => { 
+         const o = order.orderId;
+         if (!o) return;
+         const itemCount = o.items?.length || 0;
+         const total = o.total || 0;
+    %>
+      <tr>
+        <th scope="row"><%= o.orderId %></th>
+        <td><%= o.createdAt.toLocaleDateString('en-IN') %></td>
+        <td><%= o.status %></td>
+        <td>₹<%= total.toFixed(2) %> for <%= itemCount %> item<%= itemCount > 1 ? 's' : '' %></td>
+        <td><a href="/order?id=<%= o._id %>" class="axil-btn view-btn">View</a></td>
+      </tr>
+    <% }) %>
+                                                  <% } %>
                                                 </tbody>
                                             </table>
                                         </div>

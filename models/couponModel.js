@@ -16,15 +16,11 @@ const couponSchema = mongoose.Schema(
       ref: "Products",
       required: true,
     },
-    type: {
-      type: String,
-      enum: ["Free Shipping", "Percentage", "Fixed Amount"],
-    },
     status: {
       type: String,
       enum: ["Active", "Inactive", "Future Plan"],
     },
-    discountValue: { type: Number, required: true },
+    discountPercentage: { type: Number, required: true },
   },
   { timestamps: true }
 );

@@ -444,6 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let total = 0;
 
       document.querySelectorAll(".cart-item").forEach(itemEl => {
+        const productId = itemEl.querySelector(".remove-from-cart")?.dataset.id; // ✅ From close button
         const name = itemEl.querySelector(".item-title a")?.textContent.trim();
         const priceText = itemEl.querySelector(".item-price")?.textContent.replace(/[₹\s]/g, "") || "0";
         const price = parseFloat(priceText);
@@ -452,6 +453,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const quantity = 1;
 
         cartItems.push({
+          productId: productId,
           name,
           quantity,
           price,

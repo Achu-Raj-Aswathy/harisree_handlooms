@@ -1,0 +1,95 @@
+<%- include('./partials/header') %>
+    <%- include('./partials/userHeader') %>
+
+        <div class="container my-5">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h3 class="mb-4 text-primary">Order Details : <%= order.orderId %>
+                    </h3>
+
+                    <!-- Order Status & Date -->
+                    <div class="mb-4 row">
+                        <p class="col-6 mx-auto"><strong>Status:</strong>
+                            <%= order.status %>
+                        </p>
+                        <p class="col-6 mx-auto"><strong>Placed On:</strong>
+                            <%= order.createdAt.toLocaleDateString('en-IN') %>
+                        </p>
+                    </div>
+
+                    <!-- Products List -->
+                    <div class="table-responsive mb-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Product</th>
+                                    <th>Price (₹)</th>
+                                    <th>Qty</th>
+                                    <th>Subtotal (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% order.items.forEach(item=> { %>
+                                    <tr>
+                                        <td>
+                                            <img src="<%= item.productId.images[0] %>" alt="<%= item.productId.name %>"
+                                                style="width: 50px; height: 50px;">
+                                            <small>
+                                                <%= item.productId.productId %>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <%= item.productId.name %>
+                                        </td>
+                                        <td>
+                                            <%= item.price.toFixed(2) %>
+                                        </td>
+                                        <td>
+                                            <%= item.quantity %>
+                                        </td>
+                                        <td>
+                                            <%= (item.price * item.quantity).toFixed(2) %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="row">
+                        <div class="col-6">
+                            <% if (order && order.address) { %>
+                                <div class="mb-4">
+                                    <h5 class="text-dark">Shipping Address</h5>
+                                    <p class="text-dark">
+                                        <%= order.address.name %><br>
+                                        <%= order.address.line %><br>
+                                        <%= order.address.city %>, <%= order.address.state %> - <%=
+                                        order.address.pincode %><br>
+                                        <%= order.address.country || '' %><br>
+                                        Phone: <%= order.address.phone %><br>
+                                        Email: <%= order.address.email %>
+                                    </p>
+                                </div>
+                                <% } %>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <h5 class="text-dark">Payment Details</h5>
+                                <p class="text-dark">
+                                    Payment mode: <%= order.paymentMethod %><br>
+                                    Shipping Charge: ₹ <%= order.shippingCharge.toFixed(2) %><br>
+                                    Discount: ₹ <%= order.discount.toFixed(2) %><br>
+                                    <br>
+                                    Total Paid: <strong> ₹ <%= order.total.toFixed(2) %></strong><br>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('./partials/footer') %>
