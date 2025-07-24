@@ -483,3 +483,123 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
 });
 
     </script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const checkoutForm = document.getElementById("checkoutForm");
+
+    function showAlert(msg) {
+      alert(msg);
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validatePhone(phone) {
+      return /^[6-9]\d{9}$/.test(phone);
+    }
+
+    function validatePincode(pin) {
+      return /^\d{6}$/.test(pin);
+    }
+
+    function validateForm() {
+      const name = document.getElementById("first-name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const state = document.getElementById("billingState").value.trim();
+      const city = document.getElementById("billingCity").value.trim();
+      const pincode = document.getElementById("billingPincode").value.trim();
+      const country = document.getElementById("billingCountry").value;
+
+      if (!name) return showAlert("Please enter your name.");
+      if (!country) return showAlert("Please select your country.");
+      if (!state) return showAlert("Please enter your state.");
+      if (!city) return showAlert("Please enter your city.");
+      if (!pincode || !validatePincode(pincode)) return showAlert("Enter a valid 6-digit PIN Code.");
+      if (!phone || !validatePhone(phone)) return showAlert("Enter a valid 10-digit mobile number.");
+      if (!email || !validateEmail(email)) return showAlert("Enter a valid email address.");
+
+      // If shipping checkbox is checked, validate shipping fields too
+      const isShippingDifferent = document.getElementById("checkbox2").checked;
+      if (isShippingDifferent) {
+        const shippingCountry = document.getElementById("shippingCountry").value;
+        const shippingState = document.getElementById("shippingState").value.trim();
+        const shippingCity = document.getElementById("shippingCity").value.trim();
+        const shippingPincode = document.getElementById("shippingPincode").value.trim();
+
+        if (!shippingCountry) return showAlert("Please select shipping country.");
+        if (!shippingState) return showAlert("Please enter shipping state.");
+        if (!shippingCity) return showAlert("Please enter shipping city.");
+        if (!shippingPincode || !validatePincode(shippingPincode)) {
+          return showAlert("Enter a valid 6-digit shipping PIN Code.");
+        }
+      }
+
+      return true;
+    }
+
+    checkoutForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (!validateForm()) return;
+
+      const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+      const codChecked = document.getElementById("codConfirm")?.checked;
+      const cartData = <%- JSON.stringify({ items: cart, total }) %>;
+
+      if (selectedPayment === "cod") {
+        if (!codChecked) {
+          alert("Please check the box to confirm Cash on Delivery.");
+          return;
+        }
+
+        window.location.href = "/cod-confirmation";
+        return;
+      }
+
+      // Collect billing address
+      const address = {
+        name: document.getElementById("first-name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        state: document.getElementById("billingState").value,
+        city: document.getElementById("billingCity").value,
+        pincode: document.getElementById("billingPincode").value,
+        line: document.getElementById("billingAddressLine2").value,
+      };
+
+      const shippingCharge = parseFloat(document.getElementById("shippingCharge").textContent.replace(/[^\d.]/g, "")) || 0;
+      const discount = parseFloat(document.getElementById("discount").textContent.replace(/[^\d.]/g, "")) || 0;
+      const total = parseFloat(document.getElementById("total-amount").textContent.replace(/[^\d.]/g, "")) || 0;
+
+      try {
+        const response = await fetch("/create-phonepe-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            cartData: JSON.stringify(cartData),
+            address,
+            shippingCharge,
+            discount,
+            total
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.checkoutPageUrl) {
+          window.location.href = result.checkoutPageUrl;
+        } else {
+          alert("❌ Payment URL not received.");
+        }
+      } catch (err) {
+        console.error("❌ Payment error:", err);
+        alert("Something went wrong.");
+      }
+    });
+  });
+</script>

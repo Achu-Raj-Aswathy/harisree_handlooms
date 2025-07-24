@@ -112,6 +112,8 @@ function updateCartTotals() {
     const productName = row.querySelector(".product-title a").textContent.trim();
     const price = parseFloat(row.querySelector(".product-price").dataset.price);
     const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
+    
+    
     const subtotal = price * qty;
 
     row.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);

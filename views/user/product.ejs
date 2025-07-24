@@ -158,7 +158,7 @@
     <div class="toggle-open-write">
       <div class="form-group mt-4">
         <p>Your Review</p>
-        <textarea id="review" name="comment" class="form-control" rows="4" placeholder="Write your experience..."></textarea>
+        <textarea id="review" name="comment" class="form-control" rows="4" placeholder="Write your experience..."  required></textarea>
       </div>
 
       <div class="form-group">
@@ -328,7 +328,7 @@
           <div class="slick-single-layout">
             <div class="axil-product product-style-eight">
               <div class="thumbnail">
-                <a href="/product/<%= product._id %>">
+                <a href="/product?id=<%= product._id %>">
                   <% if (product.images && product.images.length > 0) { %>
                     <img class="main-img" src="<%= product.images[0] %>" alt="<%= product.name || 'Product' %>">
                   <% } else { %>
@@ -340,7 +340,7 @@
                     <div class="product-badget sale">Sale</div>
                   </div>
                 <% } %>
-                <div class="product-hover-action">
+                <!-- <div class="product-hover-action">
                   <ul class="cart-action">
                     <li class="select-option">
                       <a href="/product/<%= product._id %>">
@@ -348,7 +348,7 @@
                       </a>
                     </li>
                   </ul>
-                </div>
+                </div> -->
               </div>
               <div class="product-content">
                 <div class="inner">
@@ -538,6 +538,9 @@
     document.getElementById("buyNowForm").submit();
   }
 </script>
+
+
+
 
     <%- include('./partials/footer') %>
       </div>

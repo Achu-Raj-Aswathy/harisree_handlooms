@@ -21,11 +21,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
     "morgan": "^1.10.0",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "nocache": "^4.0.0",
     "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
     "pg-sdk-node": "^2.0.2",
+    "sharp": "^0.34.3",
     "uuid": "^11.1.0"
   }
 }
