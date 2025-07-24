@@ -501,18 +501,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </a>
           </div>
           <div class="product-content">
-            <div class="product-rating">
-              <span class="rating-icon">
-                ${[...Array(5)]
-                  .map((_, i) =>
-                    i < product.rating
-                      ? '<i class="fas fa-star"></i>'
-                      : '<i class="fal fa-star"></i>'
-                  )
-                  .join("")}
-              </span>
-              <span class="rating-number"><span>${product.reviews}+ </span> Reviews</span>
-            </div>
+           
             <h6 class="product-title"><a href="/product?id=${product._id}">${product.name}</a></h6>
             <div class="product-price-variant">
               <span class="price current-price">₹ ${product.discount}</span>
@@ -522,17 +511,16 @@ document.addEventListener("DOMContentLoaded", function () {
                   : ""
               }
             </div>
-            <div class="product-cart">
-            <a href="#" class="cart-btn add-to-cart" data-id="${product._id}">
-  <i class="fal fa-shopping-cart"></i>
-</a>
-<a href="#" class="wishlist-btn add-to-wishlist" data-id="${product._id}">
-  <i class="fal fa-heart"></i>
-</a>
+         <div class="product-cart" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+  <a href="#" class="cart-btn add-to-cart" data-id="${product._id}" style="padding: 8px; border: 1px solid #eee; border-radius: 8px;">
+    <i class="fal fa-shopping-cart"></i>
+  </a>
+  <a href="#" class="wishlist-btn add-to-wishlist" data-id="${product._id}">
+    <i class="fal fa-heart"></i>
+  </a>
+</div>
 
 
-              
-            </div>
           </div>
         </div>
         `
