@@ -60,7 +60,16 @@
                                                        <td><%= user.name %></td>
                                                        <td><%= user.email %></td>
                                                        <td><%= user.mobile %></td>
-                                                       <td><%= user.address[0].shipping %></td>
+                                                      <td>
+  <% if (user.address && user.address.length > 0 && user.address[0].shipping) { %>
+    <%= user.address[0].shipping.addressLine || '' %>,
+    <%= user.address[0].shipping.city || '' %>,
+    <%= user.address[0].shipping.state || '' %>
+  <% } else { %>
+    N/A
+  <% } %>
+</td>
+
                                                        <td><%= user.orders.length %></td>
                                                        <td>
                                                             <div class="d-flex gap-2">
