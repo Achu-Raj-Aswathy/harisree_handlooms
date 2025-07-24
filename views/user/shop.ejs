@@ -13,7 +13,7 @@
     <div class="custom-dropdown">
       <button class="dropdown-toggle-custom" onclick="toggleCustomDropdown()">
         <span id="dropdownLabel">
-  Sort By <%= typeof selectedCategory !== 'undefined' ? `- ${selectedCategory}` : '' %>
+  Sort By <%= selectedCategory ? `- ${selectedCategory}` : '' %>
 </span>
         <i class="fa-solid fa-chevron-down"></i>
       </button>
