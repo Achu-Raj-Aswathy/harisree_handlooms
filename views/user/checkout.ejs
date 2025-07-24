@@ -11,12 +11,12 @@
 
                     <div class="form-group">
                       <label> Name <span>*</span></label>
-                      <input type="text" id="first-name" placeholder="Name" value="<%- user.name %>">
+                      <input type="text" id="first-name" placeholder="Name" value="<%- user.name %>" required>
                     </div>
 
                 <div class="form-group">
                   <label>Country/ Region <span>*</span></label>
-                  <select id="billingCountry" name="billingCountry">
+                  <select id="billingCountry" name="billingCountry" required>
                     <option value="">Select Country</option>
                     <!-- Add more countries -->
                   </select>
@@ -25,7 +25,7 @@
                 <div class="form-group">
                   <label>State <span>*</span></label>
                   <input type="text" name="billingState" id="billingState" class="mb--15" placeholder="State"
-                    value="<%= user.address[0]?.billing?.state || '' %>">
+                    value="<%= user.address[0]?.billing?.state || '' %>" required>
                   <input type="text" name="billingAddressLine2" id="billingAddressLine2"
                     placeholder="Apartment, suite, unit, etc. (optional)"
                     value="<%= user.address[0]?.billing?.addressLine || '' %>">
@@ -34,23 +34,42 @@
                 <div class="form-group">
                   <label>Town/ City <span>*</span></label>
                   <input type="text" name="billingCity" id="billingCity" placeholder="Town/City"
-                    value="<%= user.address[0]?.billing?.city || '' %>">
+                    value="<%= user.address[0]?.billing?.city || '' %>" required>
                 </div>
 
                 <div class="form-group">
                   <label>PIN Code / ZIP Code <span>*</span></label>
                   <input type="text" name="billingPincode" id="billingPincode" placeholder="ZIP Code"
-                    value="<%= user.address[0]?.billing?.pincode || '' %>">
+                    value="<%= user.address[0]?.billing?.pincode || '' %>" required>
                 </div>
 
-                <div class="form-group">
-                  <label>Phone <span>*</span></label>
-                  <input type="tel" id="phone" value="<%- user.mobile %>" placeholder="Phone">
-                </div>
-                <div class="form-group">
-                  <label>Email Address <span>*</span></label>
-                  <input type="email" id="email" value="<%- user.email %>" placeholder="Email">
-                </div>
+               <div class="form-group" style="position: relative;">
+  <label>Phone <span>*</span></label>
+  <input
+    type="tel"
+    id="phone"
+    name="phone"
+    value="<%- user.mobile %>"
+    placeholder="Phone"
+    required
+    oninput="validatePhone()"
+    style="border: 1px solid #ccc; padding: 8px; width: 100%;"
+  />
+  <small id="phoneError" style="color: red; display: none;">Please enter a valid 10-digit phone number.</small>
+</div>
+               <div class="form-group" style="position: relative;">
+  <label>Email Address <span>*</span></label>
+  <input
+    type="email"
+    id="email"
+    value="<%- user.email %>"
+    placeholder="Email"
+    required
+    oninput="validateEmail()"
+    style="border: 1px solid #ccc; padding: 8px; width: 100%;"
+  />
+  <small id="emailError" style="color: red; display: none;">Please enter a valid email address.</small>
+</div>
                 <div class="form-group different-shippng">
                   <div class="toggle-bar">
                     <a href="javascript:void(0)" class="toggle-btn">
@@ -61,7 +80,7 @@
                   <div class="toggle-open">
                     <div class="form-group">
                       <label>Country/ Region <span>*</span></label>
-                      <select id="shippingCountry" name="shippingCountry">
+                      <select id="shippingCountry" name="shippingCountry" >
                         <option value="">Select Country</option>
                       </select>
                     </div>
@@ -69,7 +88,7 @@
                     <div class="form-group">
                       <label>State <span>*</span></label>
                       <input type="text" name="shippingState" id="shippingState" class="mb--15" placeholder="State"
-                        value="<%= user.address[0]?.shipping?.state || '' %>">
+                        value="<%= user.address[0]?.shipping?.state || '' %>" >
                       <input type="text" name="shippingAddressLine2" id="shippingAddressLine2"
                         placeholder="Apartment, suite, unit, etc. (optional)"
                         value="<%= user.address[0]?.shipping?.addressLine || '' %>">
@@ -78,13 +97,13 @@
                     <div class="form-group">
                       <label>Town/ City <span>*</span></label>
                       <input type="text" name="shippingCity" id="shippingCity" placeholder="Town/City"
-                        value="<%= user.address[0]?.shipping.city || '' %>">
+                        value="<%= user.address[0]?.shipping.city || '' %>" required>
                     </div>
 
                     <div class="form-group">
                       <label>PIN Code / ZIP Code <span>*</span></label>
                       <input type="text" name="shippingPincode" id="shippingPincode" placeholder="ZIP Code"
-                        value="<%= user.address[0]?.shipping?.pincode || '' %>">
+                        value="<%= user.address[0]?.shipping?.pincode || '' %>" required>
                     </div>
                   </div>
                 </div>
@@ -157,7 +176,7 @@
 
 
                 <!-- Coupon START -->
-                <div class="col-md-6 col-xl-12">
+                <div class="col-md-12 col-xl-12">
                   <div class="card border-0 shadow-sm rounded-4 p-3">
                     <h5 class="mb-3 fw-bold">Offer & Discount</h5>
 
@@ -602,4 +621,36 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
       }
     });
   });
+</script>
+<script>
+  function validatePhone() {
+    const phoneInput = document.getElementById("phone");
+    const errorText = document.getElementById("phoneError");
+    const phoneValue = phoneInput.value;
+
+    // Only allow digits
+    phoneInput.value = phoneValue.replace(/[^0-9]/g, '');
+
+    if (phoneInput.value.length !== 10) {
+      errorText.style.display = "block";
+    } else {
+      errorText.style.display = "none";
+    }
+  }
+</script>
+
+<script>
+  function validateEmail() {
+    const emailInput = document.getElementById("email");
+    const emailError = document.getElementById("emailError");
+    const emailValue = emailInput.value;
+
+    const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+    if (!emailPattern.test(emailValue)) {
+      emailError.style.display = "block";
+    } else {
+      emailError.style.display = "none";
+    }
+  }
 </script>
