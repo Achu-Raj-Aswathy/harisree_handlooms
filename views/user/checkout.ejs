@@ -70,43 +70,7 @@
   />
   <small id="emailError" style="color: red; display: none;">Please enter a valid email address.</small>
 </div>
-                <div class="form-group different-shippng">
-                  <div class="toggle-bar">
-                    <a href="javascript:void(0)" class="toggle-btn">
-                      <input type="checkbox" id="checkbox2" name="diffrent-ship">
-                      <label for="checkbox2">Ship to a different address?</label>
-                    </a>
-                  </div>
-                  <div class="toggle-open">
-                    <div class="form-group">
-                      <label>Country/ Region <span>*</span></label>
-                      <select id="shippingCountry" name="shippingCountry" >
-                        <option value="">Select Country</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group">
-                      <label>State <span>*</span></label>
-                      <input type="text" name="shippingState" id="shippingState" class="mb--15" placeholder="State"
-                        value="<%= user.address[0]?.shipping?.state || '' %>" >
-                      <input type="text" name="shippingAddressLine2" id="shippingAddressLine2"
-                        placeholder="Apartment, suite, unit, etc. (optional)"
-                        value="<%= user.address[0]?.shipping?.addressLine || '' %>">
-                    </div>
-
-                    <div class="form-group">
-                      <label>Town/ City <span>*</span></label>
-                      <input type="text" name="shippingCity" id="shippingCity" placeholder="Town/City"
-                        value="<%= user.address[0]?.shipping.city || '' %>" required>
-                    </div>
-
-                    <div class="form-group">
-                      <label>PIN Code / ZIP Code <span>*</span></label>
-                      <input type="text" name="shippingPincode" id="shippingPincode" placeholder="ZIP Code"
-                        value="<%= user.address[0]?.shipping?.pincode || '' %>" required>
-                    </div>
-                  </div>
-                </div>
+                
                 <div class="form-group">
                   <label>Other Notes (optional)</label>
                   <textarea id="notes" rows="2"

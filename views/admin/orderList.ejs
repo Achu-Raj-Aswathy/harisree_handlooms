@@ -2,16 +2,6 @@
 <div class="wrapper">
      <%- include('./partials/adminHeader') %>
      <%- include('./partials/sidebar')%>
-
-
-
-
-
-
-
-
-        
-         
           <!-- ==================================================== -->
           <!-- Start right Content here -->
           <!-- ==================================================== -->
@@ -21,8 +11,6 @@
 
                     <!-- Start Container Fluid -->
                     <div class="container-xxl">
-
-                        
 
                          <div class="row">
                               <div class="col-xl-12">
@@ -52,118 +40,42 @@
                                                             <tr>
                                                                  <th>Order ID</th>
                                                                  <th>Created at</th>
-                                                                 <th>Customer</th>
-                                                                 <th>Priority</th>
+                                                                 <th>Customer ID</th>
+                                                                 <th>Items</th>
                                                                  <th>Total</th>
                                                                  <th>Payment Status</th>
-                                                                 <th>Items</th>
-                                                                 <th>Delivery Number</th>
                                                                  <th>Order Status</th>
-                                                                 <th>Action</th>
                                                             </tr>
                                                        </thead>
                                                        <tbody>
-                                                            <!-- <tr>
-                                                                 <td>
-                                                                      #583488/80
-                                                                 </td>
-                                                                 <td>Apr 23 , 2024</td>
-                                                                 <td>
-                                                                      <a href="#!" class="link-primary fw-medium">Gail C. Anderson</a>
-                                                                 </td>
-                                                                 <td> Normal</td>
-                                                                 <td> $1,230.00</td>
-                                                                 <td> <span class="badge bg-light text-dark  px-2 py-1 fs-13">Unpaid</span></td>
-                                                                 <td> 4</td>
-                                                                 <td> -</td>
-                                                                 <td> <span class="badge border border-secondary text-secondary  px-2 py-1 fs-13">Draft</span></td>
-                                                                 <td>
-                                                                      <div class="d-flex gap-2">
-                                                                           <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      </div>
-                                                                 </td>
-                                                            </tr>
-
+                                                            <% if(orders.length > 0) { %>
+                                                            <% orders.forEach(order => { %>
                                                             <tr>
+                                                                 <td><%= order.orderId %></td>
+                                                                 <td><%= order.createdAt.toLocaleDateString('en-IN') %></td>
                                                                  <td>
-                                                                      #456754/80
+                                                                      <a href="/admin/user-details?id=<%= order.userId._id %>"><%= order.userId.userId %></a>
+                                                                      
                                                                  </td>
-                                                                 <td>Apr 20 , 2024</td>
-                                                                 <td>
-                                                                      <a href="#!" class="link-primary fw-medium">Jung S. Ayala</a>
-                                                                 </td>
-                                                                 <td> Normal</td>
-                                                                 <td> $987.00</td>
-                                                                 <td> <span class="badge bg-success text-light  px-2 py-1 fs-13">Paid</span></td>
-                                                                 <td> 2</td>
-                                                                 <td> -</td>
-                                                                 <td> <span class="badge border border-warning text-warning  px-2 py-1 fs-13">Packaging</span></td>
-                                                                 <td>
-                                                                      <div class="d-flex gap-2">
-                                                                           <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      </div>
-                                                                 </td>
+                                                                  <td>
+          <ul class="list-unstyled mb-0">
+            <% order.items.forEach(item => { %>
+              <li>
+                <%= item.productId.name || 'Product' %> x <%= item.quantity %> - ₹<%= item.subtotal.toFixed(2) %>
+              </li>
+            <% }) %>
+          </ul>
+        </td>
+        <td>₹<%= order.total.toFixed(2) %></td>
+                                                                 <td><%= order.paymentStatus %></td>
+                                                                 <td><%= order.status %></td>
                                                             </tr>
+                                                            <% }) %>
+                                                            <% } else { %>
                                                             <tr>
-                                                                 <td>
-                                                                      #578246/80
-                                                                 </td>
-                                                                 <td>Apr 19 , 2024</td>
-                                                                 <td>
-                                                                      <a href="#!" class="link-primary fw-medium">David A. Arnold</a>
-                                                                 </td>
-                                                                 <td> High</td>
-                                                                 <td> $1,478.00</td>
-                                                                 <td> <span class="badge  bg-success text-light px-2 py-1 fs-13">Paid</span></td>
-                                                                 <td> 5</td>
-                                                                 <td> #D-57837678</td>
-                                                                 <td> <span class="badge border border-success text-success  px-2 py-1 fs-13">Completed</span></td>
-                                                                 <td>
-                                                                      <div class="d-flex gap-2">
-                                                                           <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      </div>
-                                                                 </td>
-                                                            </tr> -->
-
-                                                            <tr>
-                                                                 <td>
-                                                                      No recent Orders
-                                                                 </td>
-                                                                 <!-- <td>Apr 04 , 2024</td>
-                                                                 <td>
-                                                                      <a href="#!" class="link-primary fw-medium">Cecile D. Gordon</a>
-                                                                 </td>
-                                                                 <td> Normal</td>
-                                                                 <td> $720.00</td>
-                                                                 <td> <span class="badge bg-light text-dark  px-2 py-1 fs-13">Refund</span></td>
-                                                                 <td> 4</td>
-                                                                 <td> -</td>
-                                                                 <td> <span class="badge border border-danger text-danger  px-2 py-1 fs-13">Canceled</span></td>
-                                                                 <td>
-                                                                      <div class="d-flex gap-2">
-                                                                           <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                           <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      </div>
-                                                                 </td> -->
+                                                                 <td colspan="9" class="text-center">No orders found</td>
                                                             </tr>
-
-
-
-
-                                                            
-
-
-                                                           
-
-                                                            
-
+                                                            <% } %>
                                                        </tbody>
                                                   </table>
                                              </div>

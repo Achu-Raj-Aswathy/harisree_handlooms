@@ -68,7 +68,7 @@ const loginAdmin = async (req, res) => {
 
 const viewDashboard = async (req, res) => {
   try {
-    const orders = await Orders.find();
+    const orders = await Orders.find().populate("userId").populate("items.productId");
     const products = await Products.find();
     const customers = await Users.find();
 
@@ -77,6 +77,7 @@ const viewDashboard = async (req, res) => {
     const totalCustomers = customers.length;
 
     res.render("admin/dashboard", {
+      orders,
       totalOrders,
       totalProducts,
       totalCustomers,
@@ -237,7 +238,8 @@ const viewListCoupon = async (req, res) => {
 
 const viewListOrder = async (req, res) => {
   try {
-    res.render("admin/orderList", {});
+    const orders = await Orders.find().populate("userId").populate("items.productId");
+    res.render("admin/orderList", {orders});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
