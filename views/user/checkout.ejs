@@ -24,11 +24,16 @@
 
                 <div class="form-group">
                   <label>State <span>*</span></label>
-                  <input type="text" name="billingState" id="billingState" class="mb--15" placeholder="State"
+                  <input type="text" name="billingState" id="billingState" placeholder="State"
                     value="<%= user.address[0]?.billing?.state || '' %>" required>
+                  
+                </div>
+
+                <div class="form-group">
+                  <label>Apartment <span>*</span></label>
                   <input type="text" name="billingAddressLine2" id="billingAddressLine2"
-                    placeholder="Apartment, suite, unit, etc. (optional)"
-                    value="<%= user.address[0]?.billing?.addressLine || '' %>">
+                    placeholder="Apartment, suite, unit, etc."
+                    value="<%= user.address[0]?.billing?.addressLine || '' %>" required>
                 </div>
 
                 <div class="form-group">

@@ -147,10 +147,21 @@ const status = async (req, res) => {
 });
       await newOrder.save();
 
-      await Users.findByIdAndUpdate(req.session.user, {
-  $push: {
+await Users.findByIdAndUpdate(req.session.user, {
+    $push: {
     orders: {
       orderId: newOrder._id
+    }
+  },
+  $set: {
+    "address.0.shipping": {
+      name: orderData.address.name,
+      addressLine: orderData.address.line,
+      city: orderData.address.city,
+      state: orderData.address.state,
+      country: orderData.address.country || "India", // fallback if country missing
+      pincode: orderData.address.pincode,
+      phone: orderData.address.phone,
     }
   }
 });

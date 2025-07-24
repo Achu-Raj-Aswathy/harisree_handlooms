@@ -279,7 +279,7 @@ const viewUserDetails = async (req, res) => {
     const orders = await Orders.find({ userId: user._id });
 
     // Calculate total price
-    const totalOrderPrice = orders.reduce((sum, order) => sum + order.price, 0);
+    const totalOrderPrice = orders.reduce((sum, order) => sum + order.total, 0);
 
     res.render("admin/customerDetails", {
       user,
@@ -741,7 +741,7 @@ const addCoupon = async (req, res) => {
       code,
       categoryId,
       productId,
-      discountValue,
+      discountPercentage: discountValue,
       startDate: parsedStartDate,
       endDate: parsedEndDate,
       status,
@@ -814,7 +814,7 @@ const editCoupon = async (req, res) => {
       code,
       categoryId,
       productId,
-      discountValue,
+      discountPercentage: discountValue,
       startDate: parsedStartDate,
       endDate: parsedEndDate,
       status,

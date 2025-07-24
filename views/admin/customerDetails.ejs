@@ -58,14 +58,22 @@
     <p class="d-flex mb-0 align-items-center gap-1 fw-medium text-dark"> Shipping Address: </p>
   </td>
   <td class="text-dark fw-normal px-0" style="display: block;">
-    <div><%= user.address[0]?.shipping || 'N/A' %></div>
+    <div>Address: <%= user.address[0]?.shipping.addressLine || 'N/A' %></div>
+    <div>City: <%= user.address[0]?.shipping.city || 'N/A' %></div>
+    <div>State: <%= user.address[0]?.shipping.state || 'N/A' %></div>
+    <div>Country: <%= user.address[0]?.shipping.country || 'N/A' %></div>
+    <div>PinCode: <%= user.address[0]?.shipping.pincode || 'N/A' %></div>
     <hr>
   </td>
     <td class="px-0" style="display: block;">
     <p class="d-flex mb-0 align-items-center gap-1 fw-medium text-dark"> Billing Address: </p>
   </td>
   <td class="text-dark fw-normal px-0" style="display: block;">
-    <div><%= user.address[0]?.billing || 'N/A' %></div>
+    <div>Address: <%= user.address[0]?.billing.addressLine || 'N/A' %></div>
+    <div>City: <%= user.address[0]?.billing.city || 'N/A' %></div>
+    <div>State: <%= user.address[0]?.billing.state || 'N/A' %></div>
+    <div>Country: <%= user.address[0]?.billing.country || 'N/A' %></div>
+    <div>PinCode: <%= user.address[0]?.billing.pincode || 'N/A' %></div>
     <hr>
   </td>
 </tr>
@@ -154,9 +162,9 @@
                                                                  <% orders.forEach((order, index) => { %>
                                                             <tr>
                                                                  <td> <%= order.orderId %></td>
-                                                                 <td> <span class="badge bg-success-subtle text-success py-1 px-2"><%= order.status%></span> </td>
-                                                                 <td> <%= order.price %> </td>
-                                                                 <td> <%= order.createdAt.toLocaleString %></td>
+                                                                 <td> <span class="badge bg-success-subtle text-success py-1 px-2"><%= order.status %></span> </td>
+                                                                 <td> <%= order.total %> </td>
+                                                                 <td> <%= order.createdAt.toLocaleDateString('en-IN') %></td>
                                                             </tr>
                                                                  <% }) %>
                                                             <% } else { %>

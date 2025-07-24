@@ -103,39 +103,12 @@
                       </div>
                     </div>
 
-                    <!-- Type
-                       <h4 class="card-title mb-3 mt-2">Coupon Type</h4>
-                    <div class="row mb-3">
-                    <div class="col-lg-4">
-  <div class="form-check">
-    <input class="form-check-input" type="radio" name="type" value="Free Shipping" id="typeShipping"
-      <%= coupon.type === 'Free Shipping' ? 'checked' : '' %> >
-    <label class="form-check-label" for="typeShipping">Free Shipping</label>
-  </div>
-</div>
-<div class="col-lg-4">
-  <div class="form-check">
-    <input class="form-check-input" type="radio" name="type" value="Percentage" id="typePercentage"
-      <%= coupon.type === 'Percentage' ? 'checked' : '' %> >
-    <label class="form-check-label" for="typePercentage">Percentage</label>
-  </div>
-</div>
-<div class="col-lg-4">
-  <div class="form-check">
-    <input class="form-check-input" type="radio" name="type" value="Fixed Amount" id="typeFixed"
-      <%= coupon.type === 'Fixed Amount' ? 'checked' : '' %> >
-    <label class="form-check-label" for="typeFixed">Fixed Amount</label>
-  </div>
-</div>
-</div> -->
-
-
                     <!-- Discount Value -->
                     <div class="row">
                       <div class="col-lg-12">
                         <div class="mb-3">
                           <label for="discount-value" class="form-label">Discount Percentage</label>
-                          <input type="number" id="discount-value" name="discountValue" class="form-control" placeholder="Enter value" value="<%= coupon.discountValue %>">
+                          <input type="number" id="discount-value" name="discountValue" class="form-control" placeholder="Enter value" value="<%= coupon.discountPercentage %>">
                         </div>
                       </div>
                     </div>
