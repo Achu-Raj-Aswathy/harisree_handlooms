@@ -23,6 +23,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const baseUrl = process.env.BASE_URL || "http://localhost:3000"; // Ensure BASE_URL is set in your .env file
 // ===================
 // PhonePe Config
 // ===================
@@ -37,9 +38,9 @@ const ENV = Env.UAT;
 
 const client = StandardCheckoutClient.getInstance(CLIENT_ID, CLIENT_SECRET, SALT_INDEX, ENV);
 
-const redirectUrl = "http://localhost:3000/status";
-const successUrl = "http://localhost:3000/success";
-const failureUrl = "http://localhost:3000/failure";
+const redirectUrl = `${baseUrl}/status`; 
+const successUrl = `${baseUrl}/?success=1`;
+const failureUrl = `${baseUrl}/?success=0`;
 
 const tempBookingStore = {}; // Temporary store for booking data
 
@@ -154,19 +155,73 @@ const status = async (req, res) => {
   }
 });
 
+const order = await Orders.findById(newOrder._id).populate('items.productId');
+
       await transporter.sendMail({
-        from: process.env.EMAIL,
-        to: orderData.user.email,
-        subject: "🧺 Order Confirmed",
-        html: `
-          <p>Hi <strong>${orderData.user.name}</strong>,</p>
-          <p>Thank you for your order! Total: ₹${orderData.total}</p>
-          <p>We'll start processing your order shortly.</p>
-        `,
-      });
+  from: process.env.EMAIL,
+  to: orderData.address.email,
+  subject: "🧺 Your Harisree Handlooms Order Confirmed: " + newOrder.orderId,
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
+      <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Thank you for your order</h2>
+      <p>Hi <strong>${orderData.address.name}</strong>,</p>
+      <p>Just to let you know — we’ve received your order <strong>${newOrder.orderId}</strong>, and it is now being processed:</p>
+
+      <h3 style="color: #5e9c76;">[Order ${newOrder.orderId}] (${new Date(newOrder.createdAt).toDateString()})</h3>
+      
+      <table width="100%" border="1" cellspacing="0" cellpadding="10" style="border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #f2f2f2;">
+            <th align="left">Product</th>
+            <th align="center">Quantity</th>
+            <th align="right">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${order.items.map(item => `
+            <tr>
+              <td>${item.productId.name || 'Product'}</td>
+              <td align="center">${item.quantity}</td>
+              <td align="right">₹${Number(item.subtotal).toFixed(2)}</td>
+            </tr>
+          `).join('')}
+          <tr>
+            <td colspan="2" align="right"><strong>Subtotal:</strong></td>
+            <td align="right">₹${(orderData.items.reduce((acc, item) => acc + Number(item.subtotal), 0)).toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colspan="2" align="right"><strong>Shipping:</strong></td>
+            <td align="right">₹${orderData.shippingCharge.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colspan="2" align="right"><strong>Total:</strong></td>
+            <td align="right"><strong>₹${orderData.total.toFixed(2)}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>Payment method:</strong> ${newOrder.paymentMethod}</p>
+
+      <h3 style="color: #5e9c76;">Shipping address</h3>
+      <p>
+        ${orderData.address.name}<br>
+        ${orderData.address.line}<br>
+        ${orderData.address.city}, ${orderData.address.state} ${orderData.address.pincode}<br>
+        ${orderData.address.phone}<br>
+        ${orderData.address.email}
+      </p>
+
+      <p>Your order will be dispatched within 8 to 10 days and should arrive within an additional 2 to 3 days. Thanks for shopping with us!</p>
+
+      <footer style="text-align: center; color: #888; font-size: 12px; margin-top: 30px;">
+        Harisree Handlooms — Built by Harisree Handlooms
+      </footer>
+    </div>
+  `
+});
 
       delete tempBookingStore[merchantOrderId];
-      return res.redirect("/?success=1");
+      return res.redirect(successUrl);
     } else {
       console.log(`Payment status: ${status}`);
       return res.redirect(failureUrl);
@@ -270,11 +325,33 @@ const signUp = async (req, res) => {
     
     await newUser.save();
 
+    await transporter.sendMail({
+  from: process.env.EMAIL,
+  to: newUser.email,
+  subject: `👋 Welcome to Harisree Handlooms, ${newUser.name}!`,
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
+      <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Welcome to Harisree Handlooms</h2>
+      <p>Hi <strong>${newUser.name}</strong>,</p>
+      <p>Thank you for signing up with us. We’re thrilled to have you!</p>
+      <p>You can now explore and purchase our finest Kerala handloom products.</p>
+      <p style="margin-top: 30px;">Warm regards,<br/><strong>Team Harisree</strong></p>
+
+      <footer style="text-align: center; color: #888; font-size: 12px; margin-top: 30px;">
+        Harisree Handlooms — Crafted with Love in Kerala
+      </footer>
+    </div>
+  `,
+});
+
     const token = jwt.sign({ id: newUser._id }, process.env.SECRET_KEY, {
       expiresIn: "7d",
     });
 
-    return res.redirect("/signin");
+    req.session.token = token;
+    req.session.user = newUser._id;
+
+    return res.redirect("/");
   } catch (error) {
     console.error(error);
     return res.render("user/signup", {
@@ -300,6 +377,25 @@ const signIn = async (req, res) => {
         message: "Username or Password does not match",
         messageType: "danger",
       });
+
+      await transporter.sendMail({
+  from: process.env.EMAIL,
+  to: user.email,
+  subject: `🔐 Login Alert - Harisree Handlooms`,
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
+      <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Login Alert</h2>
+      <p>Hi <strong>${user.name}</strong>,</p>
+      <p>We noticed a new login to your account at Harisree Handlooms.</p>
+      <p>If this was you, you can safely ignore this email. Otherwise, please reset your password immediately.</p>
+      <p style="margin-top: 30px;">Warm regards,<br/><strong>Team Harisree</strong></p>
+
+      <footer style="text-align: center; color: #888; font-size: 12px; margin-top: 30px;">
+        Harisree Handlooms — Crafted with Love in Kerala
+      </footer>
+    </div>
+  `,
+});
 
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: "7d",
@@ -913,6 +1009,54 @@ const viewOrderDetails = async (req, res) => {
   }
 };
 
+const updateAccountDetails = async (req, res) => {
+  try {
+    const { name, country, currentPassword, newPassword, confirmPassword } = req.body;
+    const userId = req.session.user;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect." });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "New password and confirm password do not match." });
+    }
+
+    // Update name
+    if (name) user.name = name;
+
+    // Update country (optional — assuming it's saved under user.address[0].billing.country)
+    if (country) {
+      if (!user.address || !user.address[0]) user.address = [{}];
+      if (!user.address[0].billing) user.address[0].billing = {};
+      user.address[0].billing.country = country;
+    }
+
+    // Update password only if changed
+    if (newPassword) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = newPassword;
+    }
+
+    await user.save();
+
+    return res.status(200).json({ message: "Account updated successfully." });
+  } catch (err) {
+    console.error("Update error:", err);
+    return res.status(500).json({ message: "Server error." });
+  }
+};
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -950,5 +1094,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   viewOrderDetails,
-
+  updateAccountDetails,
+   
 }

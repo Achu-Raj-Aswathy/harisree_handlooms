@@ -53,17 +53,20 @@ userRouter.use((req, res, next) => {
 
   res.locals.pathname = req.path;
 
+  const isStaticAsset = currentUrl.startsWith('/assets');
+
   if (
     !req.session.user_id &&
     req.method === "GET" &&
-    !["/signin", "/signup"].includes(currentUrl)
+    !["/signin", "/signup"].includes(currentUrl) &&
+    !isStaticAsset
   ) {
     req.session.originalUrl = currentUrl;
   }
 
   next();
 });
-
+  
 userRouter.get("/", userController.viewHomepage);
 userRouter.get("/signin", isLogout, userController.viewSignin);
 userRouter.get("/signup", isLogout, userController.viewSignup);
@@ -106,6 +109,7 @@ userRouter.post(
   userController.addReview
 );
 userRouter.post("/forgot-password", isLogout, userController.forgotPassword);
+userRouter.post("/account-edit", isLogin, userController.updateAccountDetails);
 
 userRouter.post("/create-phonepe-order", userController.createPhonePeOrder);
 userRouter.get("/status", userController.status);

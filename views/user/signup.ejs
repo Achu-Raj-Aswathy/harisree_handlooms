@@ -19,27 +19,64 @@
         <form id="signupForm" action="/signup" method="POST">
         <!-- Username -->
         <div class="input-wrapper">
-          <input type="text" name="name" placeholder="Enter name"  autocomplete="off"/>
+          <input type="text" name="name" placeholder="Enter name"  autocomplete="off" required/>
           <span class="input-error-message" id="nameError"></span>
         </div>
 
         <!-- Email -->
         <div class="input-wrapper">
-          <input type="email" name="email" placeholder="Enter email"  autocomplete="off" />
+          <input type="email" name="email" placeholder="Enter email"  autocomplete="off" required/>
           <span class="input-error-message" id="emailError"></span>
         </div>
 
         <!-- Password -->
-        <div class="input-wrapper">
-          <input type="password" name="password" placeholder="Enter password" />
-          <span class="input-error-message" id="passwordError"></span>
-        </div>
+        <!-- Password -->
+<div class="input-wrapper position-relative">
+  <input
+    type="password"
+    id="psw-input"
+    name="password"
+    placeholder="Enter password"
+    class="form-control fakepassword pe-5"
+    autocomplete="new-password"
+    required
+  />
+  <i
+    class="fakepasswordicon fas fa-eye-slash"
+    style="position: absolute; top: 30px; right: 15px; transform: translateY(-50%); cursor: pointer; color: #999;"
+  ></i>
 
-        <!-- Confirm Password -->
-        <div class="input-wrapper">
-          <input type="password" name="confirmPassword" placeholder="Confirm password" />
-          <span class="input-error-message" id="confirmPasswordError"></span>
-        </div>
+  <button type="button" class="btn btn-sm btn-outline-light mt-2" id="generate-password-btn">
+    Generate Strong Password
+  </button>
+
+  <!-- Password Rules -->
+  <div id="password-rules-container" class="d-none">
+    <ul id="password-rules" class="text-danger small ps-3 mb-3" style="list-style: none;">
+      <li id="rule-length">❌ Minimum 8 characters</li>
+      <li id="rule-upper">❌ At least 1 uppercase letter</li>
+      <li id="rule-lower">❌ At least 1 lowercase letter</li>
+      <li id="rule-number">❌ At least 1 number</li>
+      <li id="rule-special">❌ At least 1 special character (@, #, $, *)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Confirm Password -->
+<div class="input-wrapper position-relative">
+  <input
+    type="password"
+    id="confirm-password"
+    name="confirmPassword"
+    placeholder="Confirm password"
+    disabled
+    required
+  />
+
+    <span class="position-absolute top-50 translate-middle-y p-0 mt-0" style="right: 15px;">
+    <i class="fakepasswordicon fas fa-eye-slash cursor-pointer p-2"></i>
+  </span>
+</div>
 
         <button type="submit">Create Account</button>
       </form>
@@ -50,63 +87,107 @@
     </div>
   </div>
 
-  <!-- <script> document.getElementById("signupForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const name = form.name.value.trim();
-  const email = form.email.value.trim();
-  const password = form.password.value;
-  const confirmPassword = form.confirmPassword.value;
-
-  // Clear previous errors
-  document.getElementById("nameError").textContent = "";
-  document.getElementById("emailError").textContent = "";
-  document.getElementById("passwordError").textContent = "";
-  document.getElementById("confirmPasswordError").textContent = "";
-
-  let isValid = true;
-
-  if (!name) {
-    document.getElementById("nameError").textContent = "Name is required";
-    isValid = false;
-  }
-
-  if (!email) {
-    document.getElementById("emailError").textContent = "Email is required";
-    isValid = false;
-  } else if (!email.includes("@")) {
-    document.getElementById("emailError").textContent = "Email must contain @";
-    isValid = false;
-  }
-
-  if (!password) {
-    document.getElementById("passwordError").textContent = "Password is required";
-    isValid = false;
-  }
-
-  if (!confirmPassword) {
-    document.getElementById("confirmPasswordError").textContent = "Please confirm your password";
-    isValid = false;
-  } else if (confirmPassword !== password) {
-    document.getElementById("confirmPasswordError").textContent = "Passwords do not match";
-    isValid = false;
-  }
-
-  if (isValid) {
-    localStorage.setItem("userEmail", email);
-    alert("Account created successfully!");
-    window.location.href = "/signin"; // Simulate navigation
-  }
-});
-</script> -->
 </body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.getElementById("psw-input");
+    const confirmPasswordInput = document.getElementById("confirm-password");
+    const ruleContainer = document.getElementById("password-rules-container");
+
+    const rules = {
+      length: document.getElementById("rule-length"),
+      upper: document.getElementById("rule-upper"),
+      lower: document.getElementById("rule-lower"),
+      number: document.getElementById("rule-number"),
+      special: document.getElementById("rule-special"),
+    };
+
+    passwordInput.addEventListener("focus", () => {
+      ruleContainer.classList.remove("d-none");
+    });
+
+    passwordInput.addEventListener("input", function () {
+      const value = passwordInput.value;
+      const conditions = {
+        length: value.length >= 8,
+        upper: /[A-Z]/.test(value),
+        lower: /[a-z]/.test(value),
+        number: /[0-9]/.test(value),
+        special: /[@#$*]/.test(value),
+      };
+
+      Object.keys(conditions).forEach(key => {
+        if (conditions[key]) {
+          rules[key].classList.remove("text-danger");
+          rules[key].classList.add("text-success");
+          rules[key].textContent = "✅ " + rules[key].textContent.slice(2);
+        } else {
+          rules[key].classList.add("text-danger");
+          rules[key].classList.remove("text-success");
+          rules[key].textContent = "❌ " + rules[key].textContent.slice(2);
+        }
+      });
+
+      const allValid = Object.values(conditions).every(Boolean);
+      confirmPasswordInput.disabled = !allValid;
+    });
+
+    function generateStrongPassword() {
+      const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lower = "abcdefghijklmnopqrstuvwxyz";
+      const numbers = "0123456789";
+      const special = "@#$*";
+      const all = upper + lower + numbers + special;
+
+      let password = "";
+      password += upper[Math.floor(Math.random() * upper.length)];
+      password += lower[Math.floor(Math.random() * lower.length)];
+      password += numbers[Math.floor(Math.random() * numbers.length)];
+      password += special[Math.floor(Math.random() * special.length)];
+
+      for (let i = password.length; i < 10; i++) {
+        password += all[Math.floor(Math.random() * all.length)];
+      }
+
+      return password
+        .split("")
+        .sort(() => 0.5 - Math.random())
+        .join("");
+    }
+
+    document.getElementById("generate-password-btn").addEventListener("click", () => {
+      const generated = generateStrongPassword();
+      passwordInput.value = generated;
+      passwordInput.dispatchEvent(new Event("input"));
+      passwordInput.focus();
+    });
+
+    // Toggle show/hide password
+    const toggleIcons = document.querySelectorAll(".fakepasswordicon");
+    toggleIcons.forEach(icon => {
+      icon.addEventListener("click", function () {
+        const type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+        confirmPasswordInput.type = type;
+        icon.classList.toggle("fa-eye-slash");
+        icon.classList.toggle("fa-eye");
+      });
+    });
+  });
+</script>
+
 <style>
     body {
   margin: 0;
   font-family: Arial, sans-serif;
   /* background-color: #111;*/
 } 
+
+.fakepasswordicon {
+  cursor: pointer;
+  color: #ccc;
+}
 
 .signup-container {
   display: flex;

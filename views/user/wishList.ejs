@@ -89,34 +89,3 @@
     });
   });
 </script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Add to Cart
-    document.querySelectorAll(".add-to-cart").forEach((el) => {
-      el.addEventListener("click", async function (e) {
-        e.preventDefault();
-
-        const productId = this.dataset.id;
-
-        try {
-          const res = await fetch(`/cart/add?id=${productId}`, {
-            method: "POST",
-          });
-
-          const data = await res.json();
-
-          if (data.success) {
-            alert("Product added to cart!");
-            // You can also reload or update cart count here
-            window.location.reload(); // Or just update the icon/UI
-          } else {
-            alert(data.message || "Failed to add to cart.");
-          }
-        } catch (err) {
-          console.error("Error adding to cart:", err);
-          alert("Something went wrong.");
-        }
-      });
-    });
-  });
-</script>

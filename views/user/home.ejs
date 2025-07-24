@@ -729,9 +729,16 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("success") === "1") {
+    const success = urlParams.get("success");
+
+    if (success === "1") {
       alert("🎉 Booking Successful!");
-      // Optional: Remove the query from URL without reloading
+    } else if (success === "0") {
+      alert("❌ Booking Failed. Please try again.");
+    }
+
+    // Remove query param from URL (only if we're on / and it has ?success=)
+    if ((success === "1" || success === "0") && window.location.pathname === "/") {
       history.replaceState({}, document.title, window.location.pathname);
     }
   });

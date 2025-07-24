@@ -339,7 +339,11 @@
         <li class="cart-item">
           <div class="item-img">
             <a href="/product?id=<%= product._id %>">
-              <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+              <% if (product.images && product.images.length > 0) { %>
+  <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+<% } else { %>
+  <img src="/assets/images/placeholder.jpg" alt="No image available">
+<% } %>
             </a>
             <button class="close-btn remove-from-cart" data-id="<%= product._id %>">
               <i class="fas fa-times"></i>
@@ -393,7 +397,7 @@
       <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
   <form id="mini-cart-checkout-form" action="/checkout" method="POST">
     <input type="hidden" name="cartData" id="miniCartDataInput">
-    <a href="#" class="axil-btn btn-bg-secondary checkout-btn" id="miniCartCheckoutBtn">Checkout</a>
+    <a href="#" class="axil-btn btn-bg-secondary checkout-btn w-100" id="miniCartCheckoutBtn">Checkout</a>
   </form>
 </div>
 
