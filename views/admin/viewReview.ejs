@@ -31,18 +31,12 @@
     <tr>
       <td><%= index + 1 %></td>
       <td><%= review.userId.userId %></td>
-      <td><%= review.productId.productId %></td>
+     <td><%= review.productId ? review.productId.productId : 'N/A' %></td>
+
       <td><%= review.rating %></td>
       <td><%= review.review %></td>
      
-      <!-- <td>
-       <% if (review.productId.image) { %>
-  <img src="/uploads/<%= review.productId.image %>" alt="Offer Image" class="avatar-md" />
-<% } else { %>
-  <img src="/assets/images/default.jpg" alt="Default Image" class="avatar-md" />
-<% } %>
-
-      </td> -->
+   
       <td>
 
        <form action="/admin/delete-review/<%= review._id %>" method="POST" style="display:inline;">

@@ -967,7 +967,7 @@ const returnUpdate = async (req, res) => {
 
 const viewReview = async (req, res) => {
   try {
-    const reviews = await Reviews.find().populate("userId").populate("productId");
+    const reviews = await Reviews.find().populate("userId").populate("productId").exec();
     res.render("admin/viewReview", { reviews });
   } catch (error) {
     console.log(error);
