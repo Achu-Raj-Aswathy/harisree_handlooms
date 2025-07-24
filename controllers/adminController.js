@@ -435,7 +435,7 @@ const addProduct = async (req, res) => {
       description,
       price,
       discount,
-      stock,
+      stock: stock,
       lowStockLimit: lowStockAlert,
       gender,
       hsnCode,
@@ -445,6 +445,7 @@ const addProduct = async (req, res) => {
       colour,
       design,
       fabric,
+      availableStock: stock,
       images: thumbnails, // Store image paths array
     });
 
@@ -727,7 +728,6 @@ const addCoupon = async (req, res) => {
       categoryId,
       productId,
       discountValue,
-      discountType,
       startDate,
       endDate,
       status,
@@ -742,7 +742,6 @@ const addCoupon = async (req, res) => {
       categoryId,
       productId,
       discountValue,
-      type: discountType,
       startDate: parsedStartDate,
       endDate: parsedEndDate,
       status,
@@ -800,7 +799,6 @@ const editCoupon = async (req, res) => {
       categoryId,
       productId,
       discountValue,
-      type,
       startDate,
       endDate,
       status,
@@ -817,7 +815,6 @@ const editCoupon = async (req, res) => {
       categoryId,
       productId,
       discountValue,
-      type,
       startDate: parsedStartDate,
       endDate: parsedEndDate,
       status,

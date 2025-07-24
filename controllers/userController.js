@@ -155,7 +155,13 @@ const status = async (req, res) => {
   }
 });
 
-
+// 🔽 Decrease available stock of each product
+for (const item of orderData.items) {
+  await Products.updateOne(
+    { _id: item.productId },
+    { $inc: { availableStock: -item.quantity } }
+  );
+}
 
 const order = await Orders.findById(newOrder._id).populate('items.productId');
 
