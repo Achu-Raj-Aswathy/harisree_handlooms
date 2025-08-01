@@ -23,7 +23,13 @@
         <div class="main-slider-content text-white p-4 rounded" style="background: rgba(0,0,0,0.3);">
           <h1 class="title mb-4" style="font-size: 3.5rem; font-weight: bold; color: #fff;">Embrace the Craft of Kerala's Handlooms</h1>
           <h4 class="mb-4" style="font-size: 1.6rem; font-weight: 500; color: #fff;">Authentic, handcrafted textiles that celebrate tradition.</h4>
-          <a href="/shop" class="axil-btn btn-bg-primary btn-lg"><i class="fal fa-shopping-cart me-2"></i> Shop Collection</a>
+        <a href="/shop"
+   class="axil-btn btn-lg"
+   style="background-color: rgba(213,164,46,255); color: black; border: none;">
+  <i class="fal fa-shopping-cart me-2" style="color: black;"></i>
+  Shop Collection
+</a>
+
         </div>
       </div>
     </div>
@@ -185,7 +191,10 @@
   <div class="container">
     <div class="section-title-border d-flex justify-content-between align-items-center">
       <h2 class="title">Today’s Best Deals 💥</h2>
-      <div class="view-btn"><a href="/shop">View All Deals</a></div>
+    <div class="view-btn">
+  <a href="/shop" style="color: rgb(218, 218, 67);">View All Deals</a>
+</div>
+
     </div>
 
 
@@ -339,7 +348,7 @@
             <div class="container">
                 <div class="section-title-border">
                     <h2 class="title">Explore Our Products 💥</h2>
-                    <div class="view-btn"><a href="/shop">View All Products</a></div>
+                    <div class="view-btn"><a href="/shop"  style="color: rgb(155, 155, 41);">View All Products</a></div>
                 </div>
                 <!-- <div class="row">
                     <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
@@ -525,7 +534,8 @@
                         <div class="delivery-poster pickup">
                             <div class="content">
                                 <span class="badge">Always free</span>
-                                <h4 class="title">Order Pickup</h4>
+                               <h4 class="title" style="color: rgb(218, 218, 67);">Order Pickup</h4>
+
                                 <p>Choose Order Pickup & we’ll have it waiting for you inside the store.</p>
                             </div>
                             <div class="thumbnail">
@@ -537,7 +547,7 @@
                         <div class="delivery-poster delivery">
                             <div class="content">
                                 <span class="badge">Fast delivery</span>
-                                <h4 class="title">Same Day Delivery</h4>
+                                 <h4 class="title" style="color: rgb(218, 218, 67);">Fast Delivery</h4>
                                 <p>We will delivery your goods on the same day on your doorstep.</p>
                             </div>
                             <div class="thumbnail">
@@ -669,6 +679,21 @@
     #handloomSlider {
   min-height: 90vh !important;
 }
+
+
+  a.axil-btn.btn-bg-primary.btn-lg {
+    background-color: yellow !important;   /* 🟨 Yellow background */
+    color: black !important;               /* ⚫ Black text */
+    border: none !important;
+  }
+
+  a.axil-btn.btn-bg-primary.btn-lg i {
+    color: black !important;               /* ⚫ Black icon */
+  }
+
+  a.axil-btn.btn-bg-primary.btn-lg:hover {
+    opacity: 0.95; /* Optional: Slight fade on hover */
+  }
 
 @media (max-width: 576px) {
   #handloomSlider {

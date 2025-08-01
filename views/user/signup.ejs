@@ -43,6 +43,7 @@
   />
   <i
     class="fakepasswordicon fas fa-eye-slash"
+    id="toggle-password"
     style="position: absolute; top: 30px; right: 15px; transform: translateY(-50%); cursor: pointer; color: #999;"
   ></i>
 
@@ -72,12 +73,12 @@
     disabled
     required
   />
-
-    <span class="position-absolute top-50 translate-middle-y p-0 mt-0" style="right: 15px;">
-    <i class="fakepasswordicon fas fa-eye-slash cursor-pointer p-2"></i>
-  </span>
+  <i
+    class="fakepasswordicon fas fa-eye-slash"
+    id="toggle-confirm"
+    style="position: absolute; top: 30px; right: 15px; transform: translateY(-50%); cursor: pointer; color: #999;"
+  ></i>
 </div>
-
         <button type="submit">Create Account</button>
       </form>
 
@@ -93,6 +94,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     const passwordInput = document.getElementById("psw-input");
     const confirmPasswordInput = document.getElementById("confirm-password");
+    const generateBtn = document.getElementById("generate-password-btn");
     const ruleContainer = document.getElementById("password-rules-container");
 
     const rules = {
@@ -103,10 +105,12 @@
       special: document.getElementById("rule-special"),
     };
 
+    // Show password rules on focus
     passwordInput.addEventListener("focus", () => {
       ruleContainer.classList.remove("d-none");
     });
 
+    // Validate password input
     passwordInput.addEventListener("input", function () {
       const value = passwordInput.value;
       const conditions = {
@@ -133,7 +137,8 @@
       confirmPasswordInput.disabled = !allValid;
     });
 
-    function generateStrongPassword() {
+    // Generate strong password
+    generateBtn.addEventListener("click", () => {
       const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       const lower = "abcdefghijklmnopqrstuvwxyz";
       const numbers = "0123456789";
@@ -150,32 +155,34 @@
         password += all[Math.floor(Math.random() * all.length)];
       }
 
-      return password
-        .split("")
-        .sort(() => 0.5 - Math.random())
-        .join("");
-    }
+      password = password.split("").sort(() => 0.5 - Math.random()).join("");
 
-    document.getElementById("generate-password-btn").addEventListener("click", () => {
-      const generated = generateStrongPassword();
-      passwordInput.value = generated;
+      passwordInput.value = password;
       passwordInput.dispatchEvent(new Event("input"));
       passwordInput.focus();
     });
 
-    // Toggle show/hide password
-    const toggleIcons = document.querySelectorAll(".fakepasswordicon");
-    toggleIcons.forEach(icon => {
-      icon.addEventListener("click", function () {
-        const type = passwordInput.type === "password" ? "text" : "password";
-        passwordInput.type = type;
-        confirmPasswordInput.type = type;
-        icon.classList.toggle("fa-eye-slash");
-        icon.classList.toggle("fa-eye");
-      });
+    // Toggle password visibility (only for password field)
+    const togglePassword = document.getElementById("toggle-password");
+    togglePassword.addEventListener("click", function () {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      this.classList.toggle("fa-eye-slash");
+      this.classList.toggle("fa-eye");
+    });
+
+    // Toggle confirm password visibility
+    const toggleConfirm = document.getElementById("toggle-confirm");
+    toggleConfirm.addEventListener("click", function () {
+      const type = confirmPasswordInput.type === "password" ? "text" : "password";
+      confirmPasswordInput.type = type;
+      this.classList.toggle("fa-eye-slash");
+      this.classList.toggle("fa-eye");
     });
   });
 </script>
+
+
 
 <style>
     body {

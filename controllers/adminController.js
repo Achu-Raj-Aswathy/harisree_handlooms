@@ -239,7 +239,7 @@ const viewListCoupon = async (req, res) => {
 const viewListOrder = async (req, res) => {
   try {
     const orders = await Orders.find().populate("userId").populate("items.productId");
-    res.render("admin/orderList", {orders});
+    res.render("admin/orderList", { orders });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -304,8 +304,8 @@ const viewInventory = async (req, res) => {
 
 const viewSalesReport = async (req, res) => {
   try {
-     const products = await Products.find().populate("categoryId");
-    res.render("admin/reportAndAnalysis", {products});
+    const products = await Products.find().populate("categoryId");
+    res.render("admin/reportAndAnalysis", { products });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -441,7 +441,7 @@ const addProduct = async (req, res) => {
       hsnCode,
       blouseDetails: specification,
       skuId,
-      length:size,
+      length: size,
       colour,
       design,
       fabric,
@@ -549,16 +549,16 @@ const editCategory = async (req, res) => {
 
     // Delete old images that were removed
     category.images.forEach(img => {
-  const imgFilename = path.basename(img); // get filename only
-  if (!retainedImages.includes(imgFilename)) {
-    const imgPath = path.join(__dirname, "../public", img); // img already includes /uploads
-    if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-  }
-});
+      const imgFilename = path.basename(img); // get filename only
+      if (!retainedImages.includes(imgFilename)) {
+        const imgPath = path.join(__dirname, "../public", img); // img already includes /uploads
+        if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+      }
+    });
 
 
     // Merge retained + new
-category.images = [...retainedImages.map(name => `/uploads/${name}`), ...newImages];
+    category.images = [...retainedImages.map(name => `/uploads/${name}`), ...newImages];
     category.name = name;
     category.description = description;
 
@@ -808,7 +808,8 @@ const editCoupon = async (req, res) => {
     const [endDay, endMonth, endYear] = endDate.split("-");
 
     const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
-    const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+    const parsedEndDate = new Date(`${endYear}
+      -${endMonth}-${endDay}`);
 
     await Coupons.findByIdAndUpdate(couponId, {
       code,
@@ -879,7 +880,7 @@ const viewEditOffer = async (req, res) => {
         .json({ success: false, message: "Offer not found" });
     }
 
-    const categories = await Categories.find({}).select("name"); 
+    const categories = await Categories.find({}).select("name");
 
     res.render("admin/editOffer", { offer, categories });
   } catch (error) {
@@ -956,7 +957,7 @@ const returnUpdate = async (req, res) => {
   try {
     const { status } = req.body;
     await Requests.findByIdAndUpdate(req.params.id, { status });
-    res.redirect("/admin/view-return"); 
+    res.redirect("/admin/view-return");
   } catch (err) {
     console.error(err);
     res.status(500).send("Update failed");
@@ -977,7 +978,7 @@ const viewReview = async (req, res) => {
 
 
 
-const deleteReview =async (req, res) => {
+const deleteReview = async (req, res) => {
   try {
     const reviewId = req.params.id;
 
@@ -985,7 +986,7 @@ const deleteReview =async (req, res) => {
     const review = await Reviews.findById(reviewId);
     if (!review) return res.status(404).send("Review not found");
 
-    
+
     await Reviews.findByIdAndDelete(reviewId);
     res.redirect('/admin/view-review'); // Or wherever your admin sees the product
   } catch (err) {
@@ -997,7 +998,7 @@ const deleteReview =async (req, res) => {
 
 
 const editProduct = async (req, res) => {
- try {
+  try {
     const productId = req.query.id;
     if (!productId) return res.status(400).json({ message: "Product ID is required" });
 
@@ -1052,7 +1053,7 @@ const editProduct = async (req, res) => {
     existingProduct.design = design;
     existingProduct.colour = colour;
     existingProduct.fabric = fabric;
-    
+
 
     await existingProduct.save();
 

@@ -20,13 +20,27 @@
         </div>
 
         <!-- Password Input -->
-        <div class="input-wrapper password-wrapper">
-          <input type="password" id="password" name="password" placeholder="Enter password"  class="form-control" required/>
-          <span class="toggle-eye" id="togglePassword"><i class="fa-solid fa-eye"></i></span>
-          <span class="input-error-message" id="passwordError"></span>
-        </div>
+      <div class="input-wrapper password-wrapper">
+  <input
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Enter password"
+    class="form-control"
+    required
+  />
+  <span class="toggle-eye" id="togglePassword">
+    <i class="fa-solid fa-eye-slash" id="eyeIcon"></i>
+  </span>
+</div>
+
 
         <button type="submit">LOGIN</button>
+
+        <div style="margin-top: 1rem; text-align: center;">
+  <div id="googleSignInDiv"></div>
+</div>
+
 
         <% if (message) { %>
           <div class="alert alert-<%= messageType === 'success' ? 'success' : 'danger'  %> mt-3" role="alert">
@@ -89,6 +103,71 @@ document.getElementById("togglePassword").addEventListener("click", function () 
 });
 
    </script>  -->
+
+
+
+
+   <!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+  function handleCredentialResponse(response) {
+    const user = parseJwt(response.credential);
+    console.log("Google User:", user);
+
+    // Save user data locally (if needed)
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // Redirect to user dashboard or trigger login route
+    window.location.href = "/dashboard";
+  }
+
+  function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join(''));
+    return JSON.parse(jsonPayload);
+  }
+
+  window.onload = function () {
+    if (window.google && window.google.accounts) {
+      google.accounts.id.initialize({
+        client_id: "218140902608-nm7tc1pe99sfh7ep0lvudjmn1j35eq3b.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("googleSignInDiv"),
+        { theme: "outline", size: "large" }
+      );
+    }
+  };
+</script>
+
+
+
+<script>
+  document.getElementById("togglePassword").addEventListener("click", function () {
+    const passwordInput = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    const isHidden = passwordInput.getAttribute("type") === "password";
+
+    passwordInput.setAttribute("type", isHidden ? "text" : "password");
+
+    // Toggle icon classes
+    if (isHidden) {
+      eyeIcon.classList.remove("fa-eye-slash");
+      eyeIcon.classList.add("fa-eye");
+    } else {
+      eyeIcon.classList.remove("fa-eye");
+      eyeIcon.classList.add("fa-eye-slash");
+    }
+  });
+</script>
+
+
 </body>
 
 <style>
@@ -178,6 +257,19 @@ button:hover {
   color: #fff;
   padding: 2rem 0;
 }
+
+
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
 </style>
  <!-- <div class="service-area mt-5">
         <div class="container">
