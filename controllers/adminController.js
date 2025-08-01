@@ -68,7 +68,7 @@ const loginAdmin = async (req, res) => {
 
 const viewDashboard = async (req, res) => {
   try {
-    const orders = await Orders.find().populate("userId").populate("items.productId");
+    const orders = await Orders.find().populate("userId").populate("items.productId").sort({ createdAt: -1 }).limit(10);
     const products = await Products.find();
     const customers = await Users.find();
 
@@ -177,8 +177,22 @@ const viewAddProduct = async (req, res) => {
 
 const viewListProduct = async (req, res) => {
   try {
-    const products = await Products.find().populate("categoryId");
-    res.render("admin/productList", { products });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10; 
+    const skip = (page - 1) * limit;
+
+    const [products, totalProducts] = await Promise.all([
+      Products.find().populate("categoryId").skip(skip).limit(limit),
+      Products.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    res.render("admin/productList", {
+      products,
+      currentPage: page,
+      totalPages,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
