@@ -64,57 +64,8 @@
 </script>
 
         <!-- End Slider Area -->
-        <!-- Start Categories Area  -->
-       <!-- Start New Arrivals Product Area  -->
-        <!-- <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
-            <div class="container ml--xxl-0">
-                <div class="product-area pb--50">
-                    <div class="section-title-wrapper">
-                        <span class="title-highlighter highlighter-primary"><i class="fa-solid fa-basket-shopping"></i> This Week’s</span>
-                        <h2 class="title">New Arrivals</h2>
-                    </div>
-                    <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
-                        <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/dhoti1.jpg" alt="Product Images">
-                                        <img class="hover-img" src="assets/images/handlooms/dhoti2.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">20% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist">
-  <a href="#" class="add-to-wishlist">
-    <i class="far fa-heart"></i>
-  </a>
-</li>
-                                            <li class="select-option"><a href="/cart">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Top Handle Handbag</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$80</span>
-                                            <span class="price current-price">$60</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        End .slick-single-layout
-                        
-                    </div>
-                </div>
-            </div>
-        </div> -->
 
-
+        <!-- Start New Arrivals Product Area  -->
         <div class="axil-new-arrivals-product-area fullwidth-container bg-color-white axil-section-gap pb--0">
     <div class="container ml--xxl-0">
                 <div class="product-area pb--50">
@@ -124,7 +75,10 @@
                     </div>
                     <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
                 <% if(newArrivals.length > 0) { %>
-                <% newArrivals.forEach(product => { %>
+                <% newArrivals.forEach(product => { 
+                  const discountedPrice = Math.round(product.price - product.discount);
+                  const discountPercentage = Math.round((discountedPrice / product.price) * 100);                  
+                %>
                 <div class="slick-single-layout">
                     <div class="axil-product product-style-four">
                         <div class="thumbnail">
@@ -134,9 +88,9 @@
                                     <img class="hover-img" src="<%= product.images[1] %>" alt="Product Image">
                                 <% } %>
                             </a>
-                            <% if (product.discountPercentage) { %>
+                            <% if (product.discount) { %>
                             <div class="label-block label-right">
-                                <div class="product-badget"><%= product.discountPercentage %>% OFF</div>
+                                <div class="product-badget bg-warning"><%= discountPercentage %>% OFF</div>
                             </div>
                             <% } %>
                             <div class="product-hover-action">
@@ -172,7 +126,7 @@
                         </div>
                     </div>
                 </div>
-                <% }) %>
+                <%  }) %>
                 <% } else { %>
                   <div class="text-center">
     <p>No new arrivals available at the moment.</p>
@@ -250,40 +204,7 @@
                         <h2 class="title"> Offers Area</h2>
                     </div>
                     <div class="new-arrivals-product-activation slick-layout-wrapper--15 axil-slick-arrow  arrow-top-slide">
-                        <!-- <div class="slick-single-layout">
-                            <div class="axil-product product-style-four">
-                                <div class="thumbnail">
-                                    <a href="single-product.html">
-                                        <img data-sal="fade" data-sal-delay="100" data-sal-duration="1500" src="assets/images/handlooms/sarees28.jpg" alt="Product Images">
-                                        <img class="hover-img" src="assets/images/handlooms/sarees29.jpg" alt="Product Images">
-                                    </a>
-                                    <div class="label-block label-right">
-                                        <div class="product-badget">20% OFF</div>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul class="cart-action">
-                                            <li class="wishlist">
-  <a href="#" class="add-to-wishlist">
-    <i class="far fa-heart"></i>
-  </a>
-</li>
-                                            <li class="select-option"><a href="/cart">Add to Cart</a></li>
-                                            <li class="quickview"><a href="#" data-bs-toggle="modal" data-bs-target="#quick-view-modal"><i class="far fa-eye"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="product-content">
-                                    <div class="inner">
-                                        <h5 class="title"><a href="single-product.html">Top Handle Handbag</a></h5>
-                                        <div class="product-price-variant">
-                                            <span class="price old-price">$80</span>
-                                            <span class="price current-price">$60</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <!-- End .slick-single-layout -->
+                         <!-- End .slick-single-layout -->
                          <% if(offersArea.length > 0) { %>
                         <% offersArea.forEach(offer => {
        const product = offer.productId;
@@ -300,7 +221,7 @@
           <% } %>
         </a>
         <div class="label-block label-right">
-          <div class="product-badget"><%= offer.discountPercentage %>% OFF</div>
+          <div class="product-badget bg-warning"><%= offer.discountPercentage %>% OFF</div>
         </div>
         <div class="product-hover-action">
           <ul class="cart-action">
@@ -350,65 +271,6 @@
                     <h2 class="title">Explore Our Products 💥</h2>
                     <div class="view-btn"><a href="/shop"  style="color: rgb(155, 155, 41);">View All Products</a></div>
                 </div>
-                <!-- <div class="row">
-                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
-                        <div class="axil-product product-style-eight">
-                            <div class="thumbnail">
-                                <a href="single-product-8.html">
-                                    <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="assets/images/handlooms/sarees4.jpg" alt="Product Images">
-                                </a>
-                                <div class="label-block label-left">
-                                    <div class="product-badget sale">Sale</div>
-                                </div>
-                                <div class="product-hover-action">
-                                    <ul class="cart-action">
-                                        <li class="select-option">
-                                            <a href="single-product-8.html">
-                                                <i class="far fa-shopping-cart"></i> Add to Cart
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="inner">
-                                    <div class="color-variant-wrapper">
-                                        <ul class="color-variant">
-                                            <li class="color-extra-01 active"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-02"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-03"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-04"><span><span class="color"></span></span>
-                                            </li>
-                                            <li class="color-extra-05"><span><span class="color"></span></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <h5 class="title"><a href="single-product-8.html">Kalrez® Spectrum™ 6375</a></h5>
-                                    <div class="product-rating">
-                                        <span class="icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                        <span class="rating-number">6,400</span>
-                                    </div>
-                                    <div class="product-price-variant">
-                                        <span class="price old-price">$30.00</span>
-                                        <span class="price current-price">$17.84</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div> -->
                 <div class="row">
   <% products.forEach(product => { %>
   <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
@@ -418,7 +280,7 @@
           <img data-sal="zoom-out" data-sal-delay="100" data-sal-duration="800" loading="lazy" class="main-img" src="<%= product.images[0] %>" alt="<%= product.name %>">
         </a>
         <div class="label-block label-left">
-          <div class="product-badget sale">Sale</div>
+          <div class="product-badget sale text-warning">Sale</div>
         </div>
         <div class="product-hover-action">
           <ul class="cart-action">
