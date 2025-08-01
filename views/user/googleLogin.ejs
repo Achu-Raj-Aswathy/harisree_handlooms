@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Login</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    function handleCredentialResponse(response) {
+      const decoded = parseJwt(response.credential);
+      console.log("Google User:", decoded);
+
+      // Save user to localStorage
+      localStorage.setItem("user", JSON.stringify(decoded));
+
+      // Redirect
+      window.location.href = "/";
+    }
+
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      ).join(''));
+      return JSON.parse(jsonPayload);
+    }
+
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "218140902608-nm7tc1pe99sfh7ep0lvudjmn1j35eq3b.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("googleSignInDiv"),
+        { theme: "outline", size: "large" }
+      );
+    };
+  </script>
+</head>
+<body>
+  <h3>Sign in with Google</h3>
+  <div id="googleSignInDiv"></div>
+</body>
+</html>
