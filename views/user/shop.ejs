@@ -49,6 +49,31 @@
       <div class="row gy-4" id="productGrid">
         <!-- Products will be rendered here -->
       </div>
+
+<div class="d-flex justify-content-end mt-4">
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+      <% if (currentPage > 1) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage - 1 %><%= selectedCategory ? '&category=' + selectedCategory : '' %>">&laquo;</a>
+        </li>
+      <% } %>
+
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %><%= selectedCategory ? '&category=' + selectedCategory : '' %>"><%= i %></a>
+        </li>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage + 1 %><%= selectedCategory ? '&category=' + selectedCategory : '' %>">&raquo;</a>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
+
     </div>
   </div>
 </div>
@@ -89,12 +114,6 @@ function setMobileView(view) {
     const discountPrice = oldPrice - finalPrice;
     const discountPercentage = Math.floor((discountPrice/oldPrice)*100);
     const discountLabel = discountPercentage ? `${discountPercentage}% OFF` : '';
-
-// const responsiveColClass = window.innerWidth < 576 ? 'col-xs-6'
-//                         : window.innerWidth < 768 ? 'col-sm-6'
-//                         : window.innerWidth < 992 ? 'col-md-4'
-//                         : window.innerWidth < 1200 ? 'col-lg-3'
-//                         : 'col-xl-2-4';
 
 const responsiveColClass = 'responsive-col';
 
@@ -165,10 +184,10 @@ const html = `
 
 <!-- ✅ AOS Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
 <script>
   AOS.init({ duration: 800, once: true });
 </script>
-
 
 <script>
   function handleCategoryChange(category) {
@@ -179,6 +198,7 @@ const html = `
   }
 }
 </script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     // Ensure the dropdown menu is hidden on page load
@@ -186,7 +206,6 @@ const html = `
     dropdown.style.display = 'none';
   });
 </script>
-
 
 <script>
 function toggleCustomDropdown() {
@@ -212,13 +231,6 @@ function selectDropdownOption(optionText) {
   renderProducts(filtered);
 }
 
-// Close dropdown if clicked outside
-// document.addEventListener('click', function(e) {
-//   const dropdown = document.querySelector('.custom-dropdown');
-//   if (!dropdown.contains(e.target)) {
-//     document.getElementById('customDropdownMenu').style.display = 'none';
-//   }
-// });
 document.addEventListener("DOMContentLoaded", function () {
   // Always start in grid view
   mobileView = 'grid';
@@ -289,7 +301,6 @@ document.addEventListener('click', (e) => {
     }
   }
 </script>
-
 
 <style>
 @media (max-width: 479.98px) {
@@ -408,91 +419,6 @@ document.addEventListener('click', (e) => {
 
 </style>
 
-<!-- <style>
-  /* GRID/DIV responsive columns */
-@media (max-width: 575.98px) {
-  .col-xs-6 {
-    width: 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-}
-
-@media (min-width: 576px) and (max-width: 767.98px) {
-  .col-sm-6 {
-    width: 50%;
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991.98px) {
-  .col-md-4 {
-    width: 33.33%;
-    flex: 0 0 33.33%;
-    max-width: 33.33%;
-  }
-}
-
-@media (min-width: 992px) and (max-width: 1199.98px) {
-  .col-lg-3 {
-    width: 25%;
-    flex: 0 0 25%;
-    max-width: 25%;
-  }
-}
-
-@media (min-width: 1200px) {
-  .col-xl-2-4 {
-    width: 20%;
-    flex: 0 0 20%;
-    max-width: 20%;
-  }
-}
-
-/* Detail View Styling */
-.detail-mobile .axil-product {
-  flex-direction: row !important;
-  align-items: center;
-}
-
-.detail-mobile .thumbnail {
-  width: 45% !important;
-  height: 120px !important;
-}
-
-.detail-mobile .product-content {
-  flex: 1;
-  padding-left: 10px;
-  text-align: left !important;
-}
-
-/* Grid View Styling */
-.grid-mobile .axil-product {
-  flex-direction: column !important;
-  align-items: center;
-}
-
-.grid-mobile .thumbnail {
-  width: 100% !important;
-  height: 180px !important;
-}
-
-.grid-mobile .product-content {
-  text-align: center !important;
-  padding: 10px 0;
-}
-
-/* Active view button */
-#gridViewBtn.active,
-#detailViewBtn.active {
-  background-color: #333;
-  color: white;
-  border-color: #333;
-}
-
-</style> -->
-
 <style>
   /* Grid view responsive columns */
 @media (max-width: 575.98px) {
@@ -578,14 +504,25 @@ document.addEventListener('click', (e) => {
 
 </style>
 
-<!-- <script>
-  // Monitor resize and reset to grid if necessary
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 768 && mobileView === 'detail') {
-      setMobileView('grid');
-    }
-  });
-</script> -->
+<style>
+  .pagination .page-link {
+  color: #000; /* normal text color */
+  background-color: #fff;
+  border: 1px solid #ffc107; /* yellow border */
+}
+
+.pagination .page-link:hover {
+  background-color: #ffe082; /* light yellow on hover */
+  color: #000;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #ffc107; /* yellow for active page */
+  border-color: #ffc107;
+  color: #000;
+}
+</style>
+
 <script>
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 768 && mobileView === 'detail') {
@@ -598,7 +535,4 @@ document.addEventListener('click', (e) => {
   });
 </script>
 
-
-
 <%- include('./partials/footer') %>
-

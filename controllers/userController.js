@@ -254,14 +254,14 @@ const order = await Orders.findById(newOrder._id).populate('items.productId');
 const viewHomepage = async (req, res) => {
   try {
     const homeEdits = await UserHome.find({}, { sliderImages: 1, _id: 0 });
-    const products = await Products.find();
+    const products = await Products.find().limit(12).sort({ createdAt: -1 });
     const newArrivals = await Products.find().sort({ createdAt: -1 });
     let userWishlistProductIds = [];
 
     if (req.session.user) {
-  const user = await Users.findById(req.session.user);
-  userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
-}
+      const user = await Users.findById(req.session.user);
+      userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
+    }
 
     // Get all products with offers (for offers area)
     const offersArea = await Offers.find()
@@ -467,9 +467,12 @@ const viewResetPassword = async (req, res) => {
 const viewShop = async (req, res) => {
   try {
     const categories = await Categories.find({}).select("name");
-     const selectedCategory = req.query.category;
-    let filter = {};
+    const selectedCategory = req.query.category;
+    const page = parseInt(req.query.page) || 1; // default to page 1
+    const limit = 20; // number of products per page
+    const skip = (page - 1) * limit;
 
+    let filter = {};
     if (selectedCategory) {
       const categoryDoc = await Categories.findOne({ name: selectedCategory });
       if (categoryDoc) {
@@ -477,14 +480,27 @@ const viewShop = async (req, res) => {
       }
     }
 
-    const products = await Products.find(filter).populate("categoryId", "name");
-    let userWishlistProductIds = [];
+    const [products, totalProducts] = await Promise.all([
+      Products.find(filter).populate("categoryId", "name").skip(skip).limit(limit),
+      Products.countDocuments(filter),
+    ]);
 
+    let userWishlistProductIds = [];
     if (req.session.user) {
       const user = await Users.findById(req.session.user);
       userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
     }
-    res.render("user/shop", { products, categories, userWishlistProductIds, selectedCategory: selectedCategory || null });
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    res.render("user/shop", {
+      products,
+      categories,
+      userWishlistProductIds,
+      selectedCategory: selectedCategory || null,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.error(error);
     res.render("error", { error });
