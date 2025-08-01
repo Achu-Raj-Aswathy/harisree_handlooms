@@ -3,12 +3,6 @@
           <%- include('./partials/adminHeader') %>
                <%- include('./partials/sidebar')%>
 
-                    <!-- ========== Topbar Start ========== -->
-
-                    <!-- ========== Topbar End ========== -->
-
-
-
                     <!-- ==================================================== -->
                     <!-- Start right Content here -->
                     <!-- ==================================================== -->
@@ -28,20 +22,10 @@
                                                        Add Product
                                                   </a>
 
-                                                  <div class="dropdown">
-                                                       <a href="#" class="dropdown-toggle btn btn-sm btn-outline-light"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                            This Month
-                                                       </a>
-                                                       <div class="dropdown-menu dropdown-menu-end">
-                                                            <!-- item-->
-                                                            <a href="#!" class="dropdown-item">Download</a>
-                                                            <!-- item-->
-                                                            <a href="#!" class="dropdown-item">Export</a>
-                                                            <!-- item-->
-                                                            <a href="#!" class="dropdown-item">Import</a>
-                                                       </div>
-                                                  </div>
+                                                  <a href="#" class="btn btn-sm btn-outline-light">
+                                                       Export
+                                                  </a>
+
                                              </div>
                                              <div>
                                                   <div class="table-responsive">
@@ -140,29 +124,44 @@
                                                                                      </tr>
 
                                                                                      <% } %>
-
-
                                                             </tbody>
                                                        </table>
                                                   </div>
                                                   <!-- end table-responsive -->
                                              </div>
+                                            
                                              <div class="card-footer border-top">
-                                                  <nav aria-label="Page navigation example">
-                                                       <ul class="pagination justify-content-end mb-0">
-                                                            <li class="page-item"><a class="page-link"
-                                                                      href="javascript:void(0);">Previous</a></li>
-                                                            <li class="page-item active"><a class="page-link"
-                                                                      href="javascript:void(0);">1</a></li>
-                                                            <li class="page-item"><a class="page-link"
-                                                                      href="javascript:void(0);">2</a></li>
-                                                            <li class="page-item"><a class="page-link"
-                                                                      href="javascript:void(0);">3</a></li>
-                                                            <li class="page-item"><a class="page-link"
-                                                                      href="javascript:void(0);">Next</a></li>
-                                                       </ul>
-                                                  </nav>
-                                             </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end mb-0">
+      <% if (currentPage > 1) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+        </li>
+      <% } else { %>
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+      <% } %>
+
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+      <% } %>
+
+      <% if (currentPage < totalPages) { %>
+        <li class="page-item">
+          <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+        </li>
+      <% } else { %>
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
+
                                         </div>
                                    </div>
 
@@ -171,15 +170,12 @@
                          </div>
                          <!-- End Container Fluid -->
 
-                         <!-- ========== Footer Start ========== -->
-
-                         <!-- ========== Footer End ========== -->
+                         <%- include('./partials/footer') %>
 
                     </div>
                     <!-- ==================================================== -->
                     <!-- End Page Content -->
                     <!-- ==================================================== -->
-                    <%- include('./partials/footer') %>
      </div>
 
      <script>
