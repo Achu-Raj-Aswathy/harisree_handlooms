@@ -119,11 +119,24 @@ const viewAddCategory = async (req, res) => {
 
 const viewListCategory = async (req, res) => {
   try {
-    const categories = await Categories.find();
-    res.render("admin/listCategory", { categories });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10; // or whatever limit you prefer
+
+    const total = await Categories.countDocuments();
+    const categories = await Categories.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.render("admin/listCategory", {
+      categories,
+      currentPage: page,
+      totalPages,
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal Server error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -240,10 +253,24 @@ const viewAddCoupon = async (req, res) => {
 
 const viewListCoupon = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+
+    const total = await Coupons.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+
     const coupons = await Coupons.find()
       .populate("productId")
-      .populate("categoryId");
-    res.render("admin/couponsList", { coupons });
+      .populate("categoryId")
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.render("admin/couponsList", {
+      coupons,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -252,11 +279,27 @@ const viewListCoupon = async (req, res) => {
 
 const viewListOrder = async (req, res) => {
   try {
-    const orders = await Orders.find().populate("userId").populate("items.productId");
-    res.render("admin/orderList", { orders });
+    const page = parseInt(req.query.page) || 1;   // Current page number
+    const limit = 10;                             // Orders per page
+
+    const total = await Orders.countDocuments();  // Total number of orders
+    const totalPages = Math.ceil(total / limit);  // Calculate total pages
+
+    const orders = await Orders.find()
+      .populate("userId")
+      .populate("items.productId")
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // Optional: latest first
+
+    res.render("admin/orderList", {
+      orders,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal Server error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
@@ -271,8 +314,22 @@ const viewOrderDetails = async (req, res) => {
 
 const viewListUser = async (req, res) => {
   try {
-    const users = await Users.find({ role: "user" });
-    res.render("admin/userList", { users });
+    const page = parseInt(req.query.page) || 1;  // Current page from query
+    const limit = 10;                            // Users per page
+
+    const total = await Users.countDocuments({ role: "user" });
+    const totalPages = Math.ceil(total / limit);
+
+    const users = await Users.find({ role: "user" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.render("admin/userList", {
+      users,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -308,18 +365,47 @@ const viewUserDetails = async (req, res) => {
 
 const viewInventory = async (req, res) => {
   try {
-    const products = await Products.find().populate("categoryId");
-    res.render("admin/inventory", { products });
+    const page = parseInt(req.query.page) || 1;     // Current page number
+    const limit = 10;                                // Items per page
+
+    const total = await Products.countDocuments();   // Total number of products
+    const totalPages = Math.ceil(total / limit);     // Total number of pages
+
+    const products = await Products.find()
+      .populate("categoryId")
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.render("admin/inventory", {
+      products,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal Server error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 const viewSalesReport = async (req, res) => {
   try {
-    const products = await Products.find().populate("categoryId");
-    res.render("admin/reportAndAnalysis", { products });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+
+    const total = await Products.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+
+    const products = await Products.find()
+      .populate("categoryId")
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.render("admin/reportAndAnalysis", {
+      products,
+      currentPage: page,
+      totalPages
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
