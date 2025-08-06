@@ -6,6 +6,18 @@ const upload = require("../multer/multer");
 const Users = require("../models/userModel");
 const UserHome = require("../models/userHomeModel");
 const Categories = require("../models/categoryModel");
+const passport = require('passport');
+require('../config/passport');
+const moment = require("moment"); // Ensure moment is imported
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 userRouter.use(async (req, res, next) => {
   if (req.session.user) {
@@ -23,6 +35,9 @@ userRouter.use(async (req, res, next) => {
   }
   next();
 });
+
+userRouter.use(passport.initialize());
+userRouter.use(passport.session());
 
 userRouter.use(async (req, res, next) => {
   try {
@@ -66,7 +81,51 @@ userRouter.use((req, res, next) => {
 
   next();
 });
-  
+
+userRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+userRouter.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.redirect("/signin");
+      }
+
+      req.session.user = req.user._id;
+
+      console.log("✅ Google OAuth Success:", req.user);
+      
+      const loginTime = moment().format("DD/MM/YY, hh:mm A");
+
+      // Send login alert email
+      await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: req.user.email,
+        subject: `🔐 Login Alert - Harisree Handlooms at ${loginTime}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
+            <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Login Alert</h2>
+            <p>Hi <strong>${req.user.name}</strong>,</p>
+            <p>We noticed a new login to your account at Harisree Handlooms on <strong>${loginTime}</strong>.</p>
+            <p>If this was you, you can safely ignore this email. Otherwise, please reset your password immediately.</p>
+            <p style="margin-top: 30px;">Warm regards,<br/><strong>Team Harisree</strong></p>
+            <footer style="text-align: center; color: #888; font-size: 12px; margin-top: 30px;">
+              Harisree Handlooms — Crafted with Love in Kerala
+            </footer>
+          </div>
+        `,
+      });
+
+      res.redirect('/');
+    } catch (err) {
+      console.error("Google login error:", err);
+      res.redirect('/signin');
+    }
+  }
+);
+
 userRouter.get("/", userController.viewHomepage);
 userRouter.get("/signin", isLogout, userController.viewSignin);
 userRouter.get("/signup", isLogout, userController.viewSignup);
@@ -120,5 +179,10 @@ userRouter.delete(
   isLogin,
   userController.removeFromWishlist
 );
+
+// dtdc
+userRouter.get("/dtdc/shipping-label", isLogin, userController.downloadDTDCLabel);
+userRouter.get("/dtdc/track", isLogin, userController.trackDTDCShipment);
+userRouter.post("/dtdc/cancel-shipment", isLogin, userController.cancelDTDCShipment);
 
 module.exports = userRouter;

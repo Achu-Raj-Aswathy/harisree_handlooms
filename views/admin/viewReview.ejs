@@ -4,107 +4,238 @@
     <%- include('./partials/adminHeader') %>
       <%- include('./partials/sidebar') %>
 
-        <main class="content-area" style=" padding: 2rem;">
-          <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h2 class="text-danger fw-bold"> Review List</h2>
-              <!-- <a href="/admin/add-offers" class="btn btn-primary fw-semibold">➕ Add Offer</a> -->
+        <div class="page-content">
+          <div class="container-fluid">
+
+            <div class="row">
+              <div class="col-xl-12">
+                <div class="card">
+
+                  <div class="card-header d-flex justify-content-between align-items-center gap-1">
+                    <h4 class="card-title flex-grow-1">Review List</h4>
+
+                    <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
+                      Export
+                    </a>
+
+                  </div>
+
+                  <div>
+                    <div class="table-responsive">
+                      <table class="table align-middle mb-0 table-hover table-centered">
+                        <thead class="bg-light-subtle">
+                          <tr>
+                            <th>#</th>
+                            <th>UserId</th>
+                            <th>ProductId</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (reviews.length> 0) { %>
+                            <% reviews.forEach((review, index)=> { %>
+                              <tr data-created="<%= new Date(review.createdAt).toISOString() %>">
+                                <td>
+                                  <%= index + 1 %>
+                                </td>
+                                <td>
+                                  <%= review.userId.userId %>
+                                </td>
+                                <td>
+                                  <%= review.productId ? review.productId.productId : 'N/A' %>
+                                </td>
+
+                                <td>
+                                  <%= review.rating %>
+                                </td>
+                                <td>
+                                  <%= review.review %>
+                                </td>
+
+                                <td>
+
+                                  <form action="/admin/delete-review/<%= review._id %>" method="POST"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn btn-soft-danger btn-sm delete-btn"
+                                      onclick="return confirm('Are you sure you want to delete this review?');">
+                                      <iconify-icon icon="solar:trash-bin-minimalistic-2-broken"
+                                        class="align-middle fs-18"></iconify-icon>
+                                    </button>
+                                  </form>
+
+                                </td>
+                              </tr>
+
+                              <% }) %>
+                                <% } else { %>
+                                  <tr>
+                                    <td colspan="8" class="text-center">No Reviews found</td>
+                                  </tr>
+                                  <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="card-footer border-top">
+                    <nav aria-label="Page navigation example">
+                      <ul class="pagination justify-content-end mb-0">
+                        <% if (currentPage> 1) { %>
+                          <li class="page-item">
+                            <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                          </li>
+                          <% } else { %>
+                            <li class="page-item disabled">
+                              <span class="page-link">Previous</span>
+                            </li>
+                            <% } %>
+
+                              <% for (let i=1; i <=totalPages; i++) { %>
+                                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                  <a class="page-link" href="?page=<%= i %>">
+                                    <%= i %>
+                                  </a>
+                                </li>
+                                <% } %>
+
+                                  <% if (currentPage < totalPages) { %>
+                                    <li class="page-item">
+                                      <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                                    </li>
+                                    <% } else { %>
+                                      <li class="page-item disabled">
+                                        <span class="page-link">Next</span>
+                                      </li>
+                                      <% } %>
+                      </ul>
+                    </nav>
+                  </div>
+
+                </div>
+              </div>
+
             </div>
-
-            <!-- 🔧 MOCK STATIC DATA since backend is not working -->
-            <div class="table-responsive">
-              <table class="table table-bordered table-striped align-middle">
-                <thead class="table-dark">
-                  <tr>
-                    <th>#</th>
-                    <th>UserId</th>
-                    <th>ProductId</th>
-                    <th>Rating</th>
-                    <th>Review</th>
-                    
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-               <% if (reviews.length > 0) { %>
-  <% reviews.forEach((review, index) => { %>
-    <tr>
-      <td><%= index + 1 %></td>
-      <td><%= review.userId.userId %></td>
-     <td><%= review.productId ? review.productId.productId : 'N/A' %></td>
-
-      <td><%= review.rating %></td>
-      <td><%= review.review %></td>
-     
-   
-      <td>
-
-       <form action="/admin/delete-review/<%= review._id %>" method="POST" style="display:inline;">
-  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">
-    🗑️ Delete
-  </button>
-</form>
-
-      </td>
-    </tr>
- 
-
-                       
-  <% }) %>
-<% } else { %>
-  <tr><td colspan="8" class="text-center">No Reviews found</td></tr>
-<% } %>
-
-
-                </tbody>
-              </table>
-            </div>
-
           </div>
-        </main>
+          <%- include('./partials/footer') %>
+        </div>
+
   </div>
 
- 
-    <style>
+
+  <style>
+    .content-area {
+      margin-left: 250px;
+      padding: 2rem;
+      transition: margin-left 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
       .content-area {
-        margin-left: 250px;
-        padding: 2rem;
-        transition: margin-left 0.3s ease;
+        margin-left: 0 !important;
+        padding: 1rem;
       }
+    }
+  </style>
 
-      @media (max-width: 768px) {
-        .content-area {
-          margin-left: 0 !important;
-          padding: 1rem;
-        }
-      }
-    </style>
+  <script>
+    document.querySelectorAll('.delete-offer-btn').forEach(button => {
+      button.addEventListener('click', async function () {
+        const offerId = this.dataset.offerId;
 
-   <script>
-  document.querySelectorAll('.delete-offer-btn').forEach(button => {
-    button.addEventListener('click', async function () {
-      const offerId = this.dataset.offerId;
+        if (confirm('Are you sure you want to delete this offer?')) {
+          try {
+            const response = await fetch(`/admin/delete-offer/${offerId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
 
-      if (confirm('Are you sure you want to delete this offer?')) {
-        try {
-          const response = await fetch(`/admin/delete-offer/${offerId}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
+            if (response.ok) {
+              // Remove the row or card from the DOM
+              this.closest('.offer-row').remove(); // Make sure each offer is wrapped in a div with class "offer-row"
+            } else {
+              alert('Failed to delete offer.');
             }
-          });
-
-          if (response.ok) {
-            // Remove the row or card from the DOM
-            this.closest('.offer-row').remove(); // Make sure each offer is wrapped in a div with class "offer-row"
-          } else {
-            alert('Failed to delete offer.');
+          } catch (error) {
+            console.error('Delete failed:', error);
+            alert('Something went wrong.');
           }
-        } catch (error) {
-          console.error('Delete failed:', error);
-          alert('Something went wrong.');
         }
-      }
+      });
     });
+  </script>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Date Range</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="dateRangeInput" class="form-control" placeholder="Select date range" />
+        <div id="dateError" class="text-danger d-none mt-2">Please select a valid date range</div>
+      </div>
+      <div class="modal-footer">
+          <button type="submit" class="btn btn-warning" onclick="downloadReviewPDF()">Download PDF</button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  let selectedStartDate = null;
+  let selectedEndDate = null;
+
+  flatpickr("#dateRangeInput", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onChange: function (selectedDates) {
+      if (selectedDates.length === 2) {
+        selectedStartDate = selectedDates[0];
+        selectedEndDate = selectedDates[1];
+        document.getElementById('dateError').classList.add('d-none');
+      }
+    }
   });
+
+  async function downloadReviewPDF() {
+    if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+      document.getElementById('dateError').classList.remove('d-none');
+      return;
+    }
+
+    const formattedStart = selectedStartDate.toISOString();
+    const formattedEnd = selectedEndDate.toISOString();
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/admin/export-reviews-pdf";
+    form.style.display = "none";
+
+    const startInput = document.createElement("input");
+    startInput.name = "startDate";
+    startInput.value = formattedStart;
+    form.appendChild(startInput);
+
+    const endInput = document.createElement("input");
+    endInput.name = "endDate";
+    endInput.value = formattedEnd;
+    form.appendChild(endInput);
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    // Reset UI
+    document.getElementById("dateRangeInput").value = "";
+    selectedStartDate = null;
+    selectedEndDate = null;
+    bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+  }
 </script>

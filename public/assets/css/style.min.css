@@ -8289,7 +8289,7 @@ button.axil-btn.btn-size-md i {
 
 .header-action .shopping-cart .cart-dropdown-btn .cart-count {
     text-align: center;
-    background-color: var(--color-primary);
+    background-color: var(--color-warning);
     border: 2px solid var(--color-white);
     font-size: 12px;
     font-weight: 500;
@@ -13282,7 +13282,7 @@ body.open .closeMask {
 }
 
 .axil-product-table tbody td.product-add-cart .btn-outline:hover {
-    border-color: var(--color-primary)
+    border-color: var(--color-warning)
 }
 
 .axil-product-table tbody td.product-add-cart:before {

@@ -10,8 +10,10 @@ const UserHome = require("../models/userHomeModel");
 const Coupons = require("../models/couponModel");
 const Orders = require("../models/orderModel");
 const Offers = require("../models/offerModel");
-const Requests = require("../models/returnRequestModel")
+const Requests = require("../models/returnRequestModel");
 const Reviews = require("../models/reviewModel");
+const PDFDocument = require("pdfkit");
+const axios = require("axios");
 
 const viewLogin = async (req, res) => {
   try {
@@ -68,7 +70,11 @@ const loginAdmin = async (req, res) => {
 
 const viewDashboard = async (req, res) => {
   try {
-    const orders = await Orders.find().populate("userId").populate("items.productId").sort({ createdAt: -1 }).limit(10);
+    const orders = await Orders.find()
+      .populate("userId")
+      .populate("items.productId")
+      .sort({ createdAt: -1 })
+      .limit(10);
     const products = await Products.find();
     const customers = await Users.find();
 
@@ -191,7 +197,7 @@ const viewAddProduct = async (req, res) => {
 const viewListProduct = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10; 
+    const limit = 10;
     const skip = (page - 1) * limit;
 
     const [products, totalProducts] = await Promise.all([
@@ -269,7 +275,7 @@ const viewListCoupon = async (req, res) => {
     res.render("admin/couponsList", {
       coupons,
       currentPage: page,
-      totalPages
+      totalPages,
     });
   } catch (error) {
     console.log(error);
@@ -279,11 +285,11 @@ const viewListCoupon = async (req, res) => {
 
 const viewListOrder = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;   // Current page number
-    const limit = 10;                             // Orders per page
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const limit = 10; // Orders per page
 
-    const total = await Orders.countDocuments();  // Total number of orders
-    const totalPages = Math.ceil(total / limit);  // Calculate total pages
+    const total = await Orders.countDocuments(); // Total number of orders
+    const totalPages = Math.ceil(total / limit); // Calculate total pages
 
     const orders = await Orders.find()
       .populate("userId")
@@ -295,7 +301,7 @@ const viewListOrder = async (req, res) => {
     res.render("admin/orderList", {
       orders,
       currentPage: page,
-      totalPages
+      totalPages,
     });
   } catch (error) {
     console.log(error);
@@ -314,8 +320,8 @@ const viewOrderDetails = async (req, res) => {
 
 const viewListUser = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;  // Current page from query
-    const limit = 10;                            // Users per page
+    const page = parseInt(req.query.page) || 1; // Current page from query
+    const limit = 10; // Users per page
 
     const total = await Users.countDocuments({ role: "user" });
     const totalPages = Math.ceil(total / limit);
@@ -328,7 +334,7 @@ const viewListUser = async (req, res) => {
     res.render("admin/userList", {
       users,
       currentPage: page,
-      totalPages
+      totalPages,
     });
   } catch (error) {
     console.log(error);
@@ -365,11 +371,11 @@ const viewUserDetails = async (req, res) => {
 
 const viewInventory = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;     // Current page number
-    const limit = 10;                                // Items per page
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const limit = 10; // Items per page
 
-    const total = await Products.countDocuments();   // Total number of products
-    const totalPages = Math.ceil(total / limit);     // Total number of pages
+    const total = await Products.countDocuments(); // Total number of products
+    const totalPages = Math.ceil(total / limit); // Total number of pages
 
     const products = await Products.find()
       .populate("categoryId")
@@ -379,7 +385,7 @@ const viewInventory = async (req, res) => {
     res.render("admin/inventory", {
       products,
       currentPage: page,
-      totalPages
+      totalPages,
     });
   } catch (error) {
     console.log(error);
@@ -404,7 +410,7 @@ const viewSalesReport = async (req, res) => {
     res.render("admin/reportAndAnalysis", {
       products,
       currentPage: page,
-      totalPages
+      totalPages,
     });
   } catch (error) {
     console.log(error);
@@ -635,7 +641,9 @@ const editCategory = async (req, res) => {
 
     const category = await Categories.findById(categoryId);
     if (!category) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
     }
 
     // Parse retained old images
@@ -648,7 +656,7 @@ const editCategory = async (req, res) => {
     let newImages = req.files?.map((file) => `/uploads/${file.filename}`) || [];
 
     // Delete old images that were removed
-    category.images.forEach(img => {
+    category.images.forEach((img) => {
       const imgFilename = path.basename(img); // get filename only
       if (!retainedImages.includes(imgFilename)) {
         const imgPath = path.join(__dirname, "../public", img); // img already includes /uploads
@@ -656,9 +664,11 @@ const editCategory = async (req, res) => {
       }
     });
 
-
     // Merge retained + new
-    category.images = [...retainedImages.map(name => `/uploads/${name}`), ...newImages];
+    category.images = [
+      ...retainedImages.map((name) => `/uploads/${name}`),
+      ...newImages,
+    ];
     category.name = name;
     category.description = description;
 
@@ -721,68 +731,13 @@ const viewProductsByCategory = async (req, res) => {
   }
 };
 
-// const updateSlider = async (req, res) => {
-//   try {
-//     const homeData = await UserHome.findOne();
-//     if (!homeData)
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Home content not found" });
-
-//     const sliderImages = [...homeData.sliderImages]; // Copy current sliderImages
-
-//     console.log("Uploaded Files:", req.files);
-
-//     const updatedSliderImages = [];
-
-//     for (let i = 1; i <= 4; i++) {
-//       const field = `sliderImage${i}`;
-//       const key = `slider${i}`;
-
-//       // Step 1: Try to get old path safely
-//       const oldEntry = homeData.sliderImages[i - 1];
-//       let oldPath = oldEntry && oldEntry[key] ? oldEntry[key] : "";
-
-//       // Step 2: Check if new file uploaded
-//       let newPath = oldPath; // default to old path
-
-//       if (req.files && req.files[field] && req.files[field][0]) {
-//         newPath = "/uploads/" + req.files[field][0].filename;
-
-//         // Optional: delete old image
-//         if (oldPath) {
-//           const filePath = path.join(__dirname, "../public", oldPath);
-//           if (fs.existsSync(filePath)) {
-//             fs.unlinkSync(filePath);
-//           }
-//         }
-//       }
-
-//       // Step 3: If newPath is still empty (means no old and no new), set a default dummy
-//       if (!newPath) {
-//         newPath = "/uploads/placeholder.jpg"; // or skip this field if truly optional
-//       }
-
-//       // ✅ Step 4: Push valid key-value object
-//       updatedSliderImages.push({ [key]: newPath });
-//     }
-
-//     // Replace and save
-//     homeData.sliderImages = updatedSliderImages;
-//     await homeData.save();
-
-//     return res.json({ success: true, message: "Slider updated successfully" });
-//   } catch (err) {
-//     console.error("Error updating slider:", err);
-//     return res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
-
 const updateSlider = async (req, res) => {
   try {
     const homeData = await UserHome.findOne();
     if (!homeData) {
-      return res.status(404).json({ success: false, message: "Home content not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Home content not found" });
     }
 
     const currentImages = homeData.sliderImages || {};
@@ -879,19 +834,16 @@ const updateOfferTagline = async (req, res) => {
     res.json({ success: true, message: "Tagline updated successfully." });
   } catch (err) {
     console.error("Tagline update error:", err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server error while updating tagline.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating tagline.",
+    });
   }
 };
 
 const editCoupon = async (req, res) => {
   const couponId = req.query.id;
   console.log("Coupon ID from URL:", req.query.id);
-
 
   try {
     const {
@@ -942,8 +894,15 @@ const deleteCoupon = async (req, res) => {
 
 const addOffer = async (req, res) => {
   try {
-    const { title, description, startDate, endDate, discount, categoryId,
-      productId, } = req.body;
+    const {
+      title,
+      description,
+      startDate,
+      endDate,
+      discount,
+      categoryId,
+      productId,
+    } = req.body;
     const image = req.file ? req.file.filename : null;
 
     const newOffer = new Offers({
@@ -955,7 +914,7 @@ const addOffer = async (req, res) => {
       discountPercentage: discount,
       image,
       categoryId,
-      productId
+      productId,
     });
 
     await newOffer.save();
@@ -1003,8 +962,15 @@ const deleteOffer = async (req, res) => {
 const editOffer = async (req, res) => {
   try {
     const offerId = req.query.id;
-    const { title, description, startDate, endDate, discount, categoryId,
-      productId } = req.body;
+    const {
+      title,
+      description,
+      startDate,
+      endDate,
+      discount,
+      categoryId,
+      productId,
+    } = req.body;
 
     const offer = await Offers.findById(offerId);
     if (!offer) {
@@ -1064,19 +1030,31 @@ const returnUpdate = async (req, res) => {
   }
 };
 
-
 const viewReview = async (req, res) => {
   try {
-    const reviews = await Reviews.find().populate("userId").populate("productId").exec();
-    res.render("admin/viewReview", { reviews });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+
+    const total = await Reviews.countDocuments();
+    const totalPages = Math.ceil(total / limit);
+
+    const reviews = await Reviews.find()
+      .populate("userId")
+      .populate("productId")
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.render("admin/viewReview", {
+      reviews,
+      currentPage: page,
+      totalPages,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };
-
-
-
 
 const deleteReview = async (req, res) => {
   try {
@@ -1086,21 +1064,19 @@ const deleteReview = async (req, res) => {
     const review = await Reviews.findById(reviewId);
     if (!review) return res.status(404).send("Review not found");
 
-
     await Reviews.findByIdAndDelete(reviewId);
-    res.redirect('/admin/view-review'); // Or wherever your admin sees the product
+    res.redirect("/admin/view-review"); // Or wherever your admin sees the product
   } catch (err) {
     console.error("Delete Review Error:", err);
     res.status(500).send("Internal Server Error");
   }
 };
 
-
-
 const editProduct = async (req, res) => {
   try {
     const productId = req.query.id;
-    if (!productId) return res.status(400).json({ message: "Product ID is required" });
+    if (!productId)
+      return res.status(400).json({ message: "Product ID is required" });
 
     const existingProduct = await Products.findById(productId);
     if (!existingProduct) {
@@ -1129,11 +1105,12 @@ const editProduct = async (req, res) => {
     // Handle uploaded images (new ones only)
     let uploadedImages = [];
     if (req.files && req.files.length > 0) {
-      uploadedImages = req.files.map(file => "/uploads/" + file.filename); // assuming you serve images from /uploads/
+      uploadedImages = req.files.map((file) => "/uploads/" + file.filename); // assuming you serve images from /uploads/
     }
 
     // Merge new images with existing ones (optional)
-    const finalImages = uploadedImages.length > 0 ? uploadedImages : existingProduct.images;
+    const finalImages =
+      uploadedImages.length > 0 ? uploadedImages : existingProduct.images;
 
     // Update product fields
     existingProduct.name = productName;
@@ -1154,17 +1131,917 @@ const editProduct = async (req, res) => {
     existingProduct.colour = colour;
     existingProduct.fabric = fabric;
 
-
     await existingProduct.save();
 
-    res.status(200).json({ success: true, message: "Product updated successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Product updated successfully" });
   } catch (error) {
     console.error("Edit Product Error:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
+};
 
+const exportUsersPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
 
-}
+  try {
+    const users = await Users.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    }).sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({
+      size: "A4",
+      layout: "landscape",
+      margin: 40,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="users_${startDate}_${endDate}.pdf"`
+    );
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(18).text("Customer Report", { align: "center" }).moveDown(1.5);
+
+    // Table Setup
+    const tableTop = 100;
+    const colWidths = [80, 100, 150, 80, 100, 60, 200]; // widths for each column
+    const cols = [
+      "ID",
+      "Name",
+      "Email",
+      "Mobile",
+      "Created",
+      "Orders",
+      "Address",
+    ];
+    let startX = 40;
+    let y = tableTop;
+
+    // Header Row
+    doc.fontSize(12).font("Helvetica-Bold");
+    let x = startX;
+    cols.forEach((col, i) => {
+      doc.text(col, x, y, { width: colWidths[i], underline: false });
+      x += colWidths[i];
+    });
+
+    y += 25;
+
+    doc.font("Helvetica");
+
+    users.forEach((user) => {
+      let address = "N/A";
+      if (user.address?.[0]?.billing) {
+        const billing = user.address[0].billing;
+        const line = billing.addressLine || "";
+        const city = billing.city || "";
+        const state = billing.state || "";
+        address = `${line}, ${city}, ${state}`
+          .trim()
+          .replace(/^,|,$/g, "")
+          .replace(/,{2,}/g, ",");
+        if (!address || address === ", ,") address = "N/A";
+      }
+
+      const rowData = [
+        user.userId || "N/A",
+        user.name || "N/A",
+        user.email || "N/A",
+        user.mobile || "N/A",
+        user.createdAt.toDateString(),
+        user.orders?.length || 0,
+        address,
+      ];
+
+      // 1. Calculate max height required
+      let rowHeight = 0;
+      rowData.forEach((cell, i) => {
+        const height = doc.heightOfString(cell.toString(), {
+          width: colWidths[i],
+        });
+        if (height > rowHeight) rowHeight = height;
+      });
+      rowHeight += 5;
+
+      // 2. Page break before drawing full row
+      if (y + rowHeight > doc.page.height - 40) {
+        doc.addPage();
+        y = 50;
+      }
+
+      let x = startX;
+      rowData.forEach((cell, i) => {
+        doc.text(cell.toString(), x, y, {
+          width: colWidths[i],
+          height: rowHeight,
+          align: "left",
+        });
+        x += colWidths[i];
+      });
+
+      y += rowHeight;
+    });
+
+    doc.end();
+  } catch (err) {
+    console.error("PDF Export Error:", err);
+    res.status(500).send("Error generating PDF");
+  }
+};
+
+const exportProductsPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const products = await Products.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    })
+      .populate("categoryId")
+      .sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({
+      size: "A4",
+      layout: "landscape",
+      margin: 40,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="products_${startDate}_${endDate}.pdf"`
+    );
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(18).text("Product Report", { align: "center" }).moveDown(1.5);
+
+    // Table Header
+    const headers = [
+      "ID",
+      "Name",
+      "Category",
+      "HSN",
+      "SKU",
+      "Price",
+      "Created",
+    ];
+    const colWidths = [80, 150, 100, 80, 100, 80, 100];
+    let startX = 40;
+    let y = 100;
+
+    doc.font("Helvetica-Bold").fontSize(12);
+    headers.forEach((header, i) => {
+      doc.text(header, startX, y, { width: colWidths[i], align: "left" });
+      startX += colWidths[i];
+    });
+
+    y += 25;
+    doc.font("Helvetica");
+
+    for (const product of products) {
+      const row = [
+        product.productId || "N/A",
+        product.name || "N/A",
+        product.categoryId?.name || "N/A",
+        product.hsnCode || "N/A",
+        product.skuId || "N/A",
+        product.price?.toString() || "N/A",
+        product.createdAt.toDateString(),
+      ];
+
+      let x = 40;
+      row.forEach((text, i) => {
+        doc.text(text, x, y, { width: colWidths[i], align: "left" });
+        x += colWidths[i];
+      });
+
+      y += 25;
+
+      if (y > doc.page.height - 50) {
+        doc.addPage();
+        y = 50;
+      }
+    }
+
+    doc.end();
+  } catch (err) {
+    console.error("PDF Export Error:", err);
+    res.status(500).send("Error generating PDF");
+  }
+};
+
+const exportCategoriesPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const categories = await Categories.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    }).sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({
+      size: "A4",
+      layout: "landscape",
+      margin: 40,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="categories_${startDate}_${endDate}.pdf"`
+    );
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(18).text("Category Report", { align: "center" }).moveDown(1.5);
+
+    // Table headers
+    const headers = ["ID", "Name", "Description", "Created"];
+    const colWidths = [100, 100, 380, 100];
+    const colX = [40, 140, 240, 620];
+
+    doc.fontSize(12).font("Helvetica-Bold");
+    headers.forEach((header, i) => {
+      doc.text(header, colX[i], doc.y, { width: colWidths[i] });
+    });
+
+    let y = doc.y + 25;
+    doc.font("Helvetica").fontSize(10);
+
+    for (const cat of categories) {
+      const row = [
+        cat.categoryId || "N/A",
+        cat.name || "N/A",
+        cat.description || "N/A",
+        cat.createdAt.toDateString(),
+      ];
+
+      // Calculate max lines needed for wrapped text
+      const lineCounts = row.map((cell, i) => {
+        const options = { width: colWidths[i] };
+        return doc.heightOfString(cell, options) / doc.currentLineHeight();
+      });
+      const maxLines = Math.ceil(Math.max(...lineCounts));
+      const rowHeight = maxLines * doc.currentLineHeight() + 10;
+
+      // Check for page break
+      if (y + rowHeight > doc.page.height - 40) {
+        doc.addPage();
+        y = 40;
+      }
+
+      row.forEach((cell, i) => {
+        doc.text(cell, colX[i], y, {
+          width: colWidths[i],
+          align: "left",
+        });
+      });
+
+      y += rowHeight;
+    }
+
+    doc.end();
+  } catch (err) {
+    console.error("PDF Export Error:", err);
+    res.status(500).send("Error generating PDF");
+  }
+};
+
+const exportInventoryPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const products = await Products.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      }
+    }).sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 40 });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="inventory_${startDate}_${endDate}.pdf"`);
+
+    doc.pipe(res);
+
+    doc.fontSize(18).text("Inventory Report", { align: "center" }).moveDown(1.5);
+
+    // Table headers
+    const headers = [
+      "Product ID", "Name", "Price", "Discount", "Stock",
+      "Shipped", "Available", "Revenue"
+    ];
+    const tableTop = 100;
+    const colSpacing = 90;
+
+    doc.fontSize(12).font("Helvetica-Bold");
+    let x = 40;
+    headers.forEach(header => {
+      doc.text(header, x, tableTop);
+      x += colSpacing;
+    });
+
+    // Table rows
+    let y = tableTop + 25;
+    doc.font("Helvetica");
+
+    products.forEach(product => {
+      const shipped = product.stock - product.availableStock;
+      const revenue = shipped * product.discount;
+
+      const row = [
+        product.productId || "N/A",
+        product.name || "N/A",
+        product.price || "N/A",
+        product.discount || "N/A",
+        product.stock || 0,
+        shipped,
+        product.availableStock || 0,
+        revenue
+      ];
+
+      let x = 40;
+      let rowHeight = 0;
+
+  row.forEach((cell, idx) => {
+    const textHeight = doc.heightOfString(cell.toString(), {
+      width: colSpacing - 5,
+    });
+    rowHeight = Math.max(rowHeight, textHeight);
+  });
+
+  row.forEach((cell, idx) => {
+    doc.text(cell.toString(), x, y, {
+      width: colSpacing - 5,
+      height: rowHeight,
+    });
+    x += colSpacing;
+  });
+
+  y += rowHeight + 10;
+
+  if (y > doc.page.height - 50) {
+    doc.addPage();
+    y = 50;
+  }
+});
+
+    doc.end();
+  } catch (err) {
+    console.error("PDF Export Error:", err);
+    res.status(500).send("Error generating PDF");
+  }
+};
+
+const exportOrdersPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const orders = await Orders.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      }
+    }).populate("userId").populate("items.productId").sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({ size: "A4", layout: "landscape", margin: 40 });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="orders_${startDate}_${endDate}.pdf"`);
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(18).text("Order Report", { align: "center" }).moveDown(1.5);
+
+    // Table headers
+    const tableTop = 100;
+    const colWidths = [80, 90, 90, 280, 60, 80, 90]; // adjust as needed
+    const headers = ["Order ID", "Created", "Customer ID", "Items", "Total", "Payment", "Status"];
+    let x = doc.page.margins.left;
+
+    doc.font("Helvetica-Bold").fontSize(10);
+    headers.forEach((header, i) => {
+      doc.text(header, x, tableTop, { width: colWidths[i], align: "left" });
+      x += colWidths[i];
+    });
+
+    let y = tableTop + 25;
+    doc.font("Helvetica").fontSize(9);
+
+    orders.forEach(order => {
+      const row = [
+        order.orderId || "N/A",
+        order.createdAt.toLocaleDateString("en-IN"),
+        order.userId?.userId || "N/A",
+        order.items.map(item => `${item.productId?.name || 'Product'} x${item.quantity} - INR${item.subtotal.toFixed(2)}`).join(", "),
+        `INR${order.total.toFixed(2)}`,
+        order.paymentStatus || "N/A",
+        order.status || "N/A"
+      ];
+
+      let rowX = doc.page.margins.left;
+      row.forEach((cell, i) => {
+        doc.text(cell.toString(), rowX, y, {
+          width: colWidths[i],
+          align: "left",
+          continued: false,
+          lineBreak: true
+        });
+        rowX += colWidths[i];
+      });
+
+      y += 30;
+      if (y >= doc.page.height - 50) {
+        doc.addPage();
+        y = 50;
+      }
+    });
+
+    doc.end();
+  } catch (err) {
+    console.error("Export Orders PDF Error:", err);
+    res.status(500).send("Error generating PDF");
+  }
+};
+
+const exportCouponsPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const coupons = await Coupons.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    })
+      .populate("productId", "name")
+      .populate("categoryId", "name")
+      .sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({
+      size: "A4",
+      layout: "landscape",
+      margin: 40,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="coupons_${startDate}_${endDate}.pdf"`
+    );
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(18).text("Coupon Report", { align: "center" }).moveDown(1.5);
+
+// Table headers
+const headers = ["Product", "Category", "Code", "Discount (%)", "Status", "Start Date", "End Date"];
+const colWidths = [160, 80, 100, 100, 80, 100, 100];
+const colX = [40, 200, 280, 380, 480, 560, 660];
+
+doc.fontSize(12).font("Helvetica-Bold");
+
+let headerY = doc.y;
+headers.forEach((header, i) => {
+  doc.text(header, colX[i], headerY, {
+    width: colWidths[i],
+    continued: false,
+  });
+});
+
+let y = headerY + 25; 
+
+    doc.font("Helvetica").fontSize(10);
+
+    for (const coupon of coupons) {
+      const row = [
+        coupon.productId?.name || "N/A",
+        coupon.categoryId?.name || "N/A",
+        coupon.code || "N/A",
+        coupon.discountPercentage?.toString() || "N/A",
+        coupon.status || "N/A",
+        coupon.startDate?.toLocaleDateString("en-GB") || "N/A",
+        coupon.endDate?.toLocaleDateString("en-GB") || "N/A",
+      ];
+
+      // Calculate max lines needed for wrapped text
+      const lineCounts = row.map((cell, i) => {
+        const options = { width: colWidths[i] };
+        return doc.heightOfString(cell, options) / doc.currentLineHeight();
+      });
+      const maxLines = Math.ceil(Math.max(...lineCounts));
+      const rowHeight = maxLines * doc.currentLineHeight() + 10;
+
+      // Page break check
+      if (y + rowHeight > doc.page.height - 40) {
+        doc.addPage();
+        y = 40;
+      }
+
+      // Draw cells
+      row.forEach((cell, i) => {
+        doc.text(cell, colX[i], y, {
+          width: colWidths[i],
+          align: "left",
+        });
+      });
+
+      y += rowHeight;
+    }
+
+    doc.end();
+  } catch (err) {
+    console.error("Coupon PDF Export Error:", err);
+    res.status(500).send("Error generating coupon PDF");
+  }
+};
+
+const exportReviewsPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const reviews = await Reviews.find({
+      date: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      },
+    })
+      .populate("userId")
+      .populate("productId")
+      .sort({ date: -1 });
+
+    const doc = new PDFDocument({
+      size: "A4",
+      layout: "landscape",
+      margin: 40,
+    });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="reviews_${startDate}_${endDate}.pdf"`
+    );
+
+    doc.pipe(res);
+
+    doc.fontSize(18).text("Review Report", { align: "center" }).moveDown(1.5);
+
+    // ✅ Fixed headers and column widths
+    const headers = ["#", "User ID", "Product ID", "Rating", "Review", "Date"];
+    const colWidths = [30, 100, 100, 60, 320, 100];
+    const colX = [40, 70, 180, 290, 360, 700];
+
+    doc.font("Helvetica-Bold").fontSize(12);
+
+const headerY = doc.y; // 💡 fix Y to avoid cascading down
+
+headers.forEach((header, i) => {
+  doc.text(header, colX[i], headerY, { width: colWidths[i], align: "left" });
+});
+
+let y = headerY + 25; // 🧱 start row drawing from here
+
+    doc.font("Helvetica").fontSize(10);
+
+    for (let i = 0; i < reviews.length; i++) {
+      const review = reviews[i];
+      const row = [
+        i + 1,
+        review.userId?.userId || "N/A",
+        review.productId?.productId || "N/A",
+        review.rating?.toString() || "N/A",
+        review.review || "N/A",
+        review.date.toDateString(),
+      ];
+
+      const lineCounts = row.map((cell, idx) => {
+        return Math.ceil(
+          doc.heightOfString(cell.toString(), { width: colWidths[idx] }) / doc.currentLineHeight()
+        );
+      });
+
+      const maxLines = Math.max(...lineCounts);
+      const rowHeight = maxLines * doc.currentLineHeight() + 10;
+
+      if (y + rowHeight > doc.page.height - 40) {
+        doc.addPage();
+        y = 40;
+      }
+
+      row.forEach((cell, idx) => {
+        doc.text(cell.toString(), colX[idx], y, {
+          width: colWidths[idx],
+          align: "left",
+        });
+      });
+
+      y += rowHeight;
+    }
+
+    doc.end();
+  } catch (err) {
+    console.error("PDF Export Error:", err);
+    res.status(500).send("Error generating review report");
+  }
+};
+
+const exportReportPDF = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const products = await Products.find({
+      createdAt: {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      }
+    }).sort({ createdAt: -1 });
+
+    const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 40 });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="report_${startDate}_${endDate}.pdf"`);
+
+    doc.pipe(res);
+
+    doc.fontSize(18).text("Warehouse Report", { align: "center" }).moveDown(1.5);
+
+    const headers = [
+      "Product ID", "Name", "Price", "Discount",
+      "Stock", "Shipped", "Available", "Revenue"
+    ];
+
+    const tableTop = 100;
+    const colSpacing = 90;
+    let x = 40;
+
+    doc.fontSize(12).font("Helvetica-Bold");
+    headers.forEach(header => {
+      doc.text(header, x, tableTop);
+      x += colSpacing;
+    });
+
+    let y = tableTop + 25;
+    doc.font("Helvetica");
+
+    products.forEach(product => {
+      const shipped = product.stock - product.availableStock;
+      const revenue = shipped * product.discount;
+
+      const row = [
+        product.productId || "N/A",
+        product.name || "N/A",
+        product.price || "N/A",
+        product.discount || "N/A",
+        product.stock || 0,
+        shipped,
+        product.availableStock || 0,
+        revenue
+      ];
+
+      let x = 40;
+      let rowHeight = 0;
+
+      row.forEach(cell => {
+        const textHeight = doc.heightOfString(cell.toString(), { width: colSpacing - 5 });
+        rowHeight = Math.max(rowHeight, textHeight);
+      });
+
+      row.forEach(cell => {
+        doc.text(cell.toString(), x, y, { width: colSpacing - 5 });
+        x += colSpacing;
+      });
+
+      y += rowHeight + 10;
+
+      if (y > doc.page.height - 50) {
+        doc.addPage();
+        y = 50;
+      }
+    });
+
+    doc.end();
+  } catch (err) {
+    console.error("PDF Export Error:", err);
+    res.status(500).send("Error generating PDF");
+  }
+};
+
+const createDTDCShipment = async (req, res) => {
+  console.log("Creating DTDC Shipment...");
+  try {
+    const orderId = req.query.id;
+    const order = await Orders.findById(orderId)
+      .populate("items.productId")
+      .populate("userId");
+    console.log("📦 Creating DTDC Shipment for Order ID:", orderId);
+
+    const payload = {
+      consignments: [
+        {
+          customer_code: process.env.DTDC_CUSTOMER_CODE,
+          service_type_id: "B2C PRIORITY",
+          load_type: "NON-DOCUMENT",
+          description: "Order from Harisree Handlooms",
+          dimension_unit: "cm",
+          length: "30",
+          width: "25",
+          height: "10",
+          weight_unit: "kg",
+          weight: "1",
+          declared_value: order.total.toString(),
+          num_pieces: order.items.length.toString(),
+
+          origin_details: {
+            name: "Harisree Handlooms",
+            phone: "9188019689",
+            address_line_1: "Kallanchari, Peruvamba",
+            pincode: "678531",
+            city: "Palakkad",
+            state: "Kerala",
+          },
+
+          destination_details: {
+            name: order.address.name,
+            phone: order.address.phone,
+            address_line_1: order.address.line,
+            pincode: order.address.pincode,
+            city: order.address.city,
+            state: order.address.state,
+          },
+
+          customer_reference_number: order.orderId,
+          commodity_id: "38",
+          is_risk_surcharge_applicable: false,
+          reference_number: "I74518944",
+        },
+      ],
+    };
+    console.log("📦 Booking Shipment with payload:", JSON.stringify(payload, null, 2));
+    const response = await axios.post(
+      "https://dtdcapi.shipsy.io/api/customer/integration/consignment/softdata",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": process.env.DTDC_API_KEY,
+        },
+      }
+    );
+    console.log("📦 Shipment Booked:", response.data);
+    const refNo = response.data.data[0].reference_number;
+
+    await Orders.findByIdAndUpdate(orderId, {
+      $set: {
+        dtdcTrackingNumber: refNo,
+        shippingStatus: "Shipment Booked",
+        shipmentBookedAt: new Date(),
+      },
+    });
+
+    res.redirect(`/admin/order-details?id=${orderId}`);
+  } catch (error) {
+    console.error(
+      "📦 Shipment Booking Failed:",
+      error.response?.data || error.message
+    );
+    res.status(500).send("Failed to book shipment");
+  }
+};
+
+const downloadDTDCLabel = async (req, res) => {
+  const { refNo } = req.query;
+
+  try {
+    const response = await axios.get(
+      `https://dtdcapi.shipsy.io/api/customer/integration/consignment/shippinglabel/stream`,
+      {
+        params: {
+          reference_number: refNo,
+          label_code: "SHIP_LABEL_4X6",
+          label_format: "pdf",
+        },
+        headers: {
+          "api-key": process.env.DTDC_API_KEY,
+        },
+        responseType: "arraybuffer",
+      }
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=label-${refNo}.pdf`
+    );
+    res.send(response.data);
+  } catch (error) {
+    console.error("Label fetch error:", error.message);
+    res.status(500).send("Error downloading shipping label");
+  }
+};
+
+const trackDTDCShipment = async (req, res) => {
+  const { refNo } = req.query;
+
+  if (!refNo) {
+    return res.status(400).json({ error: "Missing DTDC reference number" });
+  }
+
+  try {
+    // Step 1: Make the tracking API call
+    const response = await axios.post(
+      `https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails`,
+      {
+        trkType: "cnno",
+        strcnno: refNo,
+        addtnlDtl: "Y",
+      },
+      {
+        headers: {
+          "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const trackInfo = response.data;
+
+    if (!trackInfo.trackDetails || !trackInfo.trackDetails.length) {
+      return res.status(404).json({ error: "No tracking details found" });
+    }
+
+    const latestEvent = trackInfo.trackDetails[0];
+
+    // Extract latest status & remarks
+    const currentStatus = latestEvent.strStatus || "In Transit";
+    const remarks = latestEvent.strRemarks || "Status Updated";
+
+    // Step 2: Update the corresponding order
+    await Orders.findOneAndUpdate(
+      { dtdcTrackingNumber: refNo },
+      {
+        $set: {
+          shippingStatus: currentStatus, // e.g., "Delivered", "In Transit"
+          lastTrackingUpdate: new Date(),
+          deliveryRemarks: remarks,
+        },
+      }
+    );
+
+    console.log("✅ Order updated with latest DTDC status:", currentStatus);
+
+    // Step 3: Respond to the client
+    return res.json({
+      status: currentStatus,
+      remarks: remarks,
+      trackingDetails: trackInfo.trackDetails,
+    });
+  } catch (err) {
+    console.error("❌ Tracking failed:", err.response?.data || err.message);
+    return res.status(500).json({ error: "Tracking failed" });
+  }
+};
+
+const cancelDTDCShipment = async (req, res) => {
+  const { awb } = req.body;
+
+  try {
+    const response = await axios.post(
+      `http://dtdcapi.shipsy.io/api/customer/integration/consignment/cancel`,
+      {
+        AWBNo: [awb],
+        customerCode: process.env.DTDC_CUSTOMER_CODE,
+      },
+      {
+        headers: {
+          "api-key": process.env.DTDC_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Cancellation failed:", error.message);
+    res.status(500).send("Cancellation failed");
+  }
+};
 
 module.exports = {
   viewLogin,
@@ -1211,4 +2088,16 @@ module.exports = {
   editProduct,
   viewReview,
   deleteReview,
+  exportUsersPDF,
+  exportProductsPDF,
+  exportCategoriesPDF,
+  exportInventoryPDF,
+  exportOrdersPDF,
+  exportCouponsPDF,
+  exportReviewsPDF,
+  exportReportPDF,
+  createDTDCShipment,
+  downloadDTDCLabel,
+  trackDTDCShipment,
+  cancelDTDCShipment,
 };

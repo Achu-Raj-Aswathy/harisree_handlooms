@@ -10,6 +10,11 @@ const mongoose = require("mongoose");
 const adminRouter = require('./routes/adminRouter')
 const userRouter = require('./routes/userRouter')
 
+console.log("✅ Loaded ENV in index.js", {
+  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET
+});
+
 //connecting database
 const connect = mongoose.connect(process.env.MONGODB)
 connect
@@ -39,7 +44,7 @@ app.use(
       saveUninitialized: true,
     })
   ); 
-  
+
   //static
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use("/admin/assets", express.static(path.join(__dirname, 'public/adminAssets')));

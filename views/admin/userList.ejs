@@ -5,7 +5,6 @@
 <div class="wrapper">
 <%- include('./partials/adminHeader') %>
 <%- include('./partials/sidebar') %>
-       
 
         <!-- ==================================================== -->
         <!-- Start right Content here -->
@@ -15,7 +14,6 @@
 
             <!-- Start Container Fluid -->
             <div class="container-xxl">
-
                 
                 <div class="row">
                     <div class="col-xl-12">
@@ -24,9 +22,7 @@
                                    <div>
                                         <h4 class="card-title">All Customers List</h4>
                                    </div>
-                                   <a href="#" class="btn btn-sm btn-outline-light">
-                                        Export
-                                   </a>
+                                   <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">Export</a>
                               </div>
                               <div>
                                    <div class="table-responsive">
@@ -45,7 +41,7 @@
                                              <tbody>
                                                   <% if(users && users.length > 0) { %>
                                                        <% users.forEach((user, index) => { %>
-                                                  <tr>
+                                                  <tr data-created="<%= new Date(user.createdAt).toISOString() %>">
                                                        <td><%= user.userId %></td>
                                                        <td><%= user.name %></td>
                                                        <td><%= user.email %></td>
@@ -132,3 +128,81 @@
 
     <!-- Vendor Javascript (Require in all Page) -->
   </div>
+
+  <!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Date Range</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="dateRangeInput" class="form-control" placeholder="Select date range" />
+        <div id="dateError" class="text-danger d-none mt-2">Please select a valid date range</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" onclick="exportUsersFromServer()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedStartDate = null;
+  let selectedEndDate = null;
+
+  flatpickr("#dateRangeInput", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onChange: function (selectedDates) {
+      if (selectedDates.length === 2) {
+        selectedStartDate = selectedDates[0];
+        selectedEndDate = selectedDates[1];
+        document.getElementById('dateError').classList.add('d-none');
+      }
+    }
+  });
+
+    async function exportUsersFromServer() {
+    if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+      document.getElementById('dateError').classList.remove('d-none');
+      return;
+    }
+
+    try {
+      const response = await fetch("/admin/export-users-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          startDate: selectedStartDate.toISOString(),
+          endDate: selectedEndDate.toISOString(),
+        }),
+      });
+
+      if (!response.ok) throw new Error("Export failed");
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `users_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      // Cleanup
+      document.getElementById("dateRangeInput").value = "";
+      selectedStartDate = null;
+      selectedEndDate = null;
+      bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+
+    } catch (err) {
+      alert("Error downloading PDF.");
+      console.error(err);
+    }
+  }
+</script>

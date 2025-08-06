@@ -26,7 +26,7 @@
                                                        Add Category
                                                   </a>
 
-                                                  <a href="#" class="btn btn-sm btn-outline-light">
+                                                  <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
                                                        Export
                                                   </a>
                                              </div>
@@ -36,12 +36,7 @@
                                                             class="table align-middle mb-0 table-hover table-centered">
                                                             <thead class="bg-light-subtle">
                                                                  <tr>
-                                                                      <!-- <th style="width: 20px;">
-                                                                 <div class="form-check">
-                                                                      <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                                      <label class="form-check-label" for="customCheck1"></label>
-                                                                 </div>
-                                                            </th> -->
+
                                                                       <th>ID</th>
                                                                       <th>Category Name</th>
                                                                       <th>Description</th>
@@ -51,18 +46,8 @@
                                                             </thead>
                                                             <tbody>
                                                                  <% if(categories.length>0){ %>
-
-
                                                                       <% categories.forEach((category)=> { %>
-
-
-                                                                           <tr>
-                                                                                <!-- <td>
-                                                                 <div class="form-check">
-                                                                      <input type="checkbox" class="form-check-input" id="customCheck2">
-                                                                      <label class="form-check-label" for="customCheck2"></label>
-                                                                 </div>
-                                                            </td> -->
+                                                                           <tr data-created="<%= new Date(category.createdAt).toISOString() %>">
                                                                                 <td>
                                                                                      <div
                                                                                           class="d-flex align-items-center gap-2">
@@ -123,7 +108,9 @@
                                                                            <% }) %>
                                                                                 <% } else { %>
                                                                                      <tr>
-                                                                                            <td colspan="4" class="text-center">No Categories found</td>
+                                                                                          <td colspan="4"
+                                                                                               class="text-center">No
+                                                                                               Categories found</td>
                                                                                      </tr>
 
                                                                                      <% } %>
@@ -134,36 +121,45 @@
                                                   <!-- end table-responsive -->
                                              </div>
                                              <div class="card-footer border-top">
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-end mb-0">
-      <% if (currentPage > 1) { %>
-        <li class="page-item">
-          <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
-        </li>
-      <% } else { %>
-        <li class="page-item disabled">
-          <span class="page-link">Previous</span>
-        </li>
-      <% } %>
+                                                  <nav aria-label="Page navigation example">
+                                                       <ul class="pagination justify-content-end mb-0">
+                                                            <% if (currentPage> 1) { %>
+                                                                 <li class="page-item">
+                                                                      <a class="page-link"
+                                                                           href="?page=<%= currentPage - 1 %>">Previous</a>
+                                                                 </li>
+                                                                 <% } else { %>
+                                                                      <li class="page-item disabled">
+                                                                           <span class="page-link">Previous</span>
+                                                                      </li>
+                                                                      <% } %>
 
-      <% for (let i = 1; i <= totalPages; i++) { %>
-        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-        </li>
-      <% } %>
+                                                                           <% for (let i=1; i <=totalPages; i++) { %>
+                                                                                <li
+                                                                                     class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                                                                     <a class="page-link"
+                                                                                          href="?page=<%= i %>">
+                                                                                          <%= i %>
+                                                                                     </a>
+                                                                                </li>
+                                                                                <% } %>
 
-      <% if (currentPage < totalPages) { %>
-        <li class="page-item">
-          <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
-        </li>
-      <% } else { %>
-        <li class="page-item disabled">
-          <span class="page-link">Next</span>
-        </li>
-      <% } %>
-    </ul>
-  </nav>
-</div>
+                                                                                     <% if (currentPage < totalPages) {
+                                                                                          %>
+                                                                                          <li class="page-item">
+                                                                                               <a class="page-link"
+                                                                                                    href="?page=<%= currentPage + 1 %>">Next</a>
+                                                                                          </li>
+                                                                                          <% } else { %>
+                                                                                               <li
+                                                                                                    class="page-item disabled">
+                                                                                                    <span
+                                                                                                         class="page-link">Next</span>
+                                                                                               </li>
+                                                                                               <% } %>
+                                                       </ul>
+                                                  </nav>
+                                             </div>
 
                                         </div>
                                    </div>
@@ -208,3 +204,80 @@
                });
           });
      </script>
+
+     <!-- Export Date Range Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exportModalLabel">Select Date Range</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control" id="dateRangeInput" placeholder="dd/mm/yyyy - dd/mm/yyyy" readonly>
+        <div class="text-danger mt-2 d-none" id="dateError">Please select a valid date range</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning" onclick="downloadCategoryPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedStartDate = null;
+  let selectedEndDate = null;
+
+  flatpickr("#dateRangeInput", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onChange: function (selectedDates) {
+      if (selectedDates.length === 2) {
+        selectedStartDate = selectedDates[0];
+        selectedEndDate = selectedDates[1];
+
+        if (selectedEndDate < selectedStartDate) {
+          document.getElementById('dateError').classList.remove('d-none');
+        } else {
+          document.getElementById('dateError').classList.add('d-none');
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+async function downloadCategoryPDF() {
+  if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+    document.getElementById('dateError').classList.remove('d-none');
+    return;
+  }
+
+  const response = await fetch("/admin/export-categories-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      startDate: selectedStartDate.toISOString(),
+      endDate: selectedEndDate.toISOString(),
+    }),
+  });
+
+  if (!response.ok) {
+    alert("Failed to generate PDF.");
+    return;
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `categories_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+  a.click();
+
+  document.getElementById("dateRangeInput").value = "";
+  selectedStartDate = null;
+  selectedEndDate = null;
+  bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+}
+
+</script>

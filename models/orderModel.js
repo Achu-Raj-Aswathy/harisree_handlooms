@@ -44,7 +44,17 @@ const orderSchema = new mongoose.Schema(
       city: String,
       pincode: String,
       line: String,
-    }
+    },
+    dtdcTrackingNumber: { type: String, default: null },
+    shippingStatus: {
+      type: String,
+      enum: ["Not Booked", "Shipment Booked", "In Transit", "Delivered", "Cancelled", "RTO"],
+      default: "Not Booked"
+    },
+    shippingLabelUrl: { type: String, default: null }, // Optional: for label download/display
+    shipmentBookedAt: { type: Date },
+    lastTrackingUpdate: { type: Date },
+    deliveryRemarks: { type: String }
   },
   { timestamps: true }
 );
