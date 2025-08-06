@@ -22,11 +22,10 @@
                                                        Add Product
                                                   </a>
 
-                                                  <a href="#" class="btn btn-sm btn-outline-light">
-                                                       Export
-                                                  </a>
+                                                  <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">Export</a>
 
                                              </div>
+                                             
                                              <div>
                                                   <div class="table-responsive">
                                                        <table
@@ -46,11 +45,8 @@
                                                             </thead>
                                                             <tbody>
                                                                  <% if(products.length>0){ %>
-
-
                                                                       <% products.forEach((product)=> { %>
-                                                                           <tr>
-
+                                                                           <tr data-created="<%= new Date(product.createdAt).toISOString() %>">
                                                                                 <td>
                                                                                      <div
                                                                                           class="d-flex align-items-center gap-2">
@@ -160,7 +156,7 @@
       <% } %>
     </ul>
   </nav>
-</div>
+                                             </div>
 
                                         </div>
                                    </div>
@@ -204,3 +200,69 @@
                });
           });
      </script>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Date Range</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="dateRangeInput" class="form-control" placeholder="Select date range" />
+        <div id="dateError" class="text-danger d-none mt-2">Please select a valid date range</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" onclick="downloadProductPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedStartDate = null;
+  let selectedEndDate = null;
+
+  flatpickr("#dateRangeInput", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onChange: function (selectedDates) {
+      if (selectedDates.length === 2) {
+        selectedStartDate = selectedDates[0];
+        selectedEndDate = selectedDates[1];
+        document.getElementById('dateError').classList.add('d-none');
+      }
+    }
+  });
+
+  async function downloadProductPDF() {
+    if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+      document.getElementById('dateError').classList.remove('d-none');
+      return;
+    }
+
+  const response = await fetch("/admin/export-products-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      startDate: selectedStartDate.toISOString(),
+      endDate: selectedEndDate.toISOString(),
+    }),
+  });
+
+  if (!response.ok) return alert("Failed to generate PDF");
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `products_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+  a.click();
+
+  document.getElementById("dateRangeInput").value = "";
+  selectedStartDate = null;
+  selectedEndDate = null;
+  bootstrap.Modal.getInstance(document.getElementById("exportModal")).hide();
+  }
+</script>

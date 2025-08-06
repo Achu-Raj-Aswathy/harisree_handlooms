@@ -14,6 +14,8 @@ const Orders = require('../models/orderModel')
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node');
+const axios = require("axios");
+const moment = require("moment");
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -147,6 +149,71 @@ const status = async (req, res) => {
 });
       await newOrder.save();
 
+      // dtdc
+      const dtdcPayload = {
+  consignments: [{
+    customer_code: process.env.DTDC_CUSTOMER_CODE,
+    service_type_id: "B2C PRIORITY",
+    load_type: "NON-DOCUMENT",
+    description: "Order from Harisree Handlooms",
+    dimension_unit: "cm",
+    length: "30",
+    width: "25",
+    height: "10",
+    weight_unit: "kg",
+    weight: "1",
+    declared_value: newOrder.total.toString(),
+    num_pieces: newOrder.items.length.toString(),
+    origin_details: {
+          name: "Harisree Handlooms",
+          phone: "9188019689",
+          address_line_1: "Kallanchari, Peruvamba",
+          pincode: "678531",
+          city: "Palakkad",
+          state: "Kerala"
+        },
+    destination_details: {
+      name: newOrder.address.name,
+      phone: newOrder.address.phone,
+      address_line_1: newOrder.address.line,
+      pincode: newOrder.address.pincode,
+      city: newOrder.address.city,
+      state: newOrder.address.state
+    },
+    customer_reference_number: newOrder.orderId,
+    commodity_id: "38",
+    is_risk_surcharge_applicable: false,
+    reference_number: "I74518944",
+  }]
+};
+console.log("📦 Booking Shipment with payload:", JSON.stringify(dtdcPayload, null, 2));
+
+try {
+  const dtdcResponse = await axios.post(
+    "https://dtdcapi.shipsy.io/api/customer/integration/consignment/softdata",
+    dtdcPayload,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": process.env.DTDC_API_KEY
+      }
+    }
+  );
+  console.log("📦 DTDC Full Response:", JSON.stringify(dtdcResponse.data, null, 2));
+
+  const refNo = dtdcResponse.data?.data?.[0]?.reference_number;
+  if (refNo) {
+    newOrder.dtdcTrackingNumber = refNo;
+    newOrder.shippingStatus = "Shipment Booked";
+    newOrder.shipmentBookedAt = new Date();
+    await newOrder.save();
+  } else {
+    console.warn("No DTDC tracking number returned.");
+  }
+} catch (err) {
+  console.error("DTDC booking failed:", err.response?.data || err.message);
+}
+
 await Users.findByIdAndUpdate(req.session.user, {
     $push: {
     orders: {
@@ -248,6 +315,122 @@ const order = await Orders.findById(newOrder._id).populate('items.productId');
   } catch (error) {
     console.error("Error in status check:", error.response?.data || error.message, error.stack);
     return res.redirect(failureUrl);
+  }
+};
+
+const downloadDTDCLabel = async (req, res) => {
+  const { refNo } = req.query;
+
+  try {
+    const response = await axios.get(
+      `https://dtdcapi.shipsy.io/api/customer/integration/consignment/shippinglabel/stream`,
+      {
+        params: {
+          reference_number: refNo,
+          label_code: "SHIP_LABEL_4X6",
+          label_format: "pdf"
+        },
+        headers: {
+          "api-key": process.env.DTDC_API_KEY
+        },
+        responseType: "arraybuffer"
+      }
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename=label-${refNo}.pdf`);
+    res.send(response.data);
+  } catch (error) {
+    console.error("Label fetch error:", error.message);
+    res.status(500).send("Error downloading shipping label");
+  }
+};
+
+const trackDTDCShipment = async (req, res) => {
+    const { refNo } = req.query;
+
+  if (!refNo) {
+    return res.status(400).json({ error: "Missing DTDC reference number" });
+  }
+
+  try {
+    // Step 1: Make the tracking API call
+    const response = await axios.post(
+      `https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails`,
+      {
+        trkType: "cnno",
+        strcnno: refNo,
+        addtnlDtl: "Y"
+      },
+      {
+        headers: {
+          "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const trackInfo = response.data;
+
+    if (!trackInfo.trackDetails || !trackInfo.trackDetails.length) {
+      return res.status(404).json({ error: "No tracking details found" });
+    }
+
+    const latestEvent = trackInfo.trackDetails[0];
+
+    // Extract latest status & remarks
+    const currentStatus = latestEvent.strStatus || "In Transit";
+    const remarks = latestEvent.strRemarks || "Status Updated";
+
+    // Step 2: Update the corresponding order
+    await Orders.findOneAndUpdate(
+      { dtdcTrackingNumber: refNo },
+      {
+        $set: {
+          shippingStatus: currentStatus, // e.g., "Delivered", "In Transit"
+          lastTrackingUpdate: new Date(),
+          deliveryRemarks: remarks
+        }
+      }
+    );
+
+    console.log("✅ Order updated with latest DTDC status:", currentStatus);
+
+    // Step 3: Respond to the client
+    return res.json({
+      status: currentStatus,
+      remarks: remarks,
+      trackingDetails: trackInfo.trackDetails
+    });
+
+  } catch (err) {
+    console.error("❌ Tracking failed:", err.response?.data || err.message);
+    return res.status(500).json({ error: "Tracking failed" });
+  }
+};
+
+const cancelDTDCShipment = async (req, res) => {
+  const { awb } = req.body;
+
+  try {
+    const response = await axios.post(
+      `http://dtdcapi.shipsy.io/api/customer/integration/consignment/cancel`,
+      {
+        AWBNo: [awb],
+        customerCode: process.env.DTDC_CUSTOMER_CODE
+      },
+      {
+        headers: {
+          "api-key": process.env.DTDC_API_KEY,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Cancellation failed:", error.message);
+    res.status(500).send("Cancellation failed");
   }
 };
 
@@ -382,6 +565,7 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   try {
+    const loginTime = moment().format("DD/MM/YY, hh:mm A");
     const { email, password } = req.body;
     const user = await Users.findOne({ email });
     if (!user)
@@ -400,7 +584,7 @@ const signIn = async (req, res) => {
       await transporter.sendMail({
   from: process.env.EMAIL,
   to: user.email,
-  subject: `🔐 Login Alert - Harisree Handlooms`,
+  subject: `🔐 Login Alert - Harisree Handlooms at ${loginTime}`,
   html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
       <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Login Alert</h2>
@@ -1130,5 +1314,8 @@ module.exports = {
   resetPassword,
   viewOrderDetails,
   updateAccountDetails,
-   
+  downloadDTDCLabel,
+  trackDTDCShipment,
+  cancelDTDCShipment,
+
 }

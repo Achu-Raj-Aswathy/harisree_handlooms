@@ -19,9 +19,7 @@
                                              <div>
                                                   <h4 class="card-title">All Order List</h4>
                                              </div>
-                                             <a href="#" class="btn btn-sm btn-outline-light">
-                                                  Export
-                                             </a>
+                                             <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">Export</a>
                                         </div>
                                         <div class="card-body p-0">
                                              <div class="table-responsive">
@@ -40,7 +38,7 @@
                                                        <tbody>
                                                             <% if(orders.length > 0) { %>
                                                             <% orders.forEach(order => { %>
-                                                            <tr>
+                                                            <tr data-created="<%= new Date(order.createdAt).toISOString() %>">
                                                                  <td><%= order.orderId %></td>
                                                                  <td><%= order.createdAt.toLocaleDateString('en-IN') %></td>
                                                                  <td>
@@ -119,3 +117,73 @@
                <!-- ==================================================== -->
 
           </div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Date Range</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="dateRangeInput" class="form-control" placeholder="Select date range" />
+        <div id="dateError" class="text-danger d-none mt-2">Please select a valid date range</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" onclick="downloadOrderPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedStartDate = null;
+  let selectedEndDate = null;
+
+  flatpickr("#dateRangeInput", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onChange: function (selectedDates) {
+      if (selectedDates.length === 2) {
+        selectedStartDate = selectedDates[0];
+        selectedEndDate = selectedDates[1];
+        document.getElementById('dateError').classList.add('d-none');
+      }
+    }
+  });
+
+  async function downloadOrderPDF() {
+  if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+    document.getElementById('dateError').classList.remove('d-none');
+    return;
+  }
+
+  const response = await fetch("/admin/export-orders-pdf", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      startDate: selectedStartDate.toISOString(),
+      endDate: selectedEndDate.toISOString()
+    })
+  });
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `orders_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+
+  bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+  document.getElementById("dateRangeInput").value = "";
+  selectedStartDate = null;
+  selectedEndDate = null;
+}
+
+</script>

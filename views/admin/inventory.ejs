@@ -1,7 +1,6 @@
 <%- include('./partials/header') %>
 <%- include('./partials/adminHeader') %>
 
-
      <!-- START Wrapper -->
      <div class="wrapper">
 <%- include('./partials/sidebar') %>
@@ -21,9 +20,7 @@
                                         <div>
                                              <h4 class="card-title">All Warehouse List</h4>
                                         </div>
-                                        <a href="#" class="btn btn-sm btn-outline-light">
-                                             Export
-                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">Export</a>
                                    </div>
                                    <div>
                                         <div class="table-responsive">
@@ -45,13 +42,10 @@
                                                   </thead>
                                                   <tbody>
                                                         <% if(products.length>0){ %>
-                                                                      <% products.forEach((product)=> { %>
-                                                       <tr>
-                                                          
+                                                            <% products.forEach((product)=> { %>
+                                                       <tr data-created="<%= new Date(product.createdAt).toISOString() %>">                                                          
                                                             <td><%=  product.productId %></td>
                                                             <td><%= product.name %></td>
-                                                            
-
                                                             <td> <%= product.price %></td>
                                                             <td><%= product.discount %></td>
                                                             <td><%= product.stock  %></td>
@@ -61,9 +55,9 @@
                                                             let Shippedstock=TotalStock-availableStock;
                                                             let price=product.discount;
                                                             let TotalRevenue=Shippedstock*price;
-                                                                 %>
+                                                            %>
 
-                                                                  <td><%= Shippedstock %></td>
+                                                            <td><%= Shippedstock %></td>
                                                             <td><%= product.availableStock %></td>
                                                             <td><%= TotalRevenue %></td>
                                                             <td>
@@ -135,4 +129,76 @@
     
      <!-- END Wrapper -->
 
- </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Date Range</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="dateRangeInput" class="form-control" placeholder="Select date range" />
+        <div id="dateError" class="text-danger d-none mt-2">Please select a valid date range</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" onclick="downloadInventoryPDF()">Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedStartDate = null;
+  let selectedEndDate = null;
+
+  flatpickr("#dateRangeInput", {
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onChange: function (selectedDates) {
+      if (selectedDates.length === 2) {
+        selectedStartDate = selectedDates[0];
+        selectedEndDate = selectedDates[1];
+        document.getElementById('dateError').classList.add('d-none');
+      }
+    }
+  });
+
+  async function downloadInventoryPDF() {
+  if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+    document.getElementById('dateError').classList.remove('d-none');
+    return;
+  }
+
+  const formattedStart = selectedStartDate.toISOString();
+  const formattedEnd = selectedEndDate.toISOString();
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "/admin/export-inventory-pdf";
+  form.style.display = "none";
+
+  const startInput = document.createElement("input");
+  startInput.name = "startDate";
+  startInput.value = formattedStart;
+  form.appendChild(startInput);
+
+  const endInput = document.createElement("input");
+  endInput.name = "endDate";
+  endInput.value = formattedEnd;
+  form.appendChild(endInput);
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+
+  // Reset UI
+  document.getElementById("dateRangeInput").value = "";
+  selectedStartDate = null;
+  selectedEndDate = null;
+  bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+}
+
+</script>
