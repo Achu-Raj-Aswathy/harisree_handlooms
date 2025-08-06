@@ -34,7 +34,6 @@ adminRouter.get("/view-review",isLogin,adminController.viewReview);
 
 
 
-
 adminRouter.delete("/delete-category/:id", isLogin, adminController.deleteCategory);
 adminRouter.delete('/delete-product/:id', isLogin, adminController.deleteProduct);
 adminRouter.delete("/delete-coupon/:id", isLogin, adminController.deleteCoupon);

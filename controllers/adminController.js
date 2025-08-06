@@ -14,6 +14,7 @@ const Requests = require("../models/returnRequestModel");
 const Reviews = require("../models/reviewModel");
 const PDFDocument = require("pdfkit");
 const axios = require("axios");
+const sharp = require("sharp");
 
 const viewLogin = async (req, res) => {
   try {
@@ -477,8 +478,31 @@ const addCategory = async (req, res) => {
   try {
     const { categoryId, categoryName, description } = req.body;
 
-    // Collect uploaded file paths
-    const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
+   const thumbnails = [];
+
+    // Ensure /uploads directory exists
+    const uploadDir = path.join(__dirname, "../public/uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Compress and save each uploaded image
+    for (const file of req.files) {
+      const inputPath = file.path; // multer stores temporarily
+      const outputFileName = `${Date.now()}-${file.originalname}`;
+      const outputPath = path.join(uploadDir, outputFileName);
+
+      // Compress image using sharp
+      await sharp(inputPath)
+        .resize({ width: 1080 }) // Optional: resize to standard width
+        .jpeg({ quality: 80 })   // Compress to ~80% quality
+        .toFile(outputPath);
+
+      // Delete the original temp file
+      fs.unlinkSync(inputPath);
+
+      thumbnails.push(`/uploads/${outputFileName}`);
+    }
 
     // Save to DB
     const newCategory = new Categories({
@@ -529,9 +553,32 @@ const addProduct = async (req, res) => {
       colour,
     } = req.body;
 
-    // Collect uploaded file paths
+    const thumbnails = [];
 
-    const thumbnails = req.files.map((file) => `/uploads/${file.filename}`);
+    // Ensure /uploads exists
+    const uploadDir = path.join(__dirname, "../public/uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Compress and save images
+    for (const file of req.files) {
+      const inputPath = file.path; // multer will have saved it already
+      const ext = path.extname(file.originalname);
+      const outputFileName = `${Date.now()}-${file.originalname}`;
+      const outputPath = path.join(uploadDir, outputFileName);
+
+      // Compress using sharp
+      await sharp(inputPath)
+        .resize({ width: 1080 }) // Optional: Resize to max width 1080px
+        .jpeg({ quality: 80 }) // Adjust quality for JPEG
+        .toFile(outputPath);
+
+      // Delete original uncompressed file
+      fs.unlinkSync(inputPath);
+
+      thumbnails.push(`/uploads/${outputFileName}`);
+    }
 
     // Save to DB
     const newProduct = new Products({
@@ -552,7 +599,7 @@ const addProduct = async (req, res) => {
       design,
       fabric,
       availableStock: stock,
-      images: thumbnails, // Store image paths array
+      images: thumbnails,
     });
 
     await newProduct.save();
@@ -653,7 +700,31 @@ const editCategory = async (req, res) => {
     }
 
     // Upload new images
-    let newImages = req.files?.map((file) => `/uploads/${file.filename}`) || [];
+
+    const uploadDir = path.join(__dirname, "../public/uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+        // Compress and save new images (if any)
+    const newImages = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const inputPath = file.path; // multer temp path
+        const outputFileName = `${Date.now()}-${file.originalname}`;
+        const outputPath = path.join(uploadDir, outputFileName);
+
+        await sharp(inputPath)
+          .resize({ width: 1080 }) // Optional: resize
+          .jpeg({ quality: 80 })   // Compress JPEG to ~<500KB
+          .toFile(outputPath);
+
+        // Remove original uploaded image
+        fs.unlinkSync(inputPath);
+
+        newImages.push(`/uploads/${outputFileName}`);
+      }
+    }
 
     // Delete old images that were removed
     category.images.forEach((img) => {
@@ -680,47 +751,6 @@ const editCategory = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
-
-// const editCategory = async (req, res) => {
-//   try {
-//     const categoryId = req.query.id;
-//     const { name, description, existingImages } = req.body;
-
-//     const category = await Categories.findById(categoryId);
-//     if (!category) {
-//       return res.status(404).json({ success: false, message: "Category not found" });
-//     }
-
-//     // Parse retained old images
-//     let retainedImages = [];
-//     if (existingImages) {
-//       retainedImages = JSON.parse(existingImages).map(name => `/uploads/${name}`); // FIXED: add /uploads/
-//     }
-
-//     // Upload new images
-//     let newImages = req.files?.map((file) => `/uploads/${file.filename}`) || [];
-
-//     // Delete old images that were removed
-//     category.images.forEach(img => {
-//       if (!retainedImages.includes(img)) {
-//         const imgPath = path.join(__dirname, "../public", img); // use `img` directly
-//         if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-//       }
-//     });
-
-//     // Merge retained + new
-//     category.images = [...retainedImages, ...newImages];
-//     category.name = name;
-//     category.description = description;
-
-//     await category.save();
-
-//     res.json({ success: true, message: "Category updated successfully" });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ success: false, message: "Server Error" });
-//   }
-// };
 
 const viewProductsByCategory = async (req, res) => {
   try {
@@ -903,16 +933,40 @@ const addOffer = async (req, res) => {
       categoryId,
       productId,
     } = req.body;
-    const image = req.file ? req.file.filename : null;
+
+    let compressedImageFilename = null;
+
+    if (req.file) {
+      const inputPath = req.file.path; // Original temp file (from multer)
+      const outputDir = path.join(__dirname, "../public/uploads");
+
+      // Ensure upload directory exists
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+
+      const outputFileName = `${Date.now()}-${req.file.originalname}`;
+      const outputPath = path.join(outputDir, outputFileName);
+
+      // Compress image using sharp
+      await sharp(inputPath)
+        .resize({ width: 1080 }) // Resize if needed
+        .jpeg({ quality: 80 })   // Compress to approx < 500 KB
+        .toFile(outputPath);
+
+      // Delete original uncompressed image
+      fs.unlinkSync(inputPath);
+
+      compressedImageFilename = outputFileName;
+    }
 
     const newOffer = new Offers({
       name: title,
-
       description,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       discountPercentage: discount,
-      image,
+      image: compressedImageFilename,
       categoryId,
       productId,
     });
@@ -988,26 +1042,37 @@ const editOffer = async (req, res) => {
     offer.categoryId = categoryId;
     offer.productId = productId;
 
-    // Handle image replacement
+     // Handle new image upload (compress & replace)
     if (req.file) {
-      // Delete old image if it exists
+      const uploadDir = path.join(__dirname, "../public/uploads");
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      // Delete old image if exists
       if (offer.image) {
-        const oldImagePath = path.join(
-          __dirname,
-          "..",
-          "public",
-          "uploads",
-          offer.image
-        );
+        const oldImagePath = path.join(uploadDir, offer.image);
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
       }
 
-      // Save new image name
-      offer.image = req.file.filename;
-    }
+      // Compress and save new image
+      const outputFileName = `${Date.now()}-${req.file.originalname}`;
+      const outputPath = path.join(uploadDir, outputFileName);
 
+      await sharp(req.file.path)
+        .resize({ width: 1080 }) // Optional resize
+        .jpeg({ quality: 80 })   // Compress to ~< 500KB
+        .toFile(outputPath);
+
+      // Remove temp file
+      fs.unlinkSync(req.file.path);
+
+      // Save filename to DB
+      offer.image = outputFileName;
+    }
+    
     await offer.save();
 
     res
@@ -1102,15 +1167,36 @@ const editProduct = async (req, res) => {
       colour,
     } = req.body;
 
-    // Handle uploaded images (new ones only)
-    let uploadedImages = [];
-    if (req.files && req.files.length > 0) {
-      uploadedImages = req.files.map((file) => "/uploads/" + file.filename); // assuming you serve images from /uploads/
+    const uploadDir = path.join(__dirname, "../public/uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    // Merge new images with existing ones (optional)
+    let compressedImages = [];
+
+    // Handle uploaded images (compress new ones)
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const inputPath = file.path;
+        const outputFileName = `${Date.now()}-${file.originalname}`;
+        const outputPath = path.join(uploadDir, outputFileName);
+
+        await sharp(inputPath)
+          .resize({ width: 1080 }) // Optional resize
+          .jpeg({ quality: 80 }) // Compression
+          .toFile(outputPath);
+
+        fs.unlinkSync(inputPath); // Remove original uncompressed image
+
+        compressedImages.push("/uploads/" + outputFileName);
+      }
+    }
+
+    // Final image list: use new compressed if any, else keep old
     const finalImages =
-      uploadedImages.length > 0 ? uploadedImages : existingProduct.images;
+      compressedImages.length > 0
+        ? compressedImages
+        : existingProduct.images;
 
     // Update product fields
     existingProduct.name = productName;
