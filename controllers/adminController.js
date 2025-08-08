@@ -468,7 +468,11 @@ const viewHomeEditor = async (req, res) => {
 
 const viewOrderTracking = async (req, res) => {
   try {
-    res.render("admin/orderTrackingAdmin", {});
+    const orders = await Orders.find()
+      .populate("userId")
+      .populate("items.productId")
+      .sort({ createdAt: -1 });
+    res.render("admin/orderTrackingAdmin", {orders});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });

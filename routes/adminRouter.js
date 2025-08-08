@@ -64,7 +64,7 @@ adminRouter.post("/export-inventory-pdf", isLogin, adminController.exportInvento
 adminRouter.post("/export-orders-pdf", isLogin, adminController.exportOrdersPDF);
 adminRouter.post("/export-coupons-pdf", isLogin, adminController.exportCouponsPDF);
 adminRouter.post("/export-reviews-pdf", isLogin, adminController.exportReviewsPDF);
-adminRouter.router.post("/export-report-pdf", isLogin, adminController.exportReportPDF);
+adminRouter.post("/export-report-pdf", isLogin, adminController.exportReportPDF);
 
 // dtdc
 adminRouter.get("/dtdc/book-shipment", isLogin, adminController.createDTDCShipment);
