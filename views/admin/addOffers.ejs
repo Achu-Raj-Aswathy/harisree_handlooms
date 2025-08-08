@@ -107,10 +107,16 @@
               productSelect.appendChild(option);
             });
           })
-          .catch(err => {
-            console.error(err);
-            productSelect.innerHTML = '<option value="">Error loading products</option>';
-          });
+         .catch(err => {
+  console.error(err);
+  productSelect.innerHTML = '<option value="">Error loading products</option>';
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops!',
+    text: 'Failed to load products. Please try again later.',
+  });
+});
+
       }
     });
   </script>

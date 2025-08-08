@@ -179,33 +179,113 @@
           
           <!-- Vendor Javascript (Require in all Page) -->
      </div>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".delete-coupon").forEach(button => {
       button.addEventListener("click", function () {
         const couponId = this.getAttribute("data-id");
 
-        if (!confirm("Are you sure you want to delete this coupon?")) return;
-
-        fetch(`/admin/delete-coupon/${couponId}`, {
-          method: "DELETE"
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              alert("Coupon deleted successfully!");
-              location.reload(); // or remove the row from the DOM
-            } else {
-              alert("Failed to delete coupon.");
-            }
-          })
-          .catch(err => {
-            console.error(err);
-            alert("Something went wrong while deleting.");
-          });
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This coupon will be permanently deleted.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/admin/delete-coupon/${couponId}`, {
+              method: "DELETE"
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'Coupon deleted successfully.',
+                    timer: 1500,
+                    showConfirmButton: false
+                  }).then(() => {
+                    location.reload();
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Failed!',
+                    text: 'Failed to delete coupon.',
+                  });
+                }
+              })
+              .catch(err => {
+                console.error(err);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'Something went wrong while deleting.',
+                });
+              });
+          }
+        });
       });
     });
   });
+
+  async function downloadCouponsPDF() {
+    if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+      document.getElementById('dateError').classList.remove('d-none');
+      return;
+    }
+
+    try {
+      const response = await fetch("/admin/export-coupons-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          startDate: selectedStartDate.toISOString(),
+          endDate: selectedEndDate.toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        return Swal.fire({
+          icon: 'error',
+          title: 'Export Failed',
+          text: 'Failed to generate PDF.'
+        });
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `coupons_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+      a.click();
+
+      document.getElementById("dateRangeInput").value = "";
+      selectedStartDate = null;
+      selectedEndDate = null;
+      bootstrap.Modal.getInstance(document.getElementById("exportModal")).hide();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Download Complete',
+        text: 'Your PDF has been downloaded.',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Something went wrong while exporting.'
+      });
+    }
+  }
 </script>
 
 <!-- Export Modal -->

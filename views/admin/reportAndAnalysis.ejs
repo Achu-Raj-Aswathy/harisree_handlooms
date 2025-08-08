@@ -201,10 +201,15 @@
   });
 
   async function downloadReportPDF() {
-    if (!reportStartDate || !reportEndDate || reportEndDate < reportStartDate) {
-      document.getElementById('reportDateError').classList.remove('d-none');
-      return;
-    }
+  if (!reportStartDate || !reportEndDate || reportEndDate < reportStartDate) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Invalid Date Range',
+    text: 'Please select a valid start and end date!',
+  });
+  return;
+}
+
 
     const formattedStart = reportStartDate.toISOString();
     const formattedEnd = reportEndDate.toISOString();

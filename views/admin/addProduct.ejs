@@ -239,16 +239,35 @@
         .then(response => response.json())
         .then(data => {
           console.log("Success:", data);
-          alert("Product added successfully!" );
-          window.location.href="/admin/list-product";
+          if (data.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Product Added!',
+              text: 'Product has been added successfully.',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              window.location.href = "/admin/list-product";
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Failed to Add',
+              text: data.message || 'An unknown error occurred.'
+            });
+          }
         })
         .catch(error => {
           console.error("Error:", error);
-          alert("Failed to add product.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'Something went wrong while submitting the form.'
+          });
         });
     });
   });
 </script>
+
 
 <style>
   .filepond--item {

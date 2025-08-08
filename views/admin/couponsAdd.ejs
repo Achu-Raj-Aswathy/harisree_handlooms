@@ -208,15 +208,30 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert("Coupon created successfully!");
-          window.location.href = "/admin/list-coupon";
+          Swal.fire({
+            icon: 'success',
+            title: 'Coupon Created!',
+            text: 'Your coupon has been added successfully.',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            window.location.href = "/admin/list-coupon";
+          });
         } else {
-          alert("Error: " + data.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to Create Coupon',
+            text: data.message || 'Something went wrong.'
+          });
         }
       })
       .catch(err => {
         console.error("Error:", err);
-        alert("Something went wrong.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Request Error',
+          text: 'Unable to submit the form. Please try again.'
+        });
       });
   });
 </script>
+

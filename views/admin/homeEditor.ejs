@@ -113,67 +113,100 @@
     </script>
 
 <script>
-document.getElementById("sliderForm").addEventListener("submit", async function (e) {
+  document.getElementById("sliderForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const form = e.target;
     const formData = new FormData();
 
     // Append only changed files
     document.querySelectorAll(".image-input").forEach((input, index) => {
-        const file = input.files[0];
-        if (file) {
-            formData.append(`sliderImage${index + 1}`, file);
-        }
+      const file = input.files[0];
+      if (file) {
+        formData.append(`sliderImage${index + 1}`, file);
+      }
     });
 
     try {
-        const response = await fetch("/admin/update-slider", {
-            method: "POST",
-            body: formData
-        });
+      const response = await fetch("/admin/update-slider", {
+        method: "POST",
+        body: formData
+      });
 
-        const result = await response.json();
-        if (result.success) {
-            alert("Slider updated successfully!");
-            location.reload();
-        } else {
-            alert(result.message || "Something went wrong");
-        }
+      const result = await response.json();
+      if (result.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Slider updated successfully.",
+          confirmButtonColor: "#3085d6"
+        }).then(() => {
+          location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: result.message || "Something went wrong.",
+          confirmButtonColor: "#d33"
+        });
+      }
     } catch (err) {
-        console.error("Update failed:", err);
-        alert("Error occurred while updating.");
+      console.error("Update failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "An error occurred while updating the slider.",
+        confirmButtonColor: "#d33"
+      });
     }
-});
+  });
 </script>
+
 
 <script>
-document.getElementById("taglineForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
+  document.getElementById("taglineForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-  const tagline = document.getElementById("taglineInput").value.trim();
+    const tagline = document.getElementById("taglineInput").value.trim();
 
-  try {
-    const response = await fetch("/admin/update-offer-tag", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ tagline })
-    });
+    try {
+      const response = await fetch("/admin/update-offer-tag", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ tagline })
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (result.success) {
-      alert("Offer tagline updated successfully!");
-      location.reload(); // or redirect as needed
-    } else {
-      alert(result.message || "Update failed.");
+      if (result.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Offer tagline updated successfully.",
+          confirmButtonColor: "#3085d6"
+        }).then(() => {
+          location.reload(); // or redirect as needed
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: result.message || "Something went wrong.",
+          confirmButtonColor: "#d33"
+        });
+      }
+    } catch (error) {
+      console.error("Error updating tagline:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Something went wrong while updating the offer tagline.",
+        confirmButtonColor: "#d33"
+      });
     }
-  } catch (error) {
-    console.error("Error updating tagline:", error);
-    alert("Something went wrong while updating the offer tagline.");
-  }
-});
+  });
 </script>
+
 

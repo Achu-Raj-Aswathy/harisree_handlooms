@@ -164,7 +164,7 @@
     }
   });
 
-    async function exportUsersFromServer() {
+  async function exportUsersFromServer() {
     if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
       document.getElementById('dateError').classList.remove('d-none');
       return;
@@ -201,7 +201,11 @@
       bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
 
     } catch (err) {
-      alert("Error downloading PDF.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error downloading PDF.'
+      });
       console.error(err);
     }
   }

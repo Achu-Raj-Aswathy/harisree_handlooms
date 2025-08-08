@@ -150,6 +150,9 @@
   </div>
 </div>
 
+<!-- SweetAlert2 CDN (if not already included) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   let selectedStartDate = null;
   let selectedEndDate = null;
@@ -161,44 +164,56 @@
       if (selectedDates.length === 2) {
         selectedStartDate = selectedDates[0];
         selectedEndDate = selectedDates[1];
-        document.getElementById('dateError').classList.add('d-none');
       }
     }
   });
 
   async function downloadInventoryPDF() {
-  if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
-    document.getElementById('dateError').classList.remove('d-none');
-    return;
+    if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Date Range',
+        text: 'Please select a valid start and end date.',
+      });
+      return;
+    }
+
+    const formattedStart = selectedStartDate.toISOString();
+    const formattedEnd = selectedEndDate.toISOString();
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/admin/export-inventory-pdf";
+    form.style.display = "none";
+
+    const startInput = document.createElement("input");
+    startInput.name = "startDate";
+    startInput.value = formattedStart;
+    form.appendChild(startInput);
+
+    const endInput = document.createElement("input");
+    endInput.name = "endDate";
+    endInput.value = formattedEnd;
+    form.appendChild(endInput);
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    // Reset UI
+    document.getElementById("dateRangeInput").value = "";
+    selectedStartDate = null;
+    selectedEndDate = null;
+
+    // Optional: Success confirmation (if you want)
+    Swal.fire({
+      icon: 'success',
+      title: 'Export Started',
+      text: 'Your inventory PDF is being generated.',
+      timer: 2000,
+      showConfirmButton: false
+    });
+
+    bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
   }
-
-  const formattedStart = selectedStartDate.toISOString();
-  const formattedEnd = selectedEndDate.toISOString();
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "/admin/export-inventory-pdf";
-  form.style.display = "none";
-
-  const startInput = document.createElement("input");
-  startInput.name = "startDate";
-  startInput.value = formattedStart;
-  form.appendChild(startInput);
-
-  const endInput = document.createElement("input");
-  endInput.name = "endDate";
-  endInput.value = formattedEnd;
-  form.appendChild(endInput);
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
-  // Reset UI
-  document.getElementById("dateRangeInput").value = "";
-  selectedStartDate = null;
-  selectedEndDate = null;
-  bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
-}
-
 </script>

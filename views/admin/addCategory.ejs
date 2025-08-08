@@ -117,39 +117,52 @@
   }
 </style>
 
-     <script>
-  // On document ready
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("CategoryForm");
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("CategoryForm");
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      const formData = new FormData(form);
+    const formData = new FormData(form);
 
-      // Append FilePond files manually
-      const pondFiles = FilePond.find(document.querySelector('.filepond')).getFiles();
-      pondFiles.forEach((file, index) => {
-        formData.append("thumbnail[]", file.file);
-      });
-
-      fetch("/admin/add-category", {
-        method: "POST",
-        body: formData,
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert("Category added successfully!");
-            window.location.href = "/admin/list-category"; // Redirect if needed
-          } else {
-            alert("Failed to add category: " + (data.message || "Unknown error"));
-          }
-        })
-        .catch(err => {
-          console.error("Error:", err);
-          alert("An error occurred while adding the category.");
-        });
+    // Append FilePond files manually
+    const pondFiles = FilePond.find(document.querySelector('.filepond')).getFiles();
+    pondFiles.forEach((file, index) => {
+      formData.append("thumbnail[]", file.file);
     });
+
+    fetch("/admin/add-category", {
+      method: "POST",
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Category added successfully!',
+          }).then(() => {
+            window.location.href = "/admin/list-category"; // Redirect
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed!',
+            text: data.message || 'Unknown error occurred.',
+          });
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: 'An error occurred while adding the category.',
+        });
+      });
   });
-</script>
+});
+
+   </script>

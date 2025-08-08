@@ -377,7 +377,100 @@
 
                     </div>
                     <!-- End Container Fluid -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function updateOrderStatus(orderId) {
+        const status = document.getElementById(`status_${orderId}`).value;
+
+        fetch(`/admin/update-order-status/${orderId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: status }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Order status updated successfully",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to update status",
+                });
+            }
+        })
+        .catch((error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong!",
+            });
+        });
+    }
+
+    function deleteOrder(orderId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/delete-order/${orderId}`, {
+                    method: "DELETE",
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Deleted!",
+                            text: "Order deleted successfully.",
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Failed to delete order",
+                        });
+                    }
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Something went wrong!",
+                    });
+                });
+            }
+        });
+    }
+</script>
+
 <style>
+
+
   /* Default image styling */
   .carousel-item img {
     width: 100%;

@@ -101,7 +101,7 @@
     reader.readAsDataURL(event.target.files[0]);
   }
 
-  // Handle form submission with FormData
+  // Handle form submission with FormData and SweetAlert2
   document.getElementById("editOfferForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -116,19 +116,36 @@
       });
 
       if (response.ok) {
-        alert("✅ Offer updated successfully!");
-        window.location.href = "/admin/list-offers"; // redirect to offer list
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Offer updated successfully.',
+          confirmButtonColor: '#3085d6'
+        }).then(() => {
+          window.location.href = "/admin/list-offers";
+        });
       } else {
         const error = await response.text();
         console.error("Error:", error);
-        alert("❌ Failed to update offer.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: 'Failed to update offer. Please try again later.',
+          confirmButtonColor: '#d33'
+        });
       }
     } catch (err) {
       console.error("Error:", err);
-      alert("❌ Something went wrong.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Something went wrong. Please check your connection or try again.',
+        confirmButtonColor: '#d33'
+      });
     }
   });
 </script>
+
 
   <script>
     document.getElementById('categoryId').addEventListener('change', function () {

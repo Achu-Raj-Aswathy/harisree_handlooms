@@ -217,40 +217,54 @@
       }
     });
 
-    couponForm.addEventListener("submit", function (e) {
-     
-      e.preventDefault();
+  couponForm.addEventListener("submit", function (e) {
+  e.preventDefault();
 
+  const formData = {
+    code: document.getElementById("coupons-code").value,
+    categoryId: document.getElementById("categoryId").value,
+    productId: document.getElementById("product-categories").value,
+    discountValue: document.getElementById("discount-value").value,
+    startDate: document.getElementById("start-date").value,
+    endDate: document.getElementById("end-date").value,
+    status: document.querySelector('input[name="status"]:checked').value
+  };
 
-      const formData = {
-        code: document.getElementById("coupons-code").value,
-        categoryId: document.getElementById("categoryId").value,
-        productId: document.getElementById("product-categories").value,
-        discountValue: document.getElementById("discount-value").value,
-        startDate: document.getElementById("start-date").value,
-        endDate: document.getElementById("end-date").value,
-        status: document.querySelector('input[name="status"]:checked').value
-      };
-
-      fetch(`/admin/edit-coupon?id=${couponId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert("Coupon updated successfully!");
-            window.location.href = "/admin/list-coupon";
-          } else {
-            alert("Failed to update coupon: " + data.message);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Something went wrong while updating coupon.");
+  fetch(`/admin/edit-coupon?id=${couponId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData)
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Coupon updated successfully!',
+          confirmButtonColor: '#3085d6'
+        }).then(() => {
+          window.location.href = "/admin/list-coupon";
         });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Update Failed',
+          text: data.message || 'Failed to update coupon.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Something went wrong while updating the coupon.',
+        confirmButtonColor: '#d33'
+      });
     });
-  });
+});
+ 
 </script>
 
