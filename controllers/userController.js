@@ -16,7 +16,23 @@ const { v4: uuidv4 } = require("uuid");
 const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require('pg-sdk-node');
 const axios = require("axios");
 const moment = require("moment");
+const puppeteer = require("puppeteer");
+const path = require("path");
+const ejs = require("ejs");
 
+async function generateInvoicePDF(order) {
+    const templatePath = path.join(__dirname, "../views/user/invoice.ejs");
+    const html = await ejs.renderFile(templatePath, { order });
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
+    await browser.close();
+
+    return pdfBuffer;
+}
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
@@ -244,8 +260,9 @@ for (const item of orderData.items) {
 }
 
 const order = await Orders.findById(newOrder._id).populate('items.productId');
+const pdfBuffer = await generateInvoicePDF(order);
 
-      await transporter.sendMail({
+await transporter.sendMail({
   from: process.env.EMAIL,
   to: orderData.address.email,
   subject: "🧺 Your Harisree Handlooms Order Confirmed: " + newOrder.orderId,
@@ -299,13 +316,19 @@ const order = await Orders.findById(newOrder._id).populate('items.productId');
         ${orderData.address.email}
       </p>
 
-      <p>Your order will be dispatched within 8 to 10 days and should arrive within an additional 2 to 3 days. Thanks for shopping with us!</p>
+      <p>Your order will be dispatched within 8 to 10 days and should arrive within an additional 2 to 3 days.</p>
+      
+      <p><strong>📄 Your detailed GST invoice is attached to this email for download.</strong></p>
 
       <footer style="text-align: center; color: #888; font-size: 12px; margin-top: 30px;">
         Harisree Handlooms — Built by Harisree Handlooms
       </footer>
     </div>
-  `
+  `,
+  attachments: [{
+    filename: `Invoice-${newOrder.orderId}.pdf`,
+    content: pdfBuffer
+  }]
 });
 
       delete tempBookingStore[merchantOrderId];

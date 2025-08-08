@@ -213,12 +213,14 @@
                                                                  </td>
                                                                   <td>
           <ul class="list-unstyled mb-0">
-            <% order.items.forEach(item => { %>
-              <li>
-                <%= item.productId.name || 'Product' %> x <%= item.quantity %> - ₹<%= item.subtotal.toFixed(2) %>
-              </li>
-            <% }) %>
-          </ul>
+  <% order.items.forEach(item => { %>
+    <li>
+      <%= item.productId ? item.productId.name : 'Product' %>
+      x <%= item.quantity %> - ₹<%= item.subtotal ? item.subtotal.toFixed(2) : '0.00' %>
+    </li>
+  <% }) %>
+</ul>
+
         </td>
         <td>₹<%= order.total.toFixed(2) %></td>
                                                                  <td><%= order.paymentStatus %></td>
