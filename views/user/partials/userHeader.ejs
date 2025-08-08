@@ -426,31 +426,44 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".remove-from-cart").forEach((el) => {
-      el.addEventListener("click", async function (e) {
-        e.preventDefault();
-        const productId = this.dataset.id;
+  document.querySelectorAll(".remove-from-cart").forEach((el) => {
+    el.addEventListener("click", async function (e) {
+      e.preventDefault();
+      const productId = this.dataset.id;
 
-        try {
-          const res = await fetch(`/cart/remove?id=${productId}`, {
-            method: "DELETE",
-          });
+      try {
+        const res = await fetch(`/cart/remove?id=${productId}`, { method: "DELETE" });
+        const data = await res.json();
 
-          const data = await res.json();
-
-          if (data.success) {
-            alert("Removed from cart");
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Removed!",
+            text: "Item removed from cart.",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
             window.location.reload();
-          } else {
-            alert(data.message || "Could not remove item.");
-          }
-        } catch (err) {
-          console.error("Error:", err);
-          alert("Something went wrong.");
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Could not remove item."
+          });
         }
-      });
+      } catch (err) {
+        console.error("Error:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Something went wrong."
+        });
+      }
     });
   });
+});
+
 </script>
 
 <script>
@@ -560,57 +573,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.body.addEventListener("click", async function (e) {
-      // 🛒 Handle Add to Cart
-      const cartBtn = e.target.closest(".add-to-cart");
-      if (cartBtn) {
-        e.preventDefault();
-        const productId = cartBtn.dataset.id;
+  document.body.addEventListener("click", async function (e) {
+    // 🛒 Handle Add to Cart
+    const cartBtn = e.target.closest(".add-to-cart");
+    if (cartBtn) {
+      e.preventDefault();
+      const productId = cartBtn.dataset.id;
 
-        try {
-          const res = await fetch(`/cart/add?id=${productId}`, {
-            method: "POST",
+      try {
+        const res = await fetch(`/cart/add?id=${productId}`, { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Added to Cart!",
+            text: "Product has been added to your cart.",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => window.location.reload());
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Failed to add to cart."
           });
-
-          const data = await res.json();
-          if (data.success) {
-            alert("Product added to cart!");
-            window.location.reload(); // or update cart count
-          } else {
-            alert(data.message || "Failed to add to cart.");
-          }
-        } catch (err) {
-          console.error("Error adding to cart:", err);
-          alert("Something went wrong.");
         }
-        return; // Stop here to avoid triggering both handlers
+      } catch (err) {
+        console.error("Error adding to cart:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Something went wrong."
+        });
       }
+      return;
+    }
 
-      // ❤️ Handle Add to Wishlist
-      const wishlistBtn = e.target.closest(".add-to-wishlist");
-      if (wishlistBtn) {
-        e.preventDefault();
-        const productId = wishlistBtn.dataset.id;
+    // ❤️ Handle Add to Wishlist
+    const wishlistBtn = e.target.closest(".add-to-wishlist");
+    if (wishlistBtn) {
+      e.preventDefault();
+      const productId = wishlistBtn.dataset.id;
 
-        try {
-          const res = await fetch(`/wishlist/add?id=${productId}`, {
-            method: "POST",
+      try {
+        const res = await fetch(`/wishlist/add?id=${productId}`, { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Added to Wishlist!",
+            text: "Product has been added to your wishlist.",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => window.location.reload());
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Could not add to wishlist."
           });
-
-          const data = await res.json();
-          if (data.success) {
-            alert("Added to wishlist!");
-            window.location.reload(); // or update heart icon
-          } else {
-            alert(data.message || "Could not add to wishlist.");
-          }
-        } catch (err) {
-          console.error("Error adding to wishlist:", err);
-          alert("Something went wrong.");
         }
+      } catch (err) {
+        console.error("Error adding to wishlist:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Something went wrong."
+        });
       }
-    });
+    }
   });
+});
+
 </script>
 <script>
   function handleCategoryChange(category) {

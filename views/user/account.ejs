@@ -269,7 +269,12 @@
       const result = await response.json();
 
       if (response.ok && result.success) {
-        alert("Return request submitted successfully!");
+      await Swal.fire({
+  icon: 'success',
+  title: 'Success!',
+  text: 'Return request submitted successfully!',
+});
+
 
         // ✅ Redirect explicitly using the redirect URL from response
         if (result.redirect) {
@@ -278,11 +283,21 @@
           window.location.href = '/account'; // fallback
         }
       } else {
-        alert("Failed to submit return request. Please try again.");
+       Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Failed to submit return request. Please try again.',
+});
+
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while submitting the form.");
+    Swal.fire({
+  icon: 'error',
+  title: 'Error!',
+  text: 'An error occurred while submitting the form.',
+});
+
     }
   });
 </script>
@@ -712,14 +727,29 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Response received:", data);
 
       if (response.ok) {
-        alert("Account details updated successfully!");
+      await Swal.fire({
+  icon: 'success',
+  title: 'Success!',
+  text: 'Account details updated successfully!',
+});
+
         location.reload();
       } else {
-        alert(data.message || "Something went wrong.");
+        Swal.fire({
+  icon: 'error',
+  title: 'Update Failed',
+  text: data.message || "Something went wrong.",
+});
+
       }
     } catch (err) {
       console.error("Error during fetch:", err);
-      alert("An error occurred.");
+     Swal.fire({
+  icon: 'error',
+  title: 'Error!',
+  text: 'An error occurred.',
+});
+
     }
   });
 });
