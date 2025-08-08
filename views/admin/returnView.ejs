@@ -25,16 +25,19 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-         
+
+<tbody>       
 <% returnRequests.forEach((request, index) => { %>
   <tr>
     <td><%= index + 1 %></td>
-    <td><%= request.orderId %></td>
+    <td><a href="/admin/order-details?id=<%= request.orderDetails._id %>">
+      <%= request.orderDetails.orderId %></a></td>
     <td><%= request.productName %></td>
-    <td>
-      <%= request.userId?.name || "N/A" %> <br />
-      <small><%= request.userId?.mobile || "N/A" %></small>
+    <td><a href="/admin/user-details?id=<%=request.userId._id%>">
+      <%= request.orderDetails.address.name %> <br />
+      <small><%= request.orderDetails.address.phone %></small>
+    </a>
+      
     </td>
     <td><%= request.reason %></td>
     <td>
@@ -53,15 +56,12 @@
           <option value="" disabled selected>Change Status</option>
           <option value="Approved">Approve</option>
           <option value="Rejected">Reject</option>
-          <option value="Resolved">Resolve</option>
         </select>
         <button class="btn btn-sm btn-primary">Update</button>
       </form>
     </td>
   </tr>
 <% }) %>
-
-
         </tbody>
       </table>
     

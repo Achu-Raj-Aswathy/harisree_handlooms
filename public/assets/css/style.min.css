@@ -14083,7 +14083,7 @@ body.open .closeMask {
 .axil-dashboard-aside .nav-link.active,
 .axil-dashboard-aside .nav-link:hover {
     background-color: var(--color-lighter);
-    color: var(--color-primary)
+    color: var(--color-warning)
 }
 
 .axil-dashboard-overview .welcome-text {

@@ -170,9 +170,6 @@ userRouter.post(
 userRouter.post("/forgot-password", isLogout, userController.forgotPassword);
 userRouter.post("/account-edit", isLogin, userController.updateAccountDetails);
 
-userRouter.post("/create-phonepe-order", userController.createPhonePeOrder);
-userRouter.get("/status", userController.status);
-
 userRouter.delete("/cart/remove", isLogin, userController.removeFromCart);
 userRouter.delete(
   "/wishlist/remove",
@@ -180,8 +177,12 @@ userRouter.delete(
   userController.removeFromWishlist
 );
 
+// Payment Routes
+userRouter.post("/create-phonepe-order", userController.createPhonePeOrder);
+userRouter.get("/status", userController.status);
+
 // dtdc
-userRouter.get("/dtdc/shipping-label", isLogin, userController.downloadDTDCLabel);
+// userRouter.get("/dtdc/shipping-label", isLogin, userController.downloadDTDCLabel);
 userRouter.get("/dtdc/track", isLogin, userController.trackDTDCShipment);
 userRouter.post("/dtdc/cancel-shipment", isLogin, userController.cancelDTDCShipment);
 

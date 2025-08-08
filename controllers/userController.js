@@ -53,7 +53,7 @@ const createPhonePeOrder = async (req, res) => {
   
   try {
 
-const { cartData, address, shippingCharge, discount, total } = req.body;
+const { cartData, address, subtotal, shippingCharge, discount, total } = req.body;
     const userId = req.session.user;
     if (!cartData || !userId) {
       return res.status(400).json({ error: "Missing cart data or user session" });
@@ -85,6 +85,7 @@ const amount = parseInt(total); // total should be rupees, convert to integer
   total,
   paid: 1,
   address,
+  subtotal,
   shippingCharge,
   discount,
 };
@@ -144,8 +145,9 @@ const status = async (req, res) => {
   total: orderData.total,
   paymentMethod: "PhonePe",
   paymentStatus: "Paid",
-  status: "Pending", // ✅ corrected from "Paid"
+  status: "Confirmed", // ✅ corrected from "Paid"
   address: orderData.address,
+  subtotal: orderData.subtotal,
 });
       await newOrder.save();
 
@@ -183,7 +185,7 @@ const status = async (req, res) => {
     customer_reference_number: newOrder.orderId,
     commodity_id: "38",
     is_risk_surcharge_applicable: false,
-    reference_number: "I74518944",
+    reference_number: "7X108190186",
   }]
 };
 console.log("📦 Booking Shipment with payload:", JSON.stringify(dtdcPayload, null, 2));
@@ -292,7 +294,7 @@ const order = await Orders.findById(newOrder._id).populate('items.productId');
       <p>
         ${orderData.address.name}<br>
         ${orderData.address.line}<br>
-        ${orderData.address.city}, ${orderData.address.state} ${orderData.address.pincode}<br>
+        ${orderData.address.city}, ${orderData.address.state}, ${orderData.address.country} ${orderData.address.pincode}<br>
         ${orderData.address.phone}<br>
         ${orderData.address.email}
       </p>
@@ -346,66 +348,81 @@ const downloadDTDCLabel = async (req, res) => {
   }
 };
 
-const trackDTDCShipment = async (req, res) => {
-    const { refNo } = req.query;
+async function getDTDCToken() {
+  const { data } = await axios.get(
+    `https://blktracksvc.dtdc.com/dtdc-api/api/dtdc/authenticate`,
+    {
+      params: {
+        username: process.env.DTDC_USERNAME,
+        password: process.env.DTDC_PASSWORD
+      }
+    }
+  );
+  return data; // token string
+}
 
-  if (!refNo) {
-    return res.status(400).json({ error: "Missing DTDC reference number" });
+const trackDTDCShipment = async (req, res) => {
+   const { orderNumber } = req.query; // This is your Customer Reference Number (ORD-9823)
+
+  if (!orderNumber) {
+    return res.status(400).json({ error: "Missing order number" });
   }
 
   try {
-    // Step 1: Make the tracking API call
+    // Find order in DB to get DTDC ref number or confirm order exists
+    const order = await Orders.findOne({ orderId: orderNumber });
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    const token = await getDTDCToken();
+
+    // Call DTDC tracking API using reference number
     const response = await axios.post(
-      `https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails`,
-      {
-        trkType: "cnno",
-        strcnno: refNo,
-        addtnlDtl: "Y"
-      },
-      {
-        headers: {
-          "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
-          "Content-Type": "application/json"
-        }
+      "https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails",
+  {
+    trkType: "reference", // or "cnno" for AWB
+    strcnno: orderNumber,
+    addtnlDtl: "Y"
+  },
+  {
+    headers: {
+      "X-Access-Token": token,
+      "Content-Type": "application/json"
+    }
       }
     );
 
     const trackInfo = response.data;
 
-    if (!trackInfo.trackDetails || !trackInfo.trackDetails.length) {
+    if (!trackInfo.trackHeader) {
       return res.status(404).json({ error: "No tracking details found" });
     }
 
-    const latestEvent = trackInfo.trackDetails[0];
+    const currentStatus = trackInfo.trackHeader.strStatus || "In Transit";
+    const remarks = trackInfo.trackHeader.strRemarks || "Status Updated";
 
-    // Extract latest status & remarks
-    const currentStatus = latestEvent.strStatus || "In Transit";
-    const remarks = latestEvent.strRemarks || "Status Updated";
-
-    // Step 2: Update the corresponding order
+    // Optionally update your order record
     await Orders.findOneAndUpdate(
-      { dtdcTrackingNumber: refNo },
+      { orderId: orderNumber },
       {
         $set: {
-          shippingStatus: currentStatus, // e.g., "Delivered", "In Transit"
+          shippingStatus: currentStatus,
           lastTrackingUpdate: new Date(),
           deliveryRemarks: remarks
         }
       }
     );
 
-    console.log("✅ Order updated with latest DTDC status:", currentStatus);
-
-    // Step 3: Respond to the client
-    return res.json({
+    res.json({
       status: currentStatus,
-      remarks: remarks,
-      trackingDetails: trackInfo.trackDetails
+      remarks,
+      trackHeader: trackInfo.trackHeader,
+      trackDetails: trackInfo.trackDetails || []
     });
 
   } catch (err) {
-    console.error("❌ Tracking failed:", err.response?.data || err.message);
-    return res.status(500).json({ error: "Tracking failed" });
+    console.error("❌ DTDC tracking failed:", err.response?.data || err.message);
+    res.status(500).json({ error: "Tracking failed" });
   }
 };
 

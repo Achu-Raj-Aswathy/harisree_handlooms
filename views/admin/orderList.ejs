@@ -39,7 +39,9 @@
                                                             <% if(orders.length > 0) { %>
                                                             <% orders.forEach(order => { %>
                                                             <tr data-created="<%= new Date(order.createdAt).toISOString() %>">
-                                                                 <td><%= order.orderId %></td>
+                                                                 <td>
+                                                                    <a href="/admin/order-details?id=<%= order._id %>"><%= order.orderId %></a>
+                                                                  </td>
                                                                  <td><%= order.createdAt.toLocaleDateString('en-IN') %></td>
                                                                  <td>
                                                                       <a href="/admin/user-details?id=<%= order.userId._id %>"><%= order.userId.userId %></a>

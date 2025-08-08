@@ -23,6 +23,7 @@ const orderSchema = new mongoose.Schema(
       }
     ],
 
+    subtotal: { type: Number, required: true }, // sum of all item subtotals
     shippingCharge: { type: Number, default: 0 },
     discount: { type: Number, default: 0 }, // coupon discount value
     total: { type: Number, required: true }, // final total (subtotal + shipping - discount)
@@ -32,8 +33,8 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Pending", "Cancelled", "Shipped", "Delivered", "Returned"],
-      default: "Pending"
+      enum: ["Confirmed", "Packed", "Cancelled", "Shipped", "Delivered", "Returned"],
+      default: "Confirmed"
     },
 
     address: {
@@ -44,6 +45,7 @@ const orderSchema = new mongoose.Schema(
       city: String,
       pincode: String,
       line: String,
+      country: String,
     },
     dtdcTrackingNumber: { type: String, default: null },
     shippingStatus: {

@@ -84,24 +84,33 @@
                              <div class="tab-pane fade" id="order-tracking" role="tabpanel">
   
       <div class="card-body">
-        <h4 class="text-center text-primary mb-4">📦 Track Your Order</h4>
+        <h4 class="text-center text-warning mb-4">📦 Track Your Order</h4>
 
-        <!-- Order ID input -->
-        <form action="/track" method="GET" class="mb-4">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Enter your Order ID or AWB No." name="trackingId" required>
-            <button class="btn btn-primary" type="submit">Track</button>
-          </div>
-        </form>
+    <!-- Tracking Form -->
+    <form id="dtdcTrackForm" class="mb-4">
+      <div class="input-group">
+        <input type="text" class="form-control" id="orderNumber" placeholder="Enter your Order ID" required>
+        <button class="btn btn-warning" type="submit">Track</button>
+      </div>
+    </form>
 
-        <!-- Dummy DTDC tracking UI -->
-        <div class="mb-3">
+        <!-- Tracking Result -->
+    <div id="trackingResult" style="display:none;">
+      <h6>Courier: <span class="fw-semibold">DTDC</span></h6>
+      <p><i class="fas fa-barcode me-2"></i><strong>Order ID:</strong> <span id="resOrderId"></span></p>
+      <p><i class="fas fa-truck-fast me-2"></i><strong>Status:</strong> <span id="resStatus"></span></p>
+      <p><strong>Remarks:</strong> <span id="resRemarks"></span></p>
+
+      <h5 class="mt-3">Tracking History:</h5>
+      <ul id="resHistory" class="list-unstyled"></ul>
+    </div>
+
+        <!-- <div class="mb-3">
           <h6>Courier: <span class="fw-semibold">DTDC</span></h6>
           <p><i class="fas fa-barcode me-2"></i><strong>Tracking ID:</strong> DTDC123456789</p>
           <p><i class="fas fa-truck-fast me-2"></i><strong>Estimated Delivery:</strong> July 10, 2025</p>
         </div>
 
-        <!-- Tracking Progress -->
         <div class="mt-4">
           <div class="track-step completed">
             <div>Order Placed <span class="text-muted small"> - July 3, 2025</span></div>
@@ -118,10 +127,45 @@
           <div class="track-step">
             <div>Delivered</div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
+
+  <script>
+document.getElementById("dtdcTrackForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const orderNumber = document.getElementById("orderNumber").value.trim();
+  if (!orderNumber) return;
+
+  try {
+    const res = await fetch(`/dtdc/track?orderNumber=${encodeURIComponent(orderNumber)}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Tracking failed");
+      return;
+    }
+
+    document.getElementById("trackingResult").style.display = "block";
+    document.getElementById("resOrderId").textContent = orderNumber;
+    document.getElementById("resStatus").textContent = data.status;
+    document.getElementById("resRemarks").textContent = data.remarks || "—";
+
+    const historyList = document.getElementById("resHistory");
+    historyList.innerHTML = "";
+    (data.trackDetails || []).forEach(ev => {
+      const li = document.createElement("li");
+      li.innerHTML = `<i class="fas fa-dot-circle me-2"></i>${ev.strAction} — ${ev.strOrigin || ''} → ${ev.strDestination || ''} (${ev.strActionDate || ''} ${ev.strActionTime || ''})`;
+      historyList.appendChild(li);
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Error fetching tracking info");
+  }
+});
+</script>
 
   <style>
     .track-step {
@@ -157,7 +201,6 @@
     @media (max-width: 576px) {
       .track-step {
         padding-left: 25px;
-        font-size: 0.95rem;
       }
       .track-step::before {
         width: 12px;
@@ -179,13 +222,21 @@
   
     
       <div class="card-body">
-        <h3 class="text-center text-danger mb-4">Return Product Request</h3>
+        <h3 class="text-center text-warning mb-4">Product Return/Replacement Request</h3>
 
       <form id="returnForm">
                   <div class="mb-3">
-            <label for="receivedDate" class="form-label">Order Id</label>
-       <input type="text" class="form-control" id="orderId" name="orderId" required
-  style="display: block; border: 1px solid #ced4da; height: 38px; background-color: white;">
+  <label for="orderId" class="form-label">Order ID</label>
+  <select class="form-select" id="orderId" name="orderId" required>
+    <option value="" disabled selected>Select an Order</option>
+    <% user.orders.forEach(order => { %>
+      <% if (order.orderId) { %>
+        <option value="<%= order.orderId._id %>"><%= order.orderId.orderId %></option>
+      <% } %>
+    <% }) %>
+  </select>
+</div>
+
           <div class="mb-3">
             <label for="receivedDate" class="form-label">Product Name</label>
 <input type="text" class="form-control" id="productName" name="productName" required
@@ -218,13 +269,13 @@
 
           <!-- Upload Image -->
           <div class="mb-3">
-            <label for="image" class="form-label">Upload Image (optional)</label>
+            <label for="image" class="form-label">Upload Image</label>
             <input class="form-control" type="file" id="image" name="image">
           </div>
 
           <!-- Submit -->
           <div class="d-grid">
-            <button type="submit" class="btn btn-danger">Submit Return Request</button>
+            <button type="submit" class="btn btn-warning">Submit Request</button>
           </div>
         </form>
 
@@ -372,7 +423,7 @@
       <div class="card-body text-center">
         <img src="/assets/images/phonepe-logo.png" alt="PhonePe Logo" style="height: 60px;" class="mb-3" />
 
-        <h4 class="mb-4 text-primary">Pay with PhonePe</h4>
+        <h4 class="mb-4 text-warning">Pay with PhonePe</h4>
 
         <form action="/pay" method="POST">
           <div class="mb-3 text-start">
@@ -390,7 +441,7 @@
             <input type="number" name="amount" class="form-control" placeholder="Enter amount" required min="1">
           </div>
 
-          <button type="submit" class="btn btn-primary w-100">Proceed to Pay</button>
+          <button type="submit" class="btn btn-warning w-100">Proceed to Pay</button>
         </form>
 
         <div class="mt-4 text-muted" style="font-size: 0.9rem;">
@@ -411,12 +462,12 @@
       border-radius: 20px;
     }
 
-    #payment .btn-primary {
+    #payment .btn-warning {
       background-color: #5f259f;
       border: none;
     }
 
-    #payment .btn-primary:hover {
+    #payment .btn-warning:hover {
       background-color: #4a1e81;
     }
   </style>
@@ -755,6 +806,38 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 </script>
+
+<style>
+  /* Target all input and textarea placeholders */
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    font-size: 1rem !important; /* Increase size */
+    color: #6c757d;              /* Optional: standard Bootstrap placeholder color */
+    opacity: 1;                  /* Ensure visibility */
+  }
+
+  /* For cross-browser support */
+  input::-webkit-input-placeholder,
+  textarea::-webkit-input-placeholder {
+    font-size: 1rem !important;
+  }
+
+  input:-moz-placeholder,
+  textarea:-moz-placeholder {
+    font-size: 1rem !important;
+  }
+
+  input::-moz-placeholder,
+  textarea::-moz-placeholder {
+    font-size: 1rem !important;
+  }
+
+  input:-ms-input-placeholder,
+  textarea:-ms-input-placeholder {
+    font-size: 1rem !important;
+  }
+</style>
 
              <%- include('./partials/footer') %>
         </div>

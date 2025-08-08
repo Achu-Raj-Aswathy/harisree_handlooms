@@ -111,7 +111,7 @@
                               </tr>
                               <% } %>
 
-                                <tr class="order-subtotal">
+                                <tr class="order-subtotal" id="subtotal">
                                   <td>Subtotal</td>
                                   <td>₹<%= total %>
                                   </td>
@@ -391,9 +391,11 @@ const address = {
   city: document.getElementById("billingCity").value,
   pincode: document.getElementById("billingPincode").value,
   line: document.getElementById("billingAddressLine2").value,
+  country: document.getElementById("billingCountry").value,
 };
 
 // Get applied values
+const subtotal = parseFloat(document.getElementById("subtotal").textContent.replace(/[^\d.]/g, "")) || 0;
 const shippingCharge = parseFloat(document.getElementById("shippingCharge").textContent.replace(/[^\d.]/g, "")) || 0;
 const discount = parseFloat(document.getElementById("discount").textContent.replace(/[^\d.]/g, "")) || 0;
 const total = parseFloat(document.getElementById("total-amount").textContent.replace(/[^\d.]/g, "")) || 0;
@@ -407,6 +409,7 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
           body: JSON.stringify({
   cartData: JSON.stringify(cartData),
   address,
+  subtotal,
   shippingCharge,
   discount,
   total
@@ -427,7 +430,7 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
   });
 </script>
 
-    <script>
+    <!-- <script>
       console.log("Checkout page script loaded");
       document.addEventListener("DOMContentLoaded", () => {
         console.log("DOM fully loaded and parsed");
@@ -475,7 +478,7 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
   }
 });
 
-    </script>
+    </script> -->
 
   <script>
   document.addEventListener("DOMContentLoaded", () => {

@@ -15,6 +15,15 @@ const Reviews = require("../models/reviewModel");
 const PDFDocument = require("pdfkit");
 const axios = require("axios");
 const sharp = require("sharp");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 const viewLogin = async (req, res) => {
   try {
@@ -311,8 +320,10 @@ const viewListOrder = async (req, res) => {
 };
 
 const viewOrderDetails = async (req, res) => {
+  const orderId = req.query.id;
   try {
-    res.render("admin/orderDetails", {});
+    const order = await Orders.findById(orderId).populate("userId").populate("items.productId");
+    res.render("admin/orderDetails", {order});
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -466,10 +477,32 @@ const viewOrderTracking = async (req, res) => {
 
 const viewReturn = async (req, res) => {
   try {
+    // 1. Get all return requests
     const returnRequests = await Requests.find().populate("userId");
-    res.render("admin/returnView", { returnRequests });
+
+    // 2. Convert string orderIds to ObjectId
+    const orderObjectIds = returnRequests.map(req => new mongoose.Types.ObjectId(req.orderId));
+
+    // 3. Fetch matching orders by _id
+    const orders = await Orders.find({ _id: { $in: orderObjectIds } });
+
+    // 4. Create a map for quick lookup
+    const orderMap = {};
+    orders.forEach(order => {
+      orderMap[order._id.toString()] = order;
+    });
+
+    // 5. Merge order details into requests
+    const requestsWithOrders = returnRequests.map(req => ({
+      ...req.toObject(),
+      orderDetails: orderMap[req.orderId] || null
+    }));
+
+    // 6. Render
+    res.render("admin/returnView", { returnRequests: requestsWithOrders });
+
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
   }
 };
@@ -1086,8 +1119,34 @@ const editOffer = async (req, res) => {
 
 const returnUpdate = async (req, res) => {
   try {
+    const reqId = req.params.id;
     const { status } = req.body;
-    await Requests.findByIdAndUpdate(req.params.id, { status });
+    const request = await Requests.findByIdAndUpdate(reqId, { status }, { new: true }).populate("userId");
+    const orderId = new mongoose.Types.ObjectId(request.orderId);
+    if (status === "Approved") {
+    const order = await Orders.findByIdAndUpdate(orderId, {status: "Returned"});
+
+          const trackingLink = `https://dtdc.in/tracking/${order.trackingNumber || ""}`;
+
+  await transporter.sendMail({
+  from: process.env.EMAIL,
+  to: request.userId.email,
+  subject: `Your Replacement Request for order ${order.orderId} is Approved`,
+  html: `
+        <h2>Replacement Request Approved</h2>
+        <p>Hi ${request.userId.name},</p>
+        <p>Your replacement request for <b>${request.productName}</b> has been <span style="color:green;">approved</span>.</p>
+        <p>Your replacement is now on the way. You can track it using the link below:</p>
+        <p><a href="${trackingLink}" style="color:blue;">Track Your Order</a></p>
+        <p>Order ID: ${order.orderId}</p>
+        <br>
+        <p>Thank you,<br>Harisree Handlooms Team</p>
+      `
+
+    } );
+    } else if (status === "Rejected") {
+      const order = await Orders.findByIdAndUpdate(orderId, {status: "Delivered"});
+    }
     res.redirect("/admin/view-return");
   } catch (err) {
     console.error(err);
