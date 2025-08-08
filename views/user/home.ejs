@@ -619,16 +619,28 @@
     const success = urlParams.get("success");
 
     if (success === "1") {
-      alert("🎉 Booking Successful!");
+      Swal.fire({
+        icon: 'success',
+        title: '🎉 Booking Successful!',
+        showConfirmButton: false,
+        timer: 2500
+      });
     } else if (success === "0") {
-      alert("❌ Booking Failed. Please try again.");
+      Swal.fire({
+        icon: 'error',
+        title: '❌ Booking Failed',
+        text: 'Please try again.',
+        showConfirmButton: false,
+        timer: 2500
+      });
     }
 
-    // Remove query param from URL (only if we're on / and it has ?success=)
+    // Remove query param
     if ((success === "1" || success === "0") && window.location.pathname === "/") {
       history.replaceState({}, document.title, window.location.pathname);
     }
   });
 </script>
+
 
 <%- include('./partials/footer') %>

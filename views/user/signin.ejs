@@ -59,11 +59,20 @@
         </div>
   </div>
 
-        <% if (message) { %>
-          <div class="alert alert-<%= messageType === 'success' ? 'success' : 'danger'  %> mt-3" role="alert">
-              <%= message %>
-          </div>
-        <% } %>
+      <% if (message) { %>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      Swal.fire({
+        icon: "<%= messageType === 'success' ? 'success' : 'error' %>",
+        title: "<%= messageType === 'success' ? 'Success!' : 'Login Failed!' %>",
+        text: "<%= message %>",
+        confirmButtonColor: '#e91e63',
+        confirmButtonText: 'OK'
+      });
+    });
+  </script>
+<% } %>
+
 
         <div style="text-align: right; margin-bottom: 1rem;">
           <a href="/forgot-password" style="color: #fff; text-decoration: underline; font-size: 0.9rem;">Forgot Password?</a>

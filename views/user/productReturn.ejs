@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/return.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
 </head>
 <body class="bg-light">
   <div class="container py-5">
@@ -70,56 +71,65 @@
     </div>
   </div>
 
- <script>
-  function isReturnValid() {
-    const receivedDate = new Date(document.getElementById('receivedDate').value);
-    const today = new Date();
-    const diffTime = today - receivedDate;
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  <script>
+    function isReturnValid() {
+      const receivedDate = new Date(document.getElementById('receivedDate').value);
+      const today = new Date();
+      const diffTime = today - receivedDate;
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-    const dateError = document.getElementById('dateError');
-    if (diffDays > 7) {
-      dateError.classList.remove('d-none');
-      return false;
-    }
-    dateError.classList.add('d-none');
-    return true;
-  }
-
-  document.getElementById('returnForm').addEventListener('submit', async function (e) {
-    e.preventDefault(); // Prevent default form submission
-
-    if (!isReturnValid()) return;
-
-    const form = document.getElementById('returnForm');
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch('/return', {
-        method: 'POST',
-        body: formData
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        alert("Return request submitted successfully!");
-
-        // ✅ Redirect explicitly using the redirect URL from response
-        if (result.redirect) {
-          window.location.href = result.redirect;
-        } else {
-          window.location.href = '/account'; // fallback
-        }
-      } else {
-        alert("Failed to submit return request. Please try again.");
+      const dateError = document.getElementById('dateError');
+      if (diffDays > 7) {
+        dateError.classList.remove('d-none');
+        return false;
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred while submitting the form.");
+      dateError.classList.add('d-none');
+      return true;
     }
-  });
-</script>
 
+    document.getElementById('returnForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      if (!isReturnValid()) return;
+
+      const form = document.getElementById('returnForm');
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('/return', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Return request submitted successfully!',
+            confirmButtonColor: '#d33'
+          }).then(() => {
+            window.location.href = result.redirect || '/account';
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: 'Failed to submit return request. Please try again.',
+            confirmButtonColor: '#d33'
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'An error occurred while submitting the form.',
+          confirmButtonColor: '#d33'
+        });
+      }
+    });
+  </script>
 </body>
 </html>
