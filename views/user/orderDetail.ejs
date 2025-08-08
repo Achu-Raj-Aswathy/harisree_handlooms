@@ -29,31 +29,31 @@
                                     <th>Subtotal (₹)</th>
                                 </tr>
                             </thead>
+                            
                             <tbody>
-                                <% order.items.forEach(item=> { %>
-                                    <tr>
-                                        <td>
-                                            <img src="<%= item.productId.images[0] %>" alt="<%= item.productId.name %>"
-                                                style="width: 50px; height: 50px;">
-                                            <small>
-                                                <%= item.productId.productId %>
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <%= item.productId.name %>
-                                        </td>
-                                        <td>
-                                            <%= item.price.toFixed(2) %>
-                                        </td>
-                                        <td>
-                                            <%= item.quantity %>
-                                        </td>
-                                        <td>
-                                            <%= (item.price * item.quantity).toFixed(2) %>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                            </tbody>
+  <% order.items.forEach(item => { %>
+    <tr>
+      <td>
+        <% if (item.productId) { %>
+          <img src="<%= item.productId.images && item.productId.images.length > 0 ? item.productId.images[0] : '/images/placeholder.png' %>" 
+               alt="<%= item.productId.name || 'Product' %>"
+               style="width: 50px; height: 50px;">
+          <small>
+            <%= item.productId.productId || '' %>
+          </small>
+        <% } else { %>
+          <img src="/images/placeholder.png" alt="Product" style="width: 50px; height: 50px;">
+          <small>Product Deleted</small>
+        <% } %>
+      </td>
+      <td><%= item.productId && item.productId.name ? item.productId.name : 'Product' %></td>
+      <td><%= item.price ? item.price.toFixed(2) : '0.00' %></td>
+      <td><%= item.quantity %></td>
+      <td><%= item.price && item.quantity ? (item.price * item.quantity).toFixed(2) : '0.00' %></td>
+    </tr>
+  <% }) %>
+</tbody>
+
                         </table>
                     </div>
 
