@@ -185,7 +185,7 @@ const status = async (req, res) => {
     origin_details: {
           name: "Harisree Handlooms",
           phone: "9188019689",
-          address_line_1: "Kallanchari, Peruvamba",
+          address_line_1: "Kallanchari, Peruvemba",
           pincode: "678531",
           city: "Palakkad",
           state: "Kerala"
