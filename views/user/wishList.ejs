@@ -21,9 +21,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% wishlists.forEach(item => { 
-                            const product = item.productId;
-                            if (!product) return; // Prevent rendering null products
+                      <% const validWishlists = wishlists.filter(item => item.productId); %>
+<% if (validWishlists.length === 0) { %>
+  <tr>
+    <td colspan="6" class="text-center">Your wishlist is empty.</td>
+  </tr>
+<% } else { %>
+  <% validWishlists.forEach(item => { %>
+    <% const product = item.productId; %>
+                            <% if (!product) return; // Prevent rendering null products
                         %>
                             <tr>
                                 <td class="product-remove">
@@ -50,6 +56,7 @@
                                 </td>
                             </tr>
                         <% }) %>
+                          <% } %>
                     </tbody>
                 </table>
             </div>
@@ -74,6 +81,17 @@
           const res = await fetch(`/wishlist/remove?id=${productId}`, { method: "DELETE" });
           const data = await res.json();
 
+          if (data.loginRequired) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Login Required",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() =>  window.location.href = "/signin");
+          
+  return;
+}
           if (data.success) {
             Swal.fire({
               icon: 'success',

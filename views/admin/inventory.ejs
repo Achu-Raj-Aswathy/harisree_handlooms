@@ -44,7 +44,9 @@
                                                         <% if(products.length>0){ %>
                                                             <% products.forEach((product)=> { %>
                                                        <tr data-created="<%= new Date(product.createdAt).toISOString() %>">                                                          
-                                                            <td><%=  product.productId %></td>
+                                                            <td>
+                                                              <a href="/admin/product-details?id=<%= product._id %>"><%=  product.productId %></a>
+                                                            </td>
                                                             <td><%= product.name %></td>
                                                             <td> <%= product.price %></td>
                                                             <td><%= product.discount %></td>
@@ -181,39 +183,57 @@
     const formattedStart = selectedStartDate.toISOString();
     const formattedEnd = selectedEndDate.toISOString();
 
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "/admin/export-inventory-pdf";
-    form.style.display = "none";
+    try {
+    const response = await fetch("/admin/export-inventory-pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        startDate: formattedStart,
+        endDate: formattedEnd,
+      }),
+    });
 
-    const startInput = document.createElement("input");
-    startInput.name = "startDate";
-    startInput.value = formattedStart;
-    form.appendChild(startInput);
+    if (!response.ok) {
+      const errorMsg = await response.text();
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Data',
+        text: errorMsg || 'No results found for the selected date range.',
+      });
+      return;
+    }
 
-    const endInput = document.createElement("input");
-    endInput.name = "endDate";
-    endInput.value = formattedEnd;
-    form.appendChild(endInput);
+    // ✅ Download PDF
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
 
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `inventory_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 
-    // Reset UI
-    document.getElementById("dateRangeInput").value = "";
-    selectedStartDate = null;
-    selectedEndDate = null;
-
-    // Optional: Success confirmation (if you want)
     Swal.fire({
       icon: 'success',
-      title: 'Export Started',
-      text: 'Your inventory PDF is being generated.',
+      title: 'Export Complete',
+      text: 'Your inventory PDF has been downloaded.',
       timer: 2000,
       showConfirmButton: false
     });
 
     bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+    document.getElementById("dateRangeInput").value = "";
+    selectedStartDate = null;
+    selectedEndDate = null;
+
+  } catch (err) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Export Failed',
+      text: 'Something went wrong while generating the PDF.',
+    });
+    console.error(err);
+  }
   }
 </script>

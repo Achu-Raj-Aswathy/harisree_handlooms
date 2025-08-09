@@ -47,6 +47,23 @@ const productSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+// Pre-save hook to update isAvailable based on availableStock
+productSchema.pre("save", function (next) {
+  this.isAvailable = this.availableStock > 0;
+  next();
+});
+
+// Pre-update hook to ensure availability is updated on update queries
+productSchema.pre(["findOneAndUpdate", "updateOne", "updateMany"], function (next) {
+  const update = this.getUpdate();
+  if (update.$set && update.$set.availableStock !== undefined) {
+    update.$set.isAvailable = update.$set.availableStock > 0;
+  } else if (update.availableStock !== undefined) {
+    update.isAvailable = update.availableStock > 0;
+  }
+  next();
+});
+
 // productSchema.pre("save", async function (next) {
 //   if (!this.productId) {
 //     const randomNumbers = Math.floor(1000 + Math.random() * 9000); // Ensures a 4-digit number

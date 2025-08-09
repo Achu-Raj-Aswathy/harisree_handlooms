@@ -1,153 +1,160 @@
 <%- include('./partials/header') %>
 
-<div class="wrapper">
-  <%- include('./partials/adminHeader') %>
-  <%- include('./partials/sidebar') %>
+  <div class="wrapper">
+    <%- include('./partials/adminHeader') %>
+      <%- include('./partials/sidebar') %>
 
-  <!-- 🟨 MAIN CONTENT AREA -->
-  <div class="content container mb-5" style="max-width: 700px;">
-    <h2 class="mb-4 text-center text-danger fw-bold">🎁 Edit Offer</h2>
+        <!-- 🟨 MAIN CONTENT AREA -->
+        <div class="content container mb-5" style="max-width: 700px;">
+          <h2 class="mb-4 text-center text-danger fw-bold">🎁 Edit Offer</h2>
 
-    <!-- ✅ FORM -->
-    <form id="editOfferForm" enctype="multipart/form-data" data-offer-id="<%= offer._id %>">
+          <!-- ✅ FORM -->
+          <form id="editOfferForm" enctype="multipart/form-data" data-offer-id="<%= offer._id %>">
 
-      <!-- Title -->
-      <div class="mb-3">
-        <label for="title" class="form-label fw-semibold">Offer Title</label>
-        <input type="text" class="form-control" id="title" name="title" value="<%= offer.name %>" required />
-      </div>
+            <!-- Title -->
+            <div class="mb-3">
+              <label for="title" class="form-label fw-semibold">Offer Title</label>
+              <input type="text" class="form-control" id="title" name="title" value="<%= offer.name %>" required />
+            </div>
 
-      <!-- Description -->
-      <div class="mb-3">
-        <label for="description" class="form-label fw-semibold">Offer Description</label>
-        <textarea class="form-control" id="description" name="description" rows="3" required><%= offer.description %></textarea>
-      </div>
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label fw-semibold">Offer Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3"
+                required><%= offer.description %></textarea>
+            </div>
 
-      <!-- Category -->
+            <!-- Category -->
             <div class="mb-3">
               <label for="categoryId" class="form-label">Select Category</label>
+
               <select id="categoryId" name="categoryId" class="form-select" required>
                 <option value="">-- Choose a Category --</option>
                 <% categories.forEach(category=> { %>
-                  <option value="<%= category._id %>">
+                  <option value="<%= category._id %>" <%=offer.categoryId &&
+                    offer.categoryId.toString()===category._id.toString() ? 'selected' : '' %>>
                     <%= category.name %>
                   </option>
                   <% }) %>
               </select>
+
             </div>
 
             <!-- Products -->
             <div class="mb-3">
               <label for="product-categories" class="form-label">Discount Product</label>
+
               <select class="form-control" id="product-categories" name="productId">
                 <option value="">-- Select Category First --</option>
               </select>
+
             </div>
 
-      <!-- Start Date -->
-      <div class="mb-3">
-        <label for="startDate" class="form-label fw-semibold">Start Date</label>
-        <input type="date" class="form-control" id="startDate" name="startDate" required 
-               value="<%= offer.startDate ? offer.startDate.toISOString().split('T')[0] : '' %>" />
-      </div>
+            <!-- Start Date -->
+            <div class="mb-3">
+              <label for="startDate" class="form-label fw-semibold">Start Date</label>
+              <input type="date" class="form-control" id="startDate" name="startDate" required
+                value="<%= offer.startDate ? offer.startDate.toISOString().split('T')[0] : '' %>" />
+            </div>
 
-      <!-- End Date -->
-      <div class="mb-3">
-        <label for="endDate" class="form-label fw-semibold">End Date</label>
-        <input type="date" class="form-control" id="endDate" name="endDate" required 
-               value="<%= offer.endDate ? offer.endDate.toISOString().split('T')[0] : '' %>" />
-      </div>
+            <!-- End Date -->
+            <div class="mb-3">
+              <label for="endDate" class="form-label fw-semibold">End Date</label>
+              <input type="date" class="form-control" id="endDate" name="endDate" required
+                value="<%= offer.endDate ? offer.endDate.toISOString().split('T')[0] : '' %>" />
+            </div>
 
-      <!-- Discount -->
-      <div class="mb-3">
-        <label for="discount" class="form-label fw-semibold">Discount (%)</label>
-        <input type="number" class="form-control" id="discount" name="discount" placeholder="e.g., 20" min="1" max="90" 
-               value="<%= offer.discountPercentage %>" required />
-      </div>
+            <!-- Discount -->
+            <div class="mb-3">
+              <label for="discount" class="form-label fw-semibold">Discount (%)</label>
+              <input type="number" class="form-control" id="discount" name="discount" placeholder="e.g., 20" min="1"
+                max="90" value="<%= offer.discountPercentage %>" required />
+            </div>
 
-      <!-- Image Upload -->
-      <div class="mb-3">
-        <label for="offerImage" class="form-label fw-semibold">Offer Image</label>
-        <input type="file" class="form-control" id="offerImage" name="image" accept="image/*" onchange="previewImage(event)" />
-      </div>
+            <!-- Image Upload -->
+            <div class="mb-3">
+              <label for="offerImage" class="form-label fw-semibold">Offer Image</label>
+              <input type="file" class="form-control" id="offerImage" name="image" accept="image/*"
+                onchange="previewImage(event)" />
+            </div>
 
-      <!-- Image Preview -->
-      <div class="mb-3 text-center">
-        <img id="imagePreview" 
-             src="<%= offer.image ? '/uploads/' + offer.image : '' %>" 
-             alt="Image Preview"
-             style="max-width: 300px; max-height: 200px; <%= offer.image ? '' : 'display: none;' %>; border: 1px solid #ddd; padding: 5px;" />
-      </div>
+            <!-- Image Preview -->
+            <div class="mb-3 text-center">
+              <img id="imagePreview" src="<%= offer.image ? '/uploads/' + offer.image : '' %>" alt="Image Preview"
+                style="max-width: 300px; max-height: 200px; <%= offer.image ? '' : 'display: none;' %>; border: 1px solid #ddd; padding: 5px;" />
+            </div>
 
-      <!-- Submit -->
-      <button type="submit" class="btn btn-success w-100 fw-bold">
-        ✅ Save Changes
-      </button>
-    </form>
+            <!-- Submit -->
+            <button type="submit" class="btn btn-success w-100 fw-bold">
+              Save Changes
+            </button>
+          </form>
+
+        </div>
+
+        <%- include('./partials/footer') %>
   </div>
-</div>
-<!-- END Wrapper -->
+  <!-- END Wrapper -->
 
-<!-- ✅ SCRIPTS -->
-<script>
-  // Preview selected image
-  function previewImage(event) {
-    const reader = new FileReader();
-    reader.onload = function () {
-      const img = document.getElementById("imagePreview");
-      img.src = reader.result;
-      img.style.display = "block";
-    };
-    reader.readAsDataURL(event.target.files[0]);
-  }
-
-  // Handle form submission with FormData and SweetAlert2
-  document.getElementById("editOfferForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const form = e.target;
-    const offerId = form.dataset.offerId;
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch(`/admin/offers/edit?id=${offerId}`, {
-        method: "POST",
-        body: formData
-      });
-
-      if (response.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Offer updated successfully.',
-          confirmButtonColor: '#3085d6'
-        }).then(() => {
-          window.location.href = "/admin/list-offers";
-        });
-      } else {
-        const error = await response.text();
-        console.error("Error:", error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Update Failed',
-          text: 'Failed to update offer. Please try again later.',
-          confirmButtonColor: '#d33'
-        });
+    <!-- ✅ SCRIPTS -->
+    <script>
+      // Preview selected image
+      function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          const img = document.getElementById("imagePreview");
+          img.src = reader.result;
+          img.style.display = "block";
+        };
+        reader.readAsDataURL(event.target.files[0]);
       }
-    } catch (err) {
-      console.error("Error:", err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Something went wrong. Please check your connection or try again.',
-        confirmButtonColor: '#d33'
+
+      // Handle form submission with FormData and SweetAlert2
+      document.getElementById("editOfferForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const offerId = form.dataset.offerId;
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch(`/admin/offers/edit?id=${offerId}`, {
+            method: "POST",
+            body: formData
+          });
+
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success!',
+              text: 'Offer updated successfully.',
+              confirmButtonColor: '#3085d6'
+            }).then(() => {
+              window.location.href = "/admin/list-offers";
+            });
+          } else {
+            const error = await response.text();
+            console.error("Error:", error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Update Failed',
+              text: 'Failed to update offer. Please try again later.',
+              confirmButtonColor: '#d33'
+            });
+          }
+        } catch (err) {
+          console.error("Error:", err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Something went wrong. Please check your connection or try again.',
+            confirmButtonColor: '#d33'
+          });
+        }
       });
-    }
-  });
-</script>
+    </script>
 
-
-  <script>
+    <!-- <script>
     document.getElementById('categoryId').addEventListener('change', function () {
       const categoryId = this.value;
       const productSelect = document.getElementById('product-categories');
@@ -171,4 +178,71 @@
           });
       }
     });
-  </script>
+  </script> -->
+
+    <script>
+      const selectedCategoryId = "<%= offer.categoryId ? offer.categoryId.toString() : '' %>";
+      const selectedProductId = "<%= offer.productId ? offer.productId.toString() : '' %>";
+
+      const categorySelect = document.getElementById('categoryId');
+      const productSelect = document.getElementById('product-categories');
+
+      // Populate products for selected category on page load (for edit case)
+      window.addEventListener('DOMContentLoaded', () => {
+        if (selectedCategoryId) {
+          loadProducts(selectedCategoryId, selectedProductId);
+        }
+      });
+
+      // When category changes
+      categorySelect.addEventListener('change', function () {
+        const categoryId = this.value;
+        loadProducts(categoryId, null); // reset product selection
+      });
+
+      // Fetch products and populate dropdown
+      function loadProducts(categoryId, preselectProductId) {
+        if (!categoryId) {
+          productSelect.innerHTML = '<option value="">-- Select Category First --</option>';
+          return;
+        }
+
+        productSelect.innerHTML = '<option value="">Loading...</option>';
+
+        fetch(`/admin/products/by-category/${categoryId}`)
+          .then(res => res.json())
+          .then(data => {
+            productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+            data.products.forEach(product => {
+              const option = document.createElement('option');
+              option.value = product._id;
+              option.textContent = product.name;
+              if (preselectProductId && preselectProductId === product._id) {
+                option.selected = true;
+              }
+              productSelect.appendChild(option);
+            });
+          })
+          .catch(err => {
+            console.error(err);
+            productSelect.innerHTML = '<option value="">Error loading products</option>';
+          });
+      }
+    </script>
+
+    <style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1; /* pushes footer down when content is short */
+}
+    </style>

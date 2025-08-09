@@ -1295,12 +1295,21 @@ const exportUsersPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const users = await Users.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
+      createdAt: { $gte: start, $lte: end },
     }).sort({ createdAt: -1 });
+
+      if (users.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({
       size: "A4",
@@ -1410,14 +1419,23 @@ const exportProductsPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const products = await Products.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
+      createdAt: { $gte: start, $lte: end },
     })
       .populate("categoryId")
       .sort({ createdAt: -1 });
+
+          if (products.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({
       size: "A4",
@@ -1495,12 +1513,21 @@ const exportCategoriesPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const categories = await Categories.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
-    }).sort({ createdAt: -1 });
+      createdAt: { $gte: start, $lte: end },
+}).sort({ createdAt: -1 });
+
+  if (categories.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({
       size: "A4",
@@ -1575,12 +1602,21 @@ const exportInventoryPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+        const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const products = await Products.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      }
+      createdAt: { $gte: start, $lte: end },
     }).sort({ createdAt: -1 });
+
+    if (products.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 40 });
 
@@ -1662,12 +1698,21 @@ const exportOrdersPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const orders = await Orders.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
-      }
+      createdAt: { $gte: start, $lte: end },
     }).populate("userId").populate("items.productId").sort({ createdAt: -1 });
+
+    if (orders.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({ size: "A4", layout: "landscape", margin: 40 });
     res.setHeader("Content-Type", "application/pdf");
@@ -1733,15 +1778,24 @@ const exportCouponsPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const coupons = await Coupons.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
+      createdAt: { $gte: start, $lte: end },
     })
       .populate("productId", "name")
       .populate("categoryId", "name")
       .sort({ createdAt: -1 });
+
+    if (coupons.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({
       size: "A4",
@@ -1826,15 +1880,26 @@ const exportReviewsPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const reviews = await Reviews.find({
       date: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $gte: start, $lte: end
       },
     })
       .populate("userId")
       .populate("productId")
       .sort({ date: -1 });
+
+                if (reviews.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({
       size: "A4",
@@ -1915,12 +1980,21 @@ const exportReportPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
+    const start = new Date(startDate);
+start.setHours(0, 0, 0, 0); // start of the day
+
+const end = new Date(endDate);
+end.setHours(23, 59, 59, 999); // end of the day
+
     const products = await Products.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      }
+      createdAt: { $gte: start, $lte: end },
     }).sort({ createdAt: -1 });
+
+    if (products.length === 0) {
+      return res
+        .status(404)
+        .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+    }
 
     const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 40 });
 
@@ -2020,7 +2094,7 @@ const createDTDCShipment = async (req, res) => {
           origin_details: {
             name: "Harisree Handlooms",
             phone: "9188019689",
-            address_line_1: "Kallanchari, Peruvemba",
+            address_line_1: "Kallanchira, Peruvemba",
             pincode: "678531",
             city: "Palakkad",
             state: "Kerala",

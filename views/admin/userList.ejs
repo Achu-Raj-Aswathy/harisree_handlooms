@@ -182,7 +182,15 @@
         }),
       });
 
-      if (!response.ok) throw new Error("Export failed");
+    if (!response.ok) {
+      const errorText = await response.text(); // Get server message
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Results',
+        text: errorText || 'Export failed',
+      });
+      return;
+    }
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);

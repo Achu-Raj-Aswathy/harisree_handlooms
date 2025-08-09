@@ -14,50 +14,21 @@
                <!-- Start Container Fluid -->
                <div class="container-xxl">
 
-                    <div class="row d-none">
-                         <div class="col-lg-12">
-                              <div class="card bg-light-subtle">
-                                   <div class="card-header border-0">
-                                        <div class="row justify-content-between">
-                                             <div class="col-lg-6">
-                                                  <div class="row align-items-center">
-                                                       <div class="col-lg-6">
-                                                            <form class="app-search d-none d-md-block me-auto">
-                                                                 <div class="position-relative">
-                                                                      <input type="search" class="form-control" placeholder="Search Coupons and Code" autocomplete="off" value="">
-                                                                      <iconify-icon icon="solar:magnifer-broken" class="search-widget-icon"></iconify-icon>
-                                                                 </div>
-                                                            </form>
-                                                       </div>
-                                                       <div class="col-lg-4">
-                                                            <h5 class="text-dark fw-medium mb-0">5,786 <span class="text-muted">Items</span></h5>
-                                                       </div>
-                                                  </div>
-                                             </div>
-                                             <div class="col-lg-6">
-                                                  <div class="text-md-end mt-3 mt-md-0">
-                                                       <button type="button" class="btn btn-outline-secondary me-1"><i class="bx bx-cog me-1"></i>More Setting</button>
-                                                       <button type="button" class="btn btn-outline-secondary me-1"><i class="bx bx-filter-alt me-1"></i> Filters</button>
-                                                       <button type="button" class="btn btn-success me-1"><i class="bx bx-plus"></i> New Coupons</button>
-                                                  </div>
-                                             </div><!-- end col-->
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-                    </div>
-
                     <div class="row">
                          <div class="col-xl-12">
                               <div class="card">
-                                   <div class="d-flex card-header justify-content-between align-items-center">
-                                        <div>
-                                             <h4 class="card-title">All Coupon List</h4>
-                                        </div>
-                                        <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
-                                          Export
-                                        </a>
-                                   </div>
+                                   <div
+                                                  class="card-header d-flex justify-content-between align-items-center gap-1">
+                                                  <h4 class="card-title flex-grow-1">All Coupon List</h4>
+
+                                                  <a href="/admin/add-coupon" class="btn btn-sm btn-primary">
+                                                       Add Coupon
+                                                  </a>
+
+                                                  <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
+                                                       Export
+                                                  </a>
+                                             </div>
                                    <div>
                                         <div class="table-responsive">
                                              <table class="table align-middle mb-0 table-hover table-centered">
@@ -234,58 +205,6 @@
     });
   });
 
-  async function downloadCouponsPDF() {
-    if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
-      document.getElementById('dateError').classList.remove('d-none');
-      return;
-    }
-
-    try {
-      const response = await fetch("/admin/export-coupons-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          startDate: selectedStartDate.toISOString(),
-          endDate: selectedEndDate.toISOString(),
-        }),
-      });
-
-      if (!response.ok) {
-        return Swal.fire({
-          icon: 'error',
-          title: 'Export Failed',
-          text: 'Failed to generate PDF.'
-        });
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `coupons_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
-      a.click();
-
-      document.getElementById("dateRangeInput").value = "";
-      selectedStartDate = null;
-      selectedEndDate = null;
-      bootstrap.Modal.getInstance(document.getElementById("exportModal")).hide();
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Download Complete',
-        text: 'Your PDF has been downloaded.',
-        timer: 1500,
-        showConfirmButton: false
-      });
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Something went wrong while exporting.'
-      });
-    }
-  }
 </script>
 
 <!-- Export Modal -->
@@ -325,31 +244,65 @@
 
   async function downloadCouponsPDF() {
     if (!selectedStartDate || !selectedEndDate || selectedEndDate < selectedStartDate) {
-      document.getElementById('dateError').classList.remove('d-none');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Date Range',
+        text: 'Please select a valid start and end date.'
+      });
       return;
     }
 
-    const response = await fetch("/admin/export-coupons-pdf", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        startDate: selectedStartDate.toISOString(),
-        endDate: selectedEndDate.toISOString(),
-      }),
-    });
+    try {
+      const response = await fetch("/admin/export-coupons-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          startDate: selectedStartDate.toISOString(),
+          endDate: selectedEndDate.toISOString(),
+        }),
+      });
 
-    if (!response.ok) return alert("Failed to generate PDF");
+      if (!response.ok) {
+        const msg = await response.text();
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Results',
+          text: msg || 'No coupons found for the selected date range.'
+        });
+        return;
+      }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `coupons_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
-    a.click();
+      // ✅ Download file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `coupons_${selectedStartDate.toLocaleDateString()}-${selectedEndDate.toLocaleDateString()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
-    document.getElementById("dateRangeInput").value = "";
-    selectedStartDate = null;
-    selectedEndDate = null;
-    bootstrap.Modal.getInstance(document.getElementById("exportModal")).hide();
+      // Reset form & close modal
+      document.getElementById("dateRangeInput").value = "";
+      selectedStartDate = null;
+      selectedEndDate = null;
+      bootstrap.Modal.getInstance(document.getElementById("exportModal")).hide();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Download Complete',
+        text: 'Your coupons PDF has been downloaded.',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Something went wrong while exporting.'
+      });
+    }
   }
 </script>

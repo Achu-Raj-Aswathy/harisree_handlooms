@@ -262,11 +262,15 @@
     }),
   });
 
-if (!response.ok) {
-  Swal.fire("Error", "Failed to generate PDF", "error");
-  return;
-}
-
+    if (!response.ok) {
+      const errorText = await response.text(); // Get server message
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Results',
+        text: errorText || 'Export failed',
+      });
+      return;
+    }
 
   const blob = await response.blob();
   const url = window.URL.createObjectURL(blob);

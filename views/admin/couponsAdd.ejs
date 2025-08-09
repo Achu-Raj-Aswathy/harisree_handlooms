@@ -14,7 +14,7 @@
               <div class="col-lg-5">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Coupon Status</h4>
+                    <h4 class="card-title">Coupon Status <span class="text-danger">*</span></h4>
                   </div>
                   <div class="card-body">
                     <div class="row">
@@ -47,12 +47,12 @@
                   </div>
                   <div class="card-body">
                     <div class="mb-3">
-                      <label for="start-date" class="form-label text-dark">Start Date</label>
-                      <input type="text" id="start-date" name="startDate" class="form-control" placeholder="dd-mm-yyyy" readonly>
+                      <label for="start-date" class="form-label text-dark">Start Date <span class="text-danger">*</span></label>
+                      <input type="text" id="start-date" name="startDate" class="form-control" placeholder="dd-mm-yyyy" readonly required>
                     </div>
                     <div class="mb-3">
-                      <label for="end-date" class="form-label text-dark">End Date</label>
-                      <input type="text" id="end-date" name="endDate" class="form-control" placeholder="dd-mm-yyyy" readonly>
+                      <label for="end-date" class="form-label text-dark">End Date <span class="text-danger">*</span></label>
+                      <input type="text" id="end-date" name="endDate" class="form-control" placeholder="dd-mm-yyyy" readonly required>
                     </div>
                   </div>
                 </div>
@@ -69,15 +69,15 @@
                       <!-- Code -->
                       <div class="col-lg-6">
                         <div class="mb-3">
-                          <label for="coupons-code" class="form-label">Coupon Code</label>
-                          <input type="text" id="coupons-code" name="code" class="form-control" placeholder="Enter code">
+                          <label for="coupons-code" class="form-label">Coupon Code <span class="text-danger">*</span></label>
+                          <input type="text" id="coupons-code" name="code" class="form-control" placeholder="Enter code" required>
                         </div>
                       </div>
 
                       <!-- Category -->
                       <div class="col-lg-6">
                         <div class="mb-3">
-                          <label for="categoryId" class="form-label">Select Category</label>
+                          <label for="categoryId" class="form-label">Select Category <span class="text-danger">*</span></label>
                           <select id="categoryId" name="categoryId" class="form-select" required>
                             <option value="">-- Choose a Category --</option>
                             <% categories.forEach(category => { %>
@@ -90,43 +90,20 @@
                       <!-- Products -->
                       <div class="col-lg-6">
                         <div class="mb-3">
-                          <label for="product-categories" class="form-label">Discount Product</label>
-                          <select class="form-control" id="product-categories" name="productId">
+                          <label for="product-categories" class="form-label">Discount Product <span class="text-danger">*</span></label>
+                          <select class="form-control" id="product-categories" name="productId" required>
                             <option value="">-- Select Category First --</option>
                           </select>
                         </div>
                       </div>
                     </div>
 
-                    <!-- Type -->
-                    <!-- <h4 class="card-title mb-3 mt-2">Coupon Type</h4> -->
-                    <!-- <div class="row mb-3">
-                      <div class="col-lg-4">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="type" value="Free Shipping" id="typeShipping" checked>
-                          <label class="form-check-label" for="typeShipping">Free Shipping</label>
-                        </div>
-                      </div>
-                      <div class="col-lg-4">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="type" value="Percentage" id="typePercentage">
-                          <label class="form-check-label" for="typePercentage">Percentage</label>
-                        </div>
-                      </div>
-                      <div class="col-lg-4">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="type" value="Fixed Amount" id="typeFixed">
-                          <label class="form-check-label" for="typeFixed">Fixed Amount</label>
-                        </div>
-                      </div>
-                    </div> -->
-
                     <!-- Discount Value -->
                     <div class="row">
                       <div class="col-lg-12">
                         <div class="mb-3">
-                          <label for="discount-value" class="form-label">Discount Percentage</label>
-                          <input type="number" id="discount-value" name="discountValue" class="form-control" placeholder="Enter value">
+                          <label for="discount-value" class="form-label">Discount Percentage <span class="text-danger">*</span></label>
+                          <input type="number" id="discount-value" name="discountValue" class="form-control" placeholder="Enter value" required>
                         </div>
                       </div>
                     </div>

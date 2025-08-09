@@ -72,7 +72,4 @@ adminRouter.get("/dtdc/shipping-label", isLogin, adminController.downloadDTDCLab
 adminRouter.get("/dtdc/track", isLogin, adminController.trackDTDCShipment);
 adminRouter.post("/dtdc/cancel-shipment", isLogin, adminController.cancelDTDCShipment);
 
-
-
-
 module.exports = adminRouter;

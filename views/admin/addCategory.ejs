@@ -13,7 +13,7 @@
             <!-- Upload Card -->
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Add Thumbnail Photo</h4>
+                <h4 class="card-title">Add Thumbnail Photo <span class="text-danger">*</span></h4>
               </div>
               <div class="card-body">
                 <!-- File Upload -->
@@ -23,7 +23,8 @@
                        multiple 
                        data-max-file-size="3MB"
                        data-max-files="5"
-                       accept="image/png, image/jpeg, image/gif" />
+                       accept="image/png, image/jpeg, image/gif"
+                       required />
                 <small class="text-muted fs-13 d-block mt-2">
                   1600 x 1200 (4:3) recommended. PNG, JPG and GIF files are allowed.
                 </small>
@@ -39,21 +40,21 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="mb-3">
-                      <label for="categoryId" class="form-label">Category ID</label>
+                      <label for="categoryId" class="form-label">Category ID <span class="text-danger">*</span></label>
                       <input type="text" id="categoryId" name="categoryId" class="form-control" disabled value="<%= categoryId %>">
                       <input type="hidden" name="categoryId" value="<%= categoryId %>">
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="mb-3">
-                      <label for="categoryName" class="form-label">Category Title</label>
-                      <input type="text" id="categoryName" name="categoryName" class="form-control" placeholder="Enter Title">
+                      <label for="categoryName" class="form-label">Category Title <span class="text-danger">*</span></label>
+                      <input type="text" id="categoryName" name="categoryName" class="form-control" placeholder="Enter Title" required>
                     </div>
                   </div>
                   <div class="col-lg-12">
                     <div class="mb-0">
-                      <label for="description" class="form-label">Description</label>
-                      <textarea class="form-control bg-light-subtle" id="description" name="description" rows="7" placeholder="Type description"></textarea>
+                      <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                      <textarea class="form-control bg-light-subtle" id="description" name="description" rows="7" placeholder="Type description" required></textarea>
                     </div>
                   </div>
                 </div>

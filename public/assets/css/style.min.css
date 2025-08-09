@@ -2583,17 +2583,17 @@ input[type=submit] {
     font-weight: 500;
     transition: .3s;
     height: 60px;
-    background: var(--color-primary);
+    background: var(--color-warning);
     color: var(--color-white);
     font-weight: var(--p-medium);
     font-size: var(--font-size-b2);
     line-height: var(--line-height-b3);
-    border: 2px solid var(--color-primary)
+    border: 2px solid var(--color-warning)
 }
 
 input[type=submit]:hover {
     background: rgba(0, 0, 0, 0);
-    color: var(--color-primary)
+    color: var(--color-warning)
 }
 
 .error-msg p,

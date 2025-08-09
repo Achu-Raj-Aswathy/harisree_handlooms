@@ -173,15 +173,24 @@
     const couponForm = document.getElementById("couponForm");
     const couponId = "<%= coupon._id %>"; // Pass coupon ID from server
 
+    // flatpickr("#start-date", {
+    //   dateFormat: "d-m-Y",
+    //   defaultDate: new Date("<%= coupon.startDate.toISOString() %>")
+    // });
     flatpickr("#start-date", {
-      dateFormat: "d-m-Y",
-      defaultDate: new Date("<%= coupon.startDate.toISOString() %>")
-    });
+  dateFormat: "d-m-Y",
+  defaultDate: "<%= coupon && coupon.startDate ? coupon.startDate.toISOString() : '' %>"
+});
 
-    flatpickr("#end-date", {
-      dateFormat: "d-m-Y",
-      defaultDate: new Date("<%= coupon.endDate.toISOString() %>")
-    });
+    // flatpickr("#end-date", {
+    //   dateFormat: "d-m-Y",
+    //   defaultDate: new Date("<%= coupon.endDate.toISOString() %>")
+    // });
+
+      flatpickr("#end-date", {
+  dateFormat: "d-m-Y",
+  defaultDate: "<%= coupon && coupon.endDate ? coupon.endDate.toISOString() : '' %>"
+});
 
     // Populate products dropdown with selected category's products
     const productSelect = document.getElementById("product-categories");

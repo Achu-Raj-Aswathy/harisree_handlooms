@@ -161,7 +161,7 @@
                                                             <% if(orders && orders.length > 0) { %>
                                                                  <% orders.forEach((order, index) => { %>
                                                             <tr>
-                                                                 <td> <%= order.orderId %></td>
+                                                                 <td> <a href="/admin/order-details?id=<%=order._id%>"><%= order.orderId %></a> </td>
                                                                  <td> <span class="badge bg-success-subtle text-success py-1 px-2"><%= order.status %></span> </td>
                                                                  <td> <%= order.total %> </td>
                                                                  <td> <%= order.createdAt.toLocaleDateString('en-IN') %></td>
@@ -176,7 +176,7 @@
                                                   </table>
                                              </div>
                                         </div>
-                                        <div class="card-footer border-top">
+                                        <!-- <div class="card-footer border-top">
                                              <ul class="pagination pagination-rounded m-0 justify-content-end">
                                                   <li class="page-item">
                                                        <a href="#" class="page-link"><i class="bx bx-left-arrow-alt"></i></a>
@@ -194,7 +194,7 @@
                                                        <a href="#" class="page-link"><i class="bx bx-right-arrow-alt"></i></a>
                                                   </li>
                                              </ul>
-                                        </div>
+                                        </div> -->
                                    </div>
                                    
                               </div>

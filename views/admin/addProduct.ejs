@@ -10,12 +10,12 @@
           <form id="CategoryForm" action="/admin/add-product" method="post" enctype="multipart/form-data">
             <div class="card">
               <div class="card-header">
-                <h4 class="card-title">Add Product Photo</h4>
+                <h4 class="card-title">Add Product Photo <span class="text-danger">*</span></h4>
               </div>
               <div class="card-body">
                 <input type="file" name="thumbnail[]" class="filepond" multiple
                   data-max-file-size="3MB" data-max-files="5"
-                  accept="image/png, image/jpeg, image/gif" />
+                  accept="image/png, image/jpeg, image/gif" required />
                 <small class="text-muted fs-13 d-block mt-2">
                   1600 x 1200 (4:3) recommended. PNG and JPG files are allowed.
                 </small>
@@ -30,7 +30,7 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="mb-3">
-                      <label for="productId" class="form-label">Product ID</label>
+                      <label for="productId" class="form-label">Product ID <span class="text-danger">*</span></label>
                       <input type="text" id="productId" name="productId" class="form-control" disabled
                         value="<%= productId %>">
                       <input type="hidden" name="productId" value="<%= productId %>">
@@ -39,7 +39,7 @@
 
                   <div class="col-lg-6">
                     <div class="mb-3">
-                      <label for="categoryId" class="form-label">Select Category</label>
+                      <label for="categoryId" class="form-label">Select Category <span class="text-danger">*</span></label>
                       <select id="categoryId" name="categoryId" class="form-select" required>
                         <option value="">-- Choose a Category --</option>
                         <% categories.forEach(category => { %>
@@ -53,14 +53,14 @@
                 <div class="row">
                   <div class="col-lg-8">
                     <div class="mb-3">
-                      <label for="product-name" class="form-label">Product Name</label>
+                      <label for="product-name" class="form-label">Product Name <span class="text-danger">*</span></label>
                       <input type="text" name="productName" id="product-name" class="form-control"
                         placeholder="Item Name" required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="hsnCode" class="form-label">HSN Code</label>
+                      <label for="hsnCode" class="form-label">HSN Code <span class="text-danger">*</span></label>
                       <input type="text" name="hsnCode" id="hsnCode" class="form-control" placeholder="HSN Code"  required>
                     </div>
                   </div>
@@ -68,14 +68,14 @@
 
                 <div class="row mb-3">
                   <div class="col-lg-4">
-                    <label for="specification" class="form-label">Blouse Details (if no,type nil)</label>
+                    <label for="specification" class="form-label">Blouse Details (if no,type nil) <span class="text-danger">*</span></label>
                     <input type="text" name="specification" id="specification" class="form-control" placeholder="Blouse Details" required >
                     
                   </div>
 
                   <div class="col-lg-4">
-                    <label for="gender" class="form-label">Gender</label>
-                    <select class="form-control" name="gender" id="gender"  required>
+                    <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                    <select class="form-control" name="gender" id="gender" required>
                       <option value="">Select Gender</option>
                       <option value="Men">Men</option>
                       <option value="Women">Women</option>
@@ -86,7 +86,7 @@
                   </div>
 
                   <div class="col-lg-4">
-                    <label for="size" class="form-label">Length</label>
+                    <label for="size" class="form-label">Length <span class="text-danger">*</span></label>
                     <input type="text" name="size" id="size" class="form-control" placeholder="Length" required>
                     <!-- <select class="form-control" name="size" id="size"  required>
                       <option value="Free Size">Free Size</option>
@@ -100,56 +100,48 @@
                 <div class="row">
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="skuId" class="form-label">SKU ID</label>
+                      <label for="skuId" class="form-label">SKU ID <span class="text-danger">*</span></label>
                       <input type="text" name="skuId" id="skuId" class="form-control" placeholder="SKU id"  required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="stock" class="form-label">Total Stock</label>
+                      <label for="stock" class="form-label">Total Stock <span class="text-danger">*</span></label>
                       <input type="text" name="stock" id="stock" class="form-control" placeholder="stock"  required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="lowStockAlert" class="form-label">Low Stock Alert</label>
+                      <label for="lowStockAlert" class="form-label">Low Stock Alert <span class="text-danger">*</span></label>
                       <input type="text" name="lowStockAlert" id="lowStockAlert" class="form-control" placeholder="low stock"  required>
                     </div>
                   </div>
                 </div>
-
-
-
-
                  <div class="row">
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="fabric" class="form-label">Fabric</label>
+                      <label for="fabric" class="form-label">Fabric <span class="text-danger">*</span></label>
                       <input type="text" name="fabric" id="fabric" class="form-control" placeholder="fabric"  required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="design" class="form-label">Design(if no,type nil)</label>
+                      <label for="design" class="form-label">Design(if no,type nil) <span class="text-danger">*</span></label>
                       <input type="text" name="design" id="design" class="form-control" placeholder="design"  required>
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="mb-3">
-                      <label for="colour" class="form-label">Colour</label>
+                      <label for="colour" class="form-label">Colour <span class="text-danger">*</span></label>
                       <input type="text" name="colour" id="colour" class="form-control" placeholder="colour"  required>
                     </div>
                   </div>
                 </div>
 
-
-
-
-
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="mb-3">
-                      <label for="description" class="form-label">Description</label>
+                      <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
                       <textarea class="form-control bg-light-subtle" name="description" id="description" rows="7"
                         placeholder="Short description about the product"  required></textarea>
                     </div>
@@ -165,7 +157,7 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-lg-6">
-                    <label for="price" class="form-label">Price</label>
+                    <label for="price" class="form-label">Price <span class="text-danger">*</span></label>
                     <div class="input-group mb-3">
                       <span class="input-group-text fs-15">Rs: </span>
                       <input type="number" name="price" id="price" class="form-control" placeholder="000"  required>
@@ -173,7 +165,7 @@
                   </div>
 
                   <div class="col-lg-6">
-                    <label for="discount" class="form-label">Discount Price</label>
+                    <label for="discount" class="form-label">Discount Price <span class="text-danger">*</span></label>
                     <div class="input-group mb-3">
                       <span class="input-group-text fs-20"><i class='bx bxs-discount'></i></span>
                       <input type="number" name="discount" id="discount" class="form-control" placeholder="000">

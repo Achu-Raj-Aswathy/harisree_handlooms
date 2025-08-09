@@ -45,7 +45,6 @@
                                                                  <td><%= order.createdAt.toLocaleDateString('en-IN') %></td>
                                                                  <td>
                                                                       <a href="/admin/user-details?id=<%= order.userId._id %>"><%= order.userId.userId %></a>
-                                                                      
                                                                  </td>
                                                                   <td>
           <ul class="list-unstyled mb-0">
@@ -178,6 +177,17 @@
       })
     });
 
+      // ❗ Read the response message if not ok
+    if (!response.ok) {
+      const errorText = await response.text(); // Get server message
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Results',
+        text: errorText || 'Export failed',
+      });
+      return;
+    }
+    
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");

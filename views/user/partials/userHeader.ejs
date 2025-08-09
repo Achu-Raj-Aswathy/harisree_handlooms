@@ -3,27 +3,7 @@
     <a href="#top" class="back-to-top" id="backto-top"><i class="fal fa-arrow-up"></i></a>
     <!-- Start Header -->
      <header class="header axil-header header-style-7">
-        <!-- <div class="header-top-campaign">
-            <div class="container-fluid">
-                <div class="row align-items-center">
-                    <div class="col-lg-12 col-md-12 col-12">
-                        <div class="header-campaign-activation axil-slick-arrow arrow-both-side header-campaign-arrow">
-                            <div class="slick-slide">
-                                <div class="campaign-content">
-                                    <p>STUDENT NOW GET 10% OFF : <a href="#">GET OFFER</a></p>
-                                </div>
-                            </div>
-                            <div class="slick-slide">
-                                <div class="campaign-content">
-                                    <p>STUDENT NOW GET 10% OFF : <a href="#">GET OFFER</a></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div> -->
+        
         <!-- Start Mainmenu Area  -->
 
         <header class="header axil-header header-style-7" style="position: fixed; top: 0; width: 100%; z-index: 1050;">
@@ -75,11 +55,9 @@
 }
 </style>
 
-
 </header>
 
 <style>
-
 
 .back-to-top {
   background-color: #f1c40f;  /* or any other color you want */
@@ -110,7 +88,6 @@
   margin-top: 32px; /* Adjust according to actual offer bar height */
 
   }
-
   
 </style>
 
@@ -230,10 +207,6 @@
     <!-- End Header -->
 </body>
 
-
-
-
-
 <!-- Header Search Modal End -->
 <div class="header-search-modal" id="header-search-modal">
   <button class="card-close sidebar-close"><i class="fas fa-times"></i></button>
@@ -272,82 +245,6 @@
             <h2 class="header-title">Cart review</h2>
             <button class="cart-close sidebar-close"><i class="fas fa-times"></i></button>
         </div>
-        <!-- <div class="cart-body">
-            <ul class="cart-item-list">
-                <li class="cart-item">
-                    <div class="item-img">
-                        <a href="/product"><img src="assets/images/product/electric/product-01.png"
-                                alt="Commodo Blown Lamp"></a>
-                        <button class="close-btn"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="item-content">
-                        <div class="product-rating">
-                            <span class="icon">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <span class="rating-number">(64)</span>
-                        </div>
-                        <h3 class="item-title"><a href="/product">Wireless PS Handler</a></h3>
-                        <div class="item-price"><span class="currency-symbol">$</span>155.00</div>
-                        <div class="pro-qty item-quantity">
-                            <input type="number" class="quantity-input" value="15">
-                        </div>
-                    </div>
-                </li>
-                <li class="cart-item">
-                    <div class="item-img">
-                        <a href="/product"><img src="assets/images/product/electric/product-02.png"
-                                alt="Commodo Blown Lamp"></a>
-                        <button class="close-btn"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="item-content">
-                        <div class="product-rating">
-                            <span class="icon">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <span class="rating-number">(4)</span>
-                        </div>
-                        <h3 class="item-title"><a href="/product">Gradient Light Keyboard</a></h3>
-                        <div class="item-price"><span class="currency-symbol">$</span>255.00</div>
-                        <div class="pro-qty item-quantity">
-                            <input type="number" class="quantity-input" value="5">
-                        </div>
-                    </div>
-                </li>
-                <li class="cart-item">
-                    <div class="item-img">
-                        <a href="/product"><img src="assets/images/product/electric/product-03.png"
-                                alt="Commodo Blown Lamp"></a>
-                        <button class="close-btn"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="item-content">
-                        <div class="product-rating">
-                            <span class="icon">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <span class="rating-number">(6)</span>
-                        </div>
-                        <h3 class="item-title"><a href="/product">HD CC Camera</a></h3>
-                        <div class="item-price"><span class="currency-symbol">$</span>200.00</div>
-                        <div class="pro-qty item-quantity">
-                            <input type="number" class="quantity-input" value="100">
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div> -->
         <div class="cart-body">
   <ul class="cart-item-list">
     <% if (user && user.cart && user.cart.length > 0) { %>
@@ -372,7 +269,13 @@
             <h3 class="item-title">
               <a href="/product?id=<%= product._id %>"><%= product.name %></a>
             </h3>
-            <div class="item-price">₹<%= product.discount || product.price %></div>
+            <!-- <div class="item-price">₹<%= product.discount || product.price %></div> -->
+             <% if (!product.isAvailable) { %>
+  <div class="item-price text-danger fw-bold">Out of Stock</div>
+<% } else { %>
+  <div class="item-price">₹<%= product.discount || product.price %></div>
+<% } %>
+
             <!-- Optionally show quantity if implemented -->
           </div>
         </li>
@@ -399,7 +302,7 @@
   let subtotal = 0;
   if (user && user.cart && user.cart.length > 0) {
     user.cart.forEach(item => {
-    if (item.productId) {
+    if (item.productId && item.productId.isAvailable) {
       const price = item.productId.discount || item.productId.price || 0;
       subtotal += price;
     }
@@ -434,6 +337,17 @@
       try {
         const res = await fetch(`/cart/remove?id=${productId}`, { method: "DELETE" });
         const data = await res.json();
+        if (data.loginRequired) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Login Required",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() =>  window.location.href = "/signin");
+          
+  return;
+}
 
         if (data.success) {
           Swal.fire({
@@ -480,6 +394,9 @@ document.addEventListener("DOMContentLoaded", function () {
       let total = 0;
 
       document.querySelectorAll(".cart-item").forEach(itemEl => {
+        const isOutOfStock = itemEl.querySelector(".item-price")?.textContent.includes("Out of Stock");
+        if (isOutOfStock) return; // 🚫 Skip this product
+
         const productId = itemEl.querySelector(".remove-from-cart")?.dataset.id; // ✅ From close button
         const name = itemEl.querySelector(".item-title a")?.textContent.trim();
         const priceText = itemEl.querySelector(".item-price")?.textContent.replace(/[₹\s]/g, "") || "0";
@@ -569,7 +486,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 </script>
- 
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -583,6 +499,18 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const res = await fetch(`/cart/add?id=${productId}`, { method: "POST" });
         const data = await res.json();
+        if (data.loginRequired) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Login Required",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() =>  window.location.href = "/signin");
+          
+  return;
+}
+
         if (data.success) {
           Swal.fire({
             icon: "success",
@@ -618,6 +546,17 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const res = await fetch(`/wishlist/add?id=${productId}`, { method: "POST" });
         const data = await res.json();
+        if (data.loginRequired) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: data.message || "Login Required",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() =>  window.location.href = "/signin");
+          
+  return;
+}
         if (data.success) {
           Swal.fire({
             icon: "success",

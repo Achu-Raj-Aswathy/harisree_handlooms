@@ -48,8 +48,8 @@
                                                                            <tr>
 
                                                                                 <td>
-                                                                                     <%= product.productId %>
-                                                                                </td>
+                                                              <a href="/admin/product-details?id=<%= product._id %>"><%=  product.productId %></a>
+                                                            </td>
                                                                                 <td>
                                                                                      <%= product.name %>
                                                                                 </td>
@@ -201,42 +201,62 @@
   });
 
   async function downloadReportPDF() {
-  if (!reportStartDate || !reportEndDate || reportEndDate < reportStartDate) {
-  Swal.fire({
-    icon: 'error',
-    title: 'Invalid Date Range',
-    text: 'Please select a valid start and end date!',
-  });
-  return;
-}
-
+    if (!reportStartDate || !reportEndDate || reportEndDate < reportStartDate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Date Range',
+        text: 'Please select a valid start and end date!',
+      });
+      return;
+    }
 
     const formattedStart = reportStartDate.toISOString();
     const formattedEnd = reportEndDate.toISOString();
 
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "/admin/export-report-pdf";
-    form.style.display = "none";
+    try {
+      const response = await fetch("/admin/export-report-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          startDate: formattedStart,
+          endDate: formattedEnd
+        }),
+      });
 
-    const startInput = document.createElement("input");
-    startInput.name = "startDate";
-    startInput.value = formattedStart;
-    form.appendChild(startInput);
+      // If no data found
+      if (!response.ok) {
+        const errorMsg = await response.text();
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Data Found',
+          text: errorMsg || 'No records for the selected date range.',
+        });
+        return;
+      }
 
-    const endInput = document.createElement("input");
-    endInput.name = "endDate";
-    endInput.value = formattedEnd;
-    form.appendChild(endInput);
+      // Download PDF if data exists
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report_${reportStartDate.toLocaleDateString()}-${reportEndDate.toLocaleDateString()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
+      // Close modal and reset
+      bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+      document.getElementById("reportDateRangeInput").value = "";
+      reportStartDate = null;
+      reportEndDate = null;
 
-    // Reset UI
-    document.getElementById("reportDateRangeInput").value = "";
-    reportStartDate = null;
-    reportEndDate = null;
-    bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Something went wrong while generating the PDF.',
+      });
+      console.error(err);
+    }
   }
 </script>

@@ -11,21 +11,21 @@
           <form action="/admin/offers/add" method="POST" enctype="multipart/form-data">
             <!-- Title -->
             <div class="mb-3">
-              <label for="title" class="form-label fw-semibold">Offer Title</label>
+              <label for="title" class="form-label fw-semibold">Offer Title <span class="text-danger">*</span></label>
               <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Onam Special - 30% OFF"
                 required />
             </div>
 
             <!-- Description -->
             <div class="mb-3">
-              <label for="description" class="form-label fw-semibold">Offer Description</label>
+              <label for="description" class="form-label fw-semibold">Offer Description <span class="text-danger">*</span></label>
               <textarea class="form-control" id="description" name="description" rows="3"
                 placeholder="Details about the offer..." required></textarea>
             </div>
 
             <!-- Category -->
             <div class="mb-3">
-              <label for="categoryId" class="form-label">Select Category</label>
+              <label for="categoryId" class="form-label">Select Category <span class="text-danger">*</span></label>
               <select id="categoryId" name="categoryId" class="form-select" required>
                 <option value="">-- Choose a Category --</option>
                 <% categories.forEach(category=> { %>
@@ -38,7 +38,7 @@
 
             <!-- Products -->
             <div class="mb-3">
-              <label for="product-categories" class="form-label">Discount Product</label>
+              <label for="product-categories" class="form-label">Discount Product <span class="text-danger">*</span></label>
               <select class="form-control" id="product-categories" name="productId">
                 <option value="">-- Select Category First --</option>
               </select>
@@ -46,26 +46,26 @@
 
             <!-- Start Date -->
             <div class="mb-3">
-              <label for="startDate" class="form-label fw-semibold">Start Date</label>
+              <label for="startDate" class="form-label fw-semibold">Start Date <span class="text-danger">*</span></label>
               <input type="date" class="form-control" id="startDate" name="startDate" required />
             </div>
 
             <!-- End Date -->
             <div class="mb-3">
-              <label for="endDate" class="form-label fw-semibold">End Date</label>
+              <label for="endDate" class="form-label fw-semibold">End Date <span class="text-danger">*</span></label>
               <input type="date" class="form-control" id="endDate" name="endDate" required />
             </div>
 
             <!-- Discount -->
             <div class="mb-3">
-              <label for="discount" class="form-label fw-semibold">Discount (%)</label>
+              <label for="discount" class="form-label fw-semibold">Discount (%) <span class="text-danger">*</span></label>
               <input type="number" class="form-control" id="discount" name="discount" placeholder="e.g., 20" min="1"
                 max="90" required />
             </div>
 
             <!-- Image Upload -->
             <div class="mb-3">
-              <label for="offerImage" class="form-label fw-semibold">Offer Image</label>
+              <label for="offerImage" class="form-label fw-semibold">Offer Image <span class="text-danger">*</span></label>
               <input type="file" class="form-control" id="offerImage" name="image" accept="image/*"
                 onchange="previewImage(event)" required />
             </div>

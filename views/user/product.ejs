@@ -103,14 +103,16 @@
       </button>
     </div>
 
-    <!-- 🛍️ Buy Now -->
-    <button
-      type="button"
-      class="btn btn-danger fw-semibold px-4 py-2 rounded-pill"
-      style="height: 44px;"
-      onclick="buyNow('<%= product._id %>', '<%= product.name %>', <%= product.discount || product.price %>)">
-      Buy Now
-    </button>
+<!-- 🛍️ Buy Now -->
+<button
+  type="button"
+  class="btn btn-danger fw-semibold px-4 py-2 rounded-pill"
+  style="height: 44px;"
+  onclick="buyNow('<%= product._id %>', '<%= product.name %>', <%= product.discount || product.price %>)"
+  <%= !product.isAvailable ? 'disabled' : '' %>>
+  Buy Now
+</button>
+
 
     <!-- ❤️ Wishlist -->
     <button
@@ -177,8 +179,6 @@
     </div>
   </div>
 </form>
-
-
 
                    <div class="form-group  mt-5">
                         <div class="row">
@@ -374,10 +374,6 @@
   </div>
 <% } %>
 
-
-
-
-
     </main>
 
    <script>
@@ -398,8 +394,6 @@
     ]
   });
 </script>
-
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
@@ -430,38 +424,6 @@
         }
       }
     </script>
-
-  
-    <!-- <script>
-  function adjustQty(change) {
-    const qtySpan = document.getElementById("qty-value");
-    let currentQty = parseInt(qtySpan.innerText);
-    if (!isNaN(currentQty)) {
-      const newQty = Math.max(1, currentQty + change);
-      qtySpan.innerText = newQty;
-    }
-  }
-
-  function toggleWishlist() {
-    const icon = document.getElementById("wishlistIcon");
-    const btn = document.getElementById("wishlistBtn");
-
-    if (icon.classList.contains("far")) {
-      icon.classList.remove("far");
-      icon.classList.add("fas");
-      alert("Added to wishlist!");
-    } else {
-      icon.classList.remove("fas");
-      icon.classList.add("far");
-      alert("Removed from wishlist!");
-    }
-  }
-</script> -->
-
-
-   
-  
-
 
     <script>
       // ⭐ Toggle review form
@@ -539,8 +501,17 @@
   }
 </script>
 
-
-
+<% if (reviewAdded) { %>
+<script>
+  Swal.fire({
+    icon: 'success',
+    title: 'Thank you!',
+    text: 'Your review has been added successfully.',
+    timer: 2000,
+    showConfirmButton: false
+  });
+</script>
+<% } %>
 
     <%- include('./partials/footer') %>
-      </div>
+      </div>                  

@@ -33,6 +33,7 @@ async function generateInvoicePDF(order) {
 
     return pdfBuffer;
 }
+
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
@@ -45,14 +46,12 @@ const baseUrl = process.env.BASE_URL || "http://localhost:3000"; // Ensure BASE_
 // ===================
 // PhonePe Config
 // ===================
-// const CLIENT_ID = "SU2504031724337089600354";
-// const CLIENT_SECRET = "299536df-733d-430e-84dc-0d932b331af9";
 
-const CLIENT_ID = "TEST-M2336HV644IDN_25062";
-const CLIENT_SECRET = "MTI5YTU1YWQtNTIxZS00ZTYzLWE0ZDQtNTFiYjRhZTdmOWUw";
+const CLIENT_ID = process.env.CLIENT_ID_PHONEPE;
+const CLIENT_SECRET = process.env.CLIENT_SECRET_PHONEPE;
 const SALT_INDEX = "1";
-// const ENV = Env.PRODUCTION; // Change to "UAT" for testing
-const ENV = Env.UAT;
+const ENV = Env.PRODUCTION; // Change to "UAT" for testing
+// const ENV = Env.UAT;
 
 const client = StandardCheckoutClient.getInstance(CLIENT_ID, CLIENT_SECRET, SALT_INDEX, ENV);
 
@@ -185,7 +184,7 @@ const status = async (req, res) => {
     origin_details: {
           name: "Harisree Handlooms",
           phone: "9188019689",
-          address_line_1: "Kallanchari, Peruvemba",
+          address_line_1: "Kallanchira, Peruvemba",
           pincode: "678531",
           city: "Palakkad",
           state: "Kerala"
@@ -733,10 +732,10 @@ const viewShop = async (req, res) => {
 
 const viewProduct = async (req, res) => {
   const productId = req.query.id;
+  const reviewAdded = req.query.reviewAdded === "true";
   try {
     const product = await Products.findOne({ _id: productId })
    const reviews = await Reviews.find({ productId });
-
 
     // Calculate average rating
     let avgRating = 0;
@@ -769,6 +768,7 @@ const recentlyViewedProducts = await Products.find({ _id: { $in: recentlyViewedI
       reviews,
       avgRating,
       recentlyViewedProducts,
+      reviewAdded     
     });
   } catch (error) {
     console.error(error);
@@ -963,7 +963,7 @@ const addToWishlist = async (req, res) => {
 
   try {
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not logged in" });
+      return res.status(401).json({ success: false, message: "User not logged in", loginRequired: true });
     }
 
     if (!productId) {
@@ -1003,7 +1003,7 @@ const addToCart = async (req, res) => {
 
   try {
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not logged in" });
+      return res.status(401).json({ success: false, message: "User not logged in", loginRequired: true });
     }
 
     if (!productId) {
@@ -1041,7 +1041,7 @@ const removeFromCart = async (req, res) => {
 
   try {
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not logged in" });
+      return res.status(401).json({ success: false, message: "User not logged in", loginRequired: true });
     }
 
     await Users.findByIdAndUpdate(userId, {
@@ -1062,7 +1062,7 @@ const removeFromWishlist = async (req, res) => {
 
   try {
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not logged in" });
+      return res.status(401).json({ success: false, message: "User not logged in", loginRequired: true });
     }
 
     await Users.findByIdAndUpdate(userId, {
@@ -1076,7 +1076,6 @@ const removeFromWishlist = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 const returnRequest = async (req, res) => {
   try {
@@ -1138,7 +1137,7 @@ const addReview = async (req, res) => {
     });
 
     await newReview.save();
-    res.redirect(`/product?id=${productId}`);
+    res.redirect(`/product?id=${productId}&reviewAdded=true`);
   } catch (err) {
     console.error("Review Save Error:", err);
     res.status(500).send("Review submission failed.");

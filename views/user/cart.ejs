@@ -30,10 +30,11 @@
                                         <% carts.forEach(item=> {
                                             const product = item.productId;
                                              if (!product) return;
+                                              const inStock = product.isAvailable;
                                             %>
                                             <tr data-id="<%= product._id %>" class="cart-row">
                                                 <td class="product-remove">
-                                                    <a href="#" class="remove-from-cart" data-id="<%= product._id %>">
+                                                    <a href="#" class="remove-from-cart" data-id="<%= product._id %>" data-instock="<%= inStock ? 'true' : 'false' %>">
                                                         <i class="fal fa-times"></i>
                                                     </a>
                                                 </td>
@@ -48,22 +49,39 @@
                                                     </a>
                                                 </td>
                                                 <!-- <td class="product-price" data-title="Price"><span class="currency-symbol">₹</span><%= product.discount || product.price %></td> -->
-                                                <td class="product-price" data-title="Price"
+                                                <!-- <td class="product-price" data-title="Price"
                                                     data-price="<%= product.discount || product.price %>">
                                                     <span class="currency-symbol">₹</span>
                                                     <%= product.discount || product.price %>
-                                                </td>
+                                                </td> -->
+                                                <td class="product-price" data-title="Price"
+                data-price="<%= inStock ? (product.discount || product.price) : 0 %>">
+                <% if (inStock) { %>
+                    <span class="currency-symbol">₹</span><%= product.discount || product.price %>
+                <% } else { %>
+                    <span class="text-danger">Out of Stock</span>
+                <% } %>
+            </td>
 
                                                 <td class="product-quantity" data-title="Qty">
                                                     <div class="pro-qty">
                                                         <input type="number" class="quantity-input" value="1" min="1" />
                                                     </div>
                                                 </td>
-                                                <td class="product-subtotal" data-title="Subtotal">
+                                                <!-- <td class="product-subtotal" data-title="Subtotal">
                                                     <span class="currency-symbol">₹</span><span class="subtotal-value">
                                                         <%= product.discount || product.price %>
                                                     </span>
-                                                </td>
+                                                </td> -->
+                                                 <td class="product-subtotal" data-title="Subtotal">
+                <% if (inStock) { %>
+                    <span class="currency-symbol">₹</span><span class="subtotal-value">
+                        <%= product.discount || product.price %>
+                    </span>
+                <% } else { %>
+                    -
+                <% } %>
+            </td>
                                             </tr>
                                             <% }) %>
                                                 <% } %>
@@ -103,39 +121,74 @@
             </div>
 
 <script>
+// function updateCartTotals() {
+//   let total = 0;
+//   const cartSummary = [];
+
+//   document.querySelectorAll(".cart-row").forEach(row => {
+//     const productId = row.dataset.id;
+//     const productName = row.querySelector(".product-title a").textContent.trim();
+//     const price = parseFloat(row.querySelector(".product-price").dataset.price);
+//     const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
+    
+    
+//     const subtotal = price * qty;
+
+//     row.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
+
+//     total += subtotal;
+
+//     cartSummary.push({
+//       productId: productId, 
+//       name: productName,
+//       quantity: qty,
+//       price: price,
+//       subtotal: subtotal.toFixed(2)
+//     });
+//   });
+
+//   const cartDataInput = document.getElementById("cartDataInput");
+//   if (cartDataInput) {
+//     cartDataInput.value = JSON.stringify({
+//       items: cartSummary,
+//       total: total.toFixed(2)
+//     });
+//   }
+
+//   document.getElementById("cart-total").textContent = total.toFixed(2);
+// }
+
 function updateCartTotals() {
   let total = 0;
   const cartSummary = [];
 
   document.querySelectorAll(".cart-row").forEach(row => {
+    const inStock = row.dataset.instock === "true";
+    if (!inStock) return; // Skip out-of-stock
+
     const productId = row.dataset.id;
     const productName = row.querySelector(".product-title a").textContent.trim();
     const price = parseFloat(row.querySelector(".product-price").dataset.price);
     const qty = parseInt(row.querySelector(".quantity-input").value) || 1;
-    
-    
-    const subtotal = price * qty;
 
+    const subtotal = price * qty;
     row.querySelector(".subtotal-value").textContent = subtotal.toFixed(2);
 
     total += subtotal;
 
     cartSummary.push({
-      productId: productId, 
+      productId,
       name: productName,
       quantity: qty,
-      price: price,
+      price,
       subtotal: subtotal.toFixed(2)
     });
   });
 
-  const cartDataInput = document.getElementById("cartDataInput");
-  if (cartDataInput) {
-    cartDataInput.value = JSON.stringify({
-      items: cartSummary,
-      total: total.toFixed(2)
-    });
-  }
+  document.getElementById("cartDataInput").value = JSON.stringify({
+    items: cartSummary,
+    total: total.toFixed(2)
+  });
 
   document.getElementById("cart-total").textContent = total.toFixed(2);
 }
