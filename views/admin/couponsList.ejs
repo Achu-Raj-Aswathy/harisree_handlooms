@@ -25,9 +25,9 @@
                                                        Add Coupon
                                                   </a>
 
-                                                  <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
+                                                  <!-- <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
                                                        Export
-                                                  </a>
+                                                  </a> -->
                                              </div>
                                    <div>
                                         <div class="table-responsive">
@@ -40,7 +40,8 @@
                                                             <th>Start Date</th>
                                                             <th>End Date</th>
                                                             <th>Code</th>
-                                                            <th>Discount(%)</th>
+                                                            <th>Limit</th>
+                                                            <th>Discount<br>(%)</th>
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                        </tr>
@@ -60,8 +61,11 @@
             </div>
           </div>
           <p class="text-dark fw-medium fs-15 mb-0">
-            <%= coupon.productId && coupon.productId.name ? coupon.productId.name : 'N/A' %>
+            <a href="/admin/product-details?id=<%=coupon.productId._id%>">
+              <%= coupon.productId && coupon.productId.name ? coupon.productId.name : 'N/A' %>
+              </a>
           </p>
+          
         </td>
 
         <td><%= coupon.categoryId && coupon.categoryId.name ? coupon.categoryId.name : 'N/A' %></td>
@@ -75,6 +79,7 @@
         </td>
 
         <td><%= coupon.code || 'N/A' %></td>
+        <td><%= coupon.limit || 'N/A' %></td>
         <td><%= coupon.discountPercentage != null ? coupon.discountPercentage : 'N/A' %></td>
         <td><%= coupon.status || 'N/A' %></td>
 

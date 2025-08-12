@@ -35,7 +35,6 @@
             <th>#</th>
             <th>Order ID</th>
             <th>Customer</th>
-            <th>Product</th>
             <th>Courier</th>
             <th>Tracking ID</th>
             <th>Status</th>
@@ -51,9 +50,8 @@
       <td><%= index + 1 %></td>
       <td><a href="/admin/order-details?id=<%= order._id %>"><%= order.orderId %></a></td>
       <td><a href="/admin/user-details?id=<%= order.userId._id %>"><strong><%= order.address.name %></strong><br><small><%= order.address.phone %></small></a></td>
-      <td><%= order.productName %></td>
       <td>DTDC</td>
-      <td><%= order.trackingId %></td>
+      <td><%= order.dtdcTrackingNumber %></td>
       <td>
         <span class="status-badge
           <% if(order.status === 'Shipped') { %> bg-warning
@@ -76,7 +74,7 @@
 </td>
 
       <td>
-        <a href="https://www.dtdc.in/tracking.asp" target="_blank" class="btn btn-sm btn-outline-primary">
+        <a href="/admin/order-details?id=<%= order._id %>" class="btn btn-sm btn-outline-primary">
           Track
         </a>
       </td>

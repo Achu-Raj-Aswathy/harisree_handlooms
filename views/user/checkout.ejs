@@ -125,7 +125,7 @@
                                     </div>
                                     <div class="coupon-discount d-flex justify-content-between">
                                       <span class="title">Coupon Discount</span>
-                                      <span class="discount" id="discount">₹0.00</span>
+                                      <span>-<span class="discount" id="discount"> ₹0.00</span></span>
                                     </div>
                                   </td>
 
@@ -169,7 +169,7 @@
                             <div>
                               <div class="form-check mb-1">
                                 <input class="form-check-input" type="radio" name="selectedCoupon"
-                                  id="coupon_<%= index %>" value="<%= coupon.code %>">
+                                  id="coupon_<%= index %>" value="<%= coupon.code %>" data-id="<%= coupon._id %>">
                                 <label class="form-check-label fw-bold" for="coupon_<%= index %>">
                                   <%= coupon.code %>
                                 </label>
@@ -191,9 +191,12 @@
                                 <!-- Manual Coupon Entry -->
                                 <div class="input-group">
                                   <input class="form-control" placeholder="Coupon code" id="couponCodeInput" />
-                                  <button type="submit" style="background-color: #f1c40f; color: black; border: none;" >
+                                  
+<!-- Coupon Apply Button -->
+<button type="button" id="applyCouponBtn" style="background-color: #f1c40f; color: black; border: none;">
   Apply
 </button>
+
                                 </div>
                   </div>
                 </div>
@@ -317,12 +320,13 @@
     });
 
     // Manual Apply Button
-    applyBtn.addEventListener("click", function () {
-      const code = manualInput.value.trim();
-      if (code === "") {
-        alert("Enter a coupon code");
-        return;
-      }
+    applyBtn.addEventListener("click", function (e) {
+  e.preventDefault(); // extra safeguard
+  const code = manualInput.value.trim();
+  if (code === "") {
+    alert("Enter a coupon code");
+    return;
+  }
 
       applyCoupon(code);
 
@@ -333,7 +337,13 @@
     });
 
     // Watch for changes to state input
-    billingStateInput.addEventListener("input", updateTotals);
+    billingStateInput.addEventListener("input", () => {
+  updateTotals();
+});
+billingStateInput.addEventListener("change", () => {
+  updateTotals();
+});
+
 
     // Apply default selected coupon on load
     const selectedRadio = document.querySelector('input[name="selectedCoupon"]:checked');
@@ -382,6 +392,15 @@
 
       const cartData = <%- JSON.stringify({ items: cart, total }) %>;
 
+      const selectedCouponRadio = document.querySelector('input[name="selectedCoupon"]:checked');
+let couponCode = null;
+let couponId = null;
+
+if (selectedCouponRadio && selectedCouponRadio.value !== "none") {
+  couponCode = selectedCouponRadio.value;
+  couponId = selectedCouponRadio.getAttribute("data-id");
+}
+
       // Grab all billing details
 const address = {
   name: document.getElementById("first-name").value,
@@ -412,7 +431,9 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
   subtotal,
   shippingCharge,
   discount,
-  total
+  total,
+    couponCode,
+  couponId
 })
         });
         const result = await response.json();
@@ -518,21 +539,6 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
       if (!email || !validateEmail(email)) return showAlert("Enter a valid email address.");
 
       // If shipping checkbox is checked, validate shipping fields too
-      const isShippingDifferent = document.getElementById("checkbox2").checked;
-      if (isShippingDifferent) {
-        const shippingCountry = document.getElementById("shippingCountry").value;
-        const shippingState = document.getElementById("shippingState").value.trim();
-        const shippingCity = document.getElementById("shippingCity").value.trim();
-        const shippingPincode = document.getElementById("shippingPincode").value.trim();
-
-        if (!shippingCountry) return showAlert("Please select shipping country.");
-        if (!shippingState) return showAlert("Please enter shipping state.");
-        if (!shippingCity) return showAlert("Please enter shipping city.");
-        if (!shippingPincode || !validatePincode(shippingPincode)) {
-          return showAlert("Enter a valid 6-digit shipping PIN Code.");
-        }
-      }
-
       return true;
     }
 

@@ -71,7 +71,7 @@ userRouter.use((req, res, next) => {
   const isStaticAsset = currentUrl.startsWith('/assets');
 
   if (
-    !req.session.user_id &&
+    !req.session.user &&
     req.method === "GET" &&
     !["/signin", "/signup"].includes(currentUrl) &&
     !isStaticAsset
@@ -169,6 +169,7 @@ userRouter.post(
 );
 userRouter.post("/forgot-password", isLogout, userController.forgotPassword);
 userRouter.post("/account-edit", isLogin, userController.updateAccountDetails);
+userRouter.post("/reset-password", isLogout, userController.resetPassword);
 
 userRouter.delete("/cart/remove", isLogin, userController.removeFromCart);
 userRouter.delete(

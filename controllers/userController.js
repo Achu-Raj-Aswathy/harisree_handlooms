@@ -68,7 +68,7 @@ const createPhonePeOrder = async (req, res) => {
   
   try {
 
-const { cartData, address, subtotal, shippingCharge, discount, total } = req.body;
+const { cartData, address, subtotal, shippingCharge, discount, total, couponId, couponCode } = req.body;
     const userId = req.session.user;
     if (!cartData || !userId) {
       return res.status(400).json({ error: "Missing cart data or user session" });
@@ -103,6 +103,8 @@ const amount = parseInt(total); // total should be rupees, convert to integer
   subtotal,
   shippingCharge,
   discount,
+  couponId,
+  couponCode
 };
 
     const redirectWithOrder = `${redirectUrl}?id=${orderId}`;
@@ -229,6 +231,33 @@ try {
   }
 } catch (err) {
   console.error("DTDC booking failed:", err.response?.data || err.message);
+}
+
+// 🏷️ Update coupon usage if a coupon was applied
+if (orderData.couponId) {
+  await Users.updateOne(
+    { _id: req.session.user, "couponsUsed.couponId": orderData.couponId },
+    {
+      $inc: { "couponsUsed.$.number": 1 }
+    }
+  ).then(async result => {
+    if (result.matchedCount === 0) {
+      // User never used this coupon before → add it
+      await Users.updateOne(
+        { _id: req.session.user },
+        {
+          $push: {
+            couponsUsed: {
+              couponId: orderData.couponId,
+              number: 1
+            }
+          }
+        }
+      );
+    }
+  }).catch(err => {
+    console.error("❌ Error updating coupon usage:", err);
+  });
 }
 
 await Users.findByIdAndUpdate(req.session.user, {
@@ -383,65 +412,144 @@ async function getDTDCToken() {
   return data; // token string
 }
 
+// const trackDTDCShipment = async (req, res) => {
+//   try {
+//     const { orderNumber } = req.query;
+
+//     if (!orderNumber) {
+//       return res.status(400).json({ error: "Missing order number" });
+//     }
+
+//     // Get order from DB
+//     const order = await Orders.findOne({ orderId: orderNumber });
+//     if (!order) {
+//       return res.status(404).json({ error: "Order not found" });
+//     }
+
+//     // Decide what to track with
+//     let trkType, strcnno;
+//     if (order.dtdcTrackingNumber) {
+//       trkType = "cnno"; // AWB
+//       strcnno = order.dtdcTrackingNumber;
+//     } else {
+//       trkType = "reference"; // Customer reference
+//       strcnno = order.orderId;
+//     }
+
+//     const response = await axios.post(
+//       "https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails",
+//       {
+//         trkType,
+//         strcnno,
+//         addtnlDtl: "Y"
+//       },
+//       {
+//         headers: {
+//           "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
+//           "Content-Type": "application/json"
+//         }
+//       }
+//     );
+//     console.log("DTDC tracking raw response:", JSON.stringify(response.data, null, 2));
+
+//     const trackInfo = response.data;
+//     if (!trackInfo.trackDetails || !trackInfo.trackDetails.length) {
+//       return res.status(404).json({ error: "No tracking details found" });
+//     }
+
+//         function mapToUserStage(dtdcStatus) {
+//       const statusLower = dtdcStatus.toLowerCase();
+
+//       if (
+//         statusLower.includes("softdata") ||
+//         statusLower.includes("pickup awaited") ||
+//         statusLower.includes("shipment booked")
+//       ) return "Order Placed";
+
+//       if (
+//         statusLower.includes("pickup scheduled") ||
+//         statusLower.includes("pickup reassigned")
+//       ) return "Shipped";
+
+//       if (
+//         statusLower.includes("in transit") ||
+//         statusLower.includes("received at hub")
+//       ) return "In Transit";
+
+//       if (statusLower.includes("out for delivery")) return "Out for Delivery";
+
+//       if (statusLower.includes("delivered")) return "Delivered";
+
+//       return null;
+//     }
+
+//     // ✅ Filter & remove duplicates
+//     // Keep all events, fallback to raw status if no match
+// const trackingHistory = trackInfo.trackDetails.map(event => ({
+//   stage: mapToUserStage(event.strAction || "") || event.strAction || "Unknown",
+//   rawStatus: event.strAction || "Unknown",
+//   date: event.strActionDate || ""
+// }));
+
+// res.json({
+//   courier: "DTDC",
+//   orderId: order.orderId,
+//   status: trackingHistory.length
+//     ? trackingHistory[trackingHistory.length - 1].stage
+//     : "Unknown",
+//   remarks: "",
+//   trackingDetails: trackingHistory
+// });
+    
+//   } catch (err) {
+//     console.error("❌ DTDC tracking failed:", err.response?.data || err.message);
+//     res.status(500).json({ error: "Tracking failed" });
+//   }
+// };
+
 const trackDTDCShipment = async (req, res) => {
-   const { orderNumber } = req.query; // This is your Customer Reference Number (ORD-9823)
-
-  if (!orderNumber) {
-    return res.status(400).json({ error: "Missing order number" });
-  }
-
   try {
-    // Find order in DB to get DTDC ref number or confirm order exists
-    const order = await Orders.findOne({ orderId: orderNumber });
-    if (!order) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-    const token = await getDTDCToken();
+    const { orderNumber } = req.query;
+    if (!orderNumber) return res.status(400).json({ error: "Missing order number" });
 
-    // Call DTDC tracking API using reference number
+    const order = await Orders.findOne({ orderId: orderNumber });
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
+    let trkType = order.dtdcTrackingNumber ? "cnno" : "reference";
+    let strcnno = order.dtdcTrackingNumber || order.orderId;
+
     const response = await axios.post(
       "https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails",
-  {
-    trkType: "reference", // or "cnno" for AWB
-    strcnno: orderNumber,
-    addtnlDtl: "Y"
-  },
-  {
-    headers: {
-      "X-Access-Token": token,
-      "Content-Type": "application/json"
-    }
-      }
-    );
-
-    const trackInfo = response.data;
-
-    if (!trackInfo.trackHeader) {
-      return res.status(404).json({ error: "No tracking details found" });
-    }
-
-    const currentStatus = trackInfo.trackHeader.strStatus || "In Transit";
-    const remarks = trackInfo.trackHeader.strRemarks || "Status Updated";
-
-    // Optionally update your order record
-    await Orders.findOneAndUpdate(
-      { orderId: orderNumber },
+      { trkType, strcnno, addtnlDtl: "Y" },
       {
-        $set: {
-          shippingStatus: currentStatus,
-          lastTrackingUpdate: new Date(),
-          deliveryRemarks: remarks
+        headers: {
+          "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
+          "Content-Type": "application/json"
         }
       }
     );
 
-    res.json({
-      status: currentStatus,
-      remarks,
-      trackHeader: trackInfo.trackHeader,
-      trackDetails: trackInfo.trackDetails || []
-    });
+    console.log("DTDC raw response:", JSON.stringify(response.data, null, 2)); // <--- Debug here
+    const trackInfo = response.data;
+    console.log("tracking details",trackInfo.trackDetails)
 
+    if (!trackInfo.trackDetails || !trackInfo.trackDetails.length) {
+      return res.status(404).json({ error: "No tracking details found" });
+    }
+
+    // Map without filtering to keep all data for now
+    const trackingHistory = trackInfo.trackDetails.map(event => ({
+      stage: event.strAction || "Unknown",
+      date: event.strActionDate || ""
+    }));
+
+    res.json({
+      courier: "DTDC",
+      orderId: order.orderId,
+      status: trackingHistory.length ? trackingHistory[trackingHistory.length - 1].stage : "Unknown",
+      remarks: "",
+      trackingDetails: trackingHistory
+    });
   } catch (err) {
     console.error("❌ DTDC tracking failed:", err.response?.data || err.message);
     res.status(500).json({ error: "Tracking failed" });
@@ -803,21 +911,45 @@ const viewCheckout = async (req, res) => {
   const { cartData } = req.body;
   let parsed;
   const userId = req.session.user;
-  console.log("cartData:", cartData);
+
   try {
     parsed = JSON.parse(cartData);
-    console.log("Cart Items:", parsed.items);
-    console.log("Total:", parsed.total);
 
-    const user = await Users.findById(userId).populate("cart.productId").populate("wishlist.productId").populate("orders.orderId");
+    const user = await Users.findById(userId).populate("cart.productId").populate("wishlist.productId").populate("orders.orderId").populate("couponsUsed.couponId");
     if (!user) {
       return res.status(404).render("error", { error: "User not found" });
     }
 
-    const coupons = await Coupons.find({ status: "Active" }).populate("productId").populate("categoryId");
+    const now = new Date();
+
+    const allCoupons = await Coupons.find({ status: "Active" })
+      .populate("productId")
+      .populate("categoryId");
+
+    // Get all coupon IDs the user has already used
+    const usedCouponIds = user.couponsUsed.map(c => c.couponId?._id?.toString());
+
+    // Filter valid coupons
+    const validCoupons = allCoupons.filter(coupon => {
+      const withinDateRange =
+        coupon.startDate <= now && coupon.endDate >= now;
+
+      if (!withinDateRange) return false;
+
+      if (coupon.limit === "multiple") {
+        return true;
+      }
+
+      if (coupon.limit === "one-time") {
+        // Only valid if not already used
+        return !usedCouponIds.includes(coupon._id.toString());
+      }
+
+      return false;
+    });
 
     // Save to DB, session, or pass to payment gateway
-    res.render("user/checkout", { cart: parsed.items, total: parsed.total, user, coupons });
+    res.render("user/checkout", { cart: parsed.items, total: parsed.total, user, coupons: validCoupons });
   } catch (e) {
     console.error("Invalid cart data:", e);
     res.status(400).send("Invalid cart data");
@@ -1211,7 +1343,8 @@ const resetPassword = async (req, res) => {
   console.log(token);
 
   if (password != confirmPassword) {
-    return res.status(400).render("user/resetPassword", {
+    return res.status(400).json({
+      success: false,
       message: "Passwords do not match",
       messageType: "danger",
       token,
@@ -1219,13 +1352,22 @@ const resetPassword = async (req, res) => {
   }
 
   try {
+     let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.SECRET_KEY);
+    } catch (err) {
+      return res.status(400).json({ success: false, message: "Invalid or expired token" });
+    }
+
     const user = await Users.findOne({
+      _id: decoded.id, 
       resetToken: token,
       resetTokenExpiry: { $gt: Date.now() },
     });
 
     if (!user) {
-      return res.status(400).render("user/resetPassword", {
+      return res.status(400).json({
+        success: false,
         message: "Invalid or expired token",
         messageType: "danger",
         token,
@@ -1238,12 +1380,13 @@ const resetPassword = async (req, res) => {
     await user.save();
 
     res.render("user/signin", {
+      success: true,
       message: "Password reset successful. Login here",
       messageType: "success",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 

@@ -74,6 +74,19 @@
                         </div>
                       </div>
 
+                      <!-- Limit -->
+                      <div class="col-lg-6">
+                        <div class="mb-3">
+                          <label for="coupon-limit" class="form-label">Coupon Limit <span class="text-danger">*</span></label>
+                          <select class="form-control" id="coupon-limit" name="limit" required>
+                                             <option value="">-- Choose a type --</option>
+                                             <option value="one-time">One time</option>
+                                             <option value="multiple">Multiple</option>
+                                            
+                                        </select>
+                        </div>
+                      </div>
+
                       <!-- Category -->
                       <div class="col-lg-6">
                         <div class="mb-3">
@@ -174,7 +187,8 @@
       discountValue: document.getElementById("discount-value").value,
       startDate: document.getElementById("start-date").value,
       endDate: document.getElementById("end-date").value,
-      status: document.querySelector('input[name="status"]:checked').value
+      status: document.querySelector('input[name="status"]:checked').value,
+      limit: document.getElementById("coupon-limit").value
     };
 
     fetch("/admin/add-coupon", {

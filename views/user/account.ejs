@@ -87,82 +87,133 @@
         <h4 class="text-center text-warning mb-4">📦 Track Your Order</h4>
 
     <!-- Tracking Form -->
-    <form id="dtdcTrackForm" class="mb-4">
-      <div class="input-group">
-        <input type="text" class="form-control" id="orderNumber" placeholder="Enter your Order ID" required>
-        <button class="btn btn-warning" type="submit">Track</button>
-      </div>
-    </form>
+        <form id="trackForm" class="mb-4">
+          <div class="input-group">
+              <select class="form-select" id="trackingId" name="trackingId" required>
+    <option value="" disabled selected>Select your Order Id</option>
+    <% user.orders.forEach(order => { %>
+      <% if (order.orderId) { %>
+        <option value="<%= order.orderId.orderId %>"><%= order.orderId.orderId %></option>
+      <% } %>
+    <% }) %>
+  </select>
+</div>
+<button class="btn btn-warning mt-3" type="submit">Track</button>
+        </form>
 
         <!-- Tracking Result -->
-    <div id="trackingResult" style="display:none;">
-      <h6>Courier: <span class="fw-semibold">DTDC</span></h6>
-      <p><i class="fas fa-barcode me-2"></i><strong>Order ID:</strong> <span id="resOrderId"></span></p>
-      <p><i class="fas fa-truck-fast me-2"></i><strong>Status:</strong> <span id="resStatus"></span></p>
-      <p><strong>Remarks:</strong> <span id="resRemarks"></span></p>
+    <div id="trackingResult"></div>
 
-      <h5 class="mt-3">Tracking History:</h5>
-      <ul id="resHistory" class="list-unstyled"></ul>
-    </div>
-
-        <!-- <div class="mb-3">
-          <h6>Courier: <span class="fw-semibold">DTDC</span></h6>
-          <p><i class="fas fa-barcode me-2"></i><strong>Tracking ID:</strong> DTDC123456789</p>
-          <p><i class="fas fa-truck-fast me-2"></i><strong>Estimated Delivery:</strong> July 10, 2025</p>
-        </div>
-
-        <div class="mt-4">
-          <div class="track-step completed">
-            <div>Order Placed <span class="text-muted small"> - July 3, 2025</span></div>
-          </div>
-          <div class="track-step completed">
-            <div>Shipped via DTDC <span class="text-muted small"> - July 4, 2025</span></div>
-          </div>
-          <div class="track-step">
-            <div>In Transit <span class="text-muted small"> - Expected July 7, 2025</span></div>
-          </div>
-          <div class="track-step">
-            <div>Out for Delivery</div>
-          </div>
-          <div class="track-step">
-            <div>Delivered</div>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
 
   <script>
-document.getElementById("dtdcTrackForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const orderNumber = document.getElementById("orderNumber").value.trim();
-  if (!orderNumber) return;
+document.addEventListener("DOMContentLoaded", function() {
+  console.log("Tracking script started");
 
-  try {
-    const res = await fetch(`/dtdc/track?orderNumber=${encodeURIComponent(orderNumber)}`);
-    const data = await res.json();
+  document.getElementById("trackForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-    if (!res.ok) {
-      alert(data.error || "Tracking failed");
-      return;
-    }
+    const trackingId = document.getElementById("trackingId").value.trim();
+    const resultDiv = document.getElementById("trackingResult");
+    resultDiv.innerHTML = `<p class="text-muted">Fetching tracking details...</p>`;
 
-    document.getElementById("trackingResult").style.display = "block";
-    document.getElementById("resOrderId").textContent = orderNumber;
-    document.getElementById("resStatus").textContent = data.status;
-    document.getElementById("resRemarks").textContent = data.remarks || "—";
+    try {
+      const res = await fetch(`/dtdc/track?orderNumber=${encodeURIComponent(trackingId)}`);
+      const data = await res.json();
 
-    const historyList = document.getElementById("resHistory");
-    historyList.innerHTML = "";
-    (data.trackDetails || []).forEach(ev => {
-      const li = document.createElement("li");
-      li.innerHTML = `<i class="fas fa-dot-circle me-2"></i>${ev.strAction} — ${ev.strOrigin || ''} → ${ev.strDestination || ''} (${ev.strActionDate || ''} ${ev.strActionTime || ''})`;
-      historyList.appendChild(li);
+      console.log("Tracking API response:", data);
+
+      console.log("trackingDetails array:", data.trackingDetails);
+      console.log("length:", data.trackingDetails.length);
+
+      if (!res.ok) {
+        throw new Error(data.error || "Tracking failed");
+      }
+
+      if (!data.trackingDetails || data.trackingDetails.length === 0) {
+        resultDiv.innerHTML = `<p class="text-warning">No tracking history found for this order.</p>`;
+        return;
+      }
+
+  //     let stepsHtml = "";
+  //     data.trackingDetails.forEach((step, index) => {
+  //         const formattedDate = formatDate(step.date);
+  // console.log(`Step ${index}:`, step.stage, formattedDate);
+  //       const completed =
+  //         (step.stage && step.stage.toLowerCase() === "delivered") ||
+  //         index < data.trackingDetails.length - 1;
+
+  //       stepsHtml += `
+  //         <div class="track-step ${completed ? "completed" : ""}">
+  //           <div>${step.stage} <span class="text-muted small"> - ${formattedDate}</span></div>
+  //         </div>
+  //       `;
+  //     });
+
+  //     resultDiv.innerHTML = `
+  //       <div class="mb-3">
+  //         <h6>Courier: <span class="fw-semibold">DTDC</span></h6>
+  //         <p><i class="fas fa-barcode me-2"></i><strong>Tracking ID:</strong> ${trackingId}</p>
+  //         <p><i class="fas fa-truck-fast me-2"></i><strong>Current Status:</strong> ${data.status}</p>
+  //       </div>
+  //       <div class="mt-4">${stepsHtml}</div>
+  //     `;
+  let stepsHtml = "";
+const stageMap = {
+  "Pickup Awaited": "Picked up",
+  "Softdata Upload": "Picked up",
+  "Pickup Scheduled": "Picked up",
+  "Pickup Reassigned": "Picked up",
+  "Not Picked": "Picked up",
+  "In Transit": "In Transit",
+  "Out for Delivery": "Out for Delivery",
+  "Delivered": "Delivered"
+};
+
+const simplifiedSteps = [];
+
+data.trackingDetails.forEach(step => {
+  const simpleStage = stageMap[step.stage] || null;
+  if (simpleStage && !simplifiedSteps.some(s => s.stage === simpleStage)) {
+    simplifiedSteps.push({
+      stage: simpleStage,
+      date: step.date
     });
+  }
+});
 
-  } catch (err) {
-    console.error(err);
-    alert("Error fetching tracking info");
+simplifiedSteps.forEach((step, index) => {
+  const formattedDate = formatDate(step.date);
+  const completed = (step.stage.toLowerCase() === "delivered") || index < simplifiedSteps.length - 1;
+
+  stepsHtml += `
+    <div class="track-step ${completed ? "completed" : ""}">
+      <div>${step.stage} <span class="text-muted small"> - ${formattedDate}</span></div>
+    </div>
+  `;
+});
+
+resultDiv.innerHTML = `
+  <div class="mb-3">
+    <h6>Courier: <span class="fw-semibold">DTDC</span></h6>
+    <p><i class="fas fa-barcode me-2"></i><strong>Tracking ID:</strong> ${trackingId}</p>
+    <p><i class="fas fa-truck-fast me-2"></i><strong>Current Status:</strong> ${data.status}</p>
+  </div>
+  <div class="mt-4">${stepsHtml}</div>
+`;
+
+
+    } catch (err) {
+      console.error("Tracking error:", err);
+      resultDiv.innerHTML = `<p class="text-danger">❌ ${err.message}</p>`;
+    }
+  });
+
+  function formatDate(dateStr) {
+    if (!dateStr || dateStr.length !== 8) return dateStr;
+    return `${dateStr.slice(0, 2)}-${dateStr.slice(2, 4)}-${dateStr.slice(4)}`;
   }
 });
 </script>

@@ -47,16 +47,22 @@
                                                                       <a href="/admin/user-details?id=<%= order.userId._id %>"><%= order.userId.userId %></a>
                                                                  </td>
                                                                   <td>
-          <ul class="list-unstyled mb-0">
+<ul class="list-unstyled mb-0">
   <% order.items.forEach(item => { %>
     <li>
-      <%= item.productId && item.productId.name ? item.productId.name : 'Product' %>
+      <% if (item.productId) { %>
+        <a href="/admin/product-details?id=<%= item.productId._id %>">
+          <%= item.productId.productId || 'Product' %>
+        </a>
+      <% } else { %>
+        <span>Product</span>
+      <% } %>
       x <%= item.quantity %> - ₹<%= item.subtotal ? item.subtotal.toFixed(2) : '0.00' %>
     </li>
   <% }) %>
 </ul>
+</td>
 
-        </td>
         <td>₹<%= order.total.toFixed(2) %></td>
                                                                  <td><%= order.paymentStatus %></td>
                                                                  <td><%= order.status %></td>

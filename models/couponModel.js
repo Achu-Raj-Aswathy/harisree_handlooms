@@ -16,6 +16,10 @@ const couponSchema = mongoose.Schema(
       ref: "Products",
       required: true,
     },
+    limit: {
+      type: String,
+      enum: ["one-time", "multiple"],
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive", "Future Plan"],

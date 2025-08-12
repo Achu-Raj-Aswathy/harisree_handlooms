@@ -33,7 +33,7 @@
           <div class="delivery-tracker">
             <% const steps = [
               { name: 'Confirmed', icon: 'bi-check-circle', color: 'primary' },
-              { name: 'Packed', icon: 'bi-box-seam', color: 'info' },
+              { name: 'Picked', icon: 'bi-box-seam', color: 'info' },
               { name: 'Shipped', icon: 'bi-truck', color: 'warning' },
               { name: 'Delivered', icon: 'bi-house-check', color: 'success' }
             ]; %>
@@ -92,98 +92,76 @@
                                                   </div>
                                              </div>
 
-         <!-- Order Timeline -->
+                                             <div class="row g-4 mb-4">
+                                               <div class="col-lg-7">
+                                                <!-- Order Timeline -->
         <div class="mb-5">
-          <h5 class="fw-bold mb-3 text-secondary">Order Timeline</h5>
-          <div class="timeline-wrapper">
-            <!-- Packing Started -->
-            <div class="timeline-card">
-              <div class="timeline-content">
-                <div class="timeline-header">
-                  <h6 class="fw-semibold mb-1">The packing has been started</h6>
-                  <small class="text-muted">April 23, 2024, 09:40 am</small>
-                </div>
-                <p class="text-muted small mb-2">Confirmed by Gaston Lapierre</p>
-              </div>
-              <div class="timeline-badge bg-success">
-                <i class="bi bi-box-seam"></i>
-              </div>
-            </div>
+  <h5 class="fw-bold mb-3 text-secondary">Order Timeline</h5>
+  <div class="timeline-wrapper">
 
-            <!-- Invoice Sent -->
-            <div class="timeline-card">
-              <div class="timeline-content">
-                <div class="timeline-header">
-                  <h6 class="fw-semibold mb-1">The invoice has been sent to the customer</h6>
-                  <small class="text-muted">April 23, 2024, 09:40 am</small>
-                </div>
-                <p class="text-muted small mb-2">Invoice email sent to hello@dundermufflin.com</p>
-                <button class="btn btn-sm btn-outline-primary">
-                  <i class="bi bi-send me-1"></i>Resend Invoice
-                </button>
-              </div>
-              <div class="timeline-badge bg-info">
-                <i class="bi bi-envelope-paper"></i>
-              </div>
+    <% if (trackingDetails && trackingDetails.length > 0) { %>
+      <% trackingDetails.forEach((event, index) => { %>
+        <% 
+          // Determine if this step is the latest (last)
+          const isLast = index === trackingDetails.length - 1;
+          // Format date (e.g. "YYYYMMDDHHmmss" or custom format you get)
+          let formattedDate = event.date;
+          if (formattedDate && formattedDate.length >= 8) {
+            formattedDate = formattedDate.slice(0,2) + "-" + formattedDate.slice(2,4) + "-" + formattedDate.slice(4,8);
+          }
+        %>
+        <div class="timeline-card <%= isLast ? 'active' : '' %>">
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <h6 class="fw-semibold mb-1"><%= event.stage %></h6>
+              <small class="text-muted"><%= formattedDate %></small>
             </div>
+          </div>
+          <div class="timeline-badge <%= isLast ? 'bg-success' : 'bg-primary' %>">
+            <i class="bi bi-clock-history"></i>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-muted">No tracking details available.</p>
+    <% } %>
 
-            <!-- Invoice Created -->
-            <div class="timeline-card">
-              <div class="timeline-content">
-                <div class="timeline-header">
-                  <h6 class="fw-semibold mb-1">The invoice has been created</h6>
-                  <small class="text-muted">April 23, 2024, 09:40 am</small>
-                </div>
-                <p class="text-muted small mb-2">Invoice created by Gaston Lapierre</p>
-                <button class="btn btn-sm btn-warning">
-                  <i class="bi bi-download me-1"></i>Download Invoice
-                </button>
-              </div>
-              <div class="timeline-badge bg-primary">
-                <i class="bi bi-file-earmark-text"></i>
-              </div>
-            </div>
+  </div>
+</div>
 
-            <!-- Payment Done -->
-            <div class="timeline-card">
-              <div class="timeline-content">
-                <div class="timeline-header">
-                  <h6 class="fw-semibold mb-1">Order Payment</h6>
-                  <small class="text-muted">April 23, 2024, 09:40 am</small>
-                </div>
-                <p class="text-muted small mb-2">Using MasterCard</p>
-                <span class="badge bg-success bg-opacity-10 text-success">Paid</span>
-              </div>
-              <div class="timeline-badge bg-success">
-                <i class="bi bi-credit-card"></i>
-              </div>
-            </div>
+                                               </div>
+        <!-- Customer & Order Summary -->
 
-            <!-- Order Confirmed -->
-            <div class="timeline-card">
-              <div class="timeline-content">
-                <div class="timeline-header">
-                  <h6 class="fw-semibold mb-1">Order Confirmed</h6>
-                  <small class="text-muted">April 23, 2024, 09:40 am</small>
+                                               <div class="col-lg-5 d-flex flex-column gap-4">
+<!-- order summary -->
+                                                 <div class="col-lg-12">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <h5 class="fw-bold mb-3 text-secondary">Order Summary</h5>
+                <div class="order-summary">
+                  <div class="summary-item">
+                    <span>Subtotal</span>
+                    <span>₹<%= order.subtotal?.toFixed(2) %></span>
+                  </div>
+                  <div class="summary-item">
+                    <span>Discount</span>
+                    <span class="text-success">-₹<%= order.discount %></span>
+                  </div>
+                  <div class="summary-item">
+                    <span>Shipping Charge</span>
+                    <span>₹<%= order.shippingCharge %></span>
+                  </div>
+                  <div class="summary-item total">
+                    <span>Total</span>
+                    <span>₹<%= order.total %></span>
+                  </div>
                 </div>
-                <p class="text-muted small mb-2">4 Orders confirmed by Gaston Lapierre</p>
-                <div class="d-flex flex-wrap gap-1">
-                  <span class="badge bg-light border text-dark">Order 1</span>
-                  <span class="badge bg-light border text-dark">Order 2</span>
-                  <span class="badge bg-light border text-dark">Order 3</span>
-                  <span class="badge bg-light border text-dark">Order 4</span>
-                </div>
-              </div>
-              <div class="timeline-badge bg-primary">
-                <i class="bi bi-check-circle"></i>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Customer & Order Summary -->
-        <div class="row g-4 mb-4">
-          <div class="col-lg-6">
+          <!-- customer summary -->
+                                                <div class="col-lg-12">
             <div class="card border-0 shadow-sm h-100">
               <div class="card-body">
                 <h5 class="fw-bold mb-3 text-secondary">Customer Details</h5>
@@ -227,32 +205,11 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-              <div class="card-body">
-                <h5 class="fw-bold mb-3 text-secondary">Order Summary</h5>
-                <div class="order-summary">
-                  <div class="summary-item">
-                    <span>Subtotal</span>
-                    <span>₹<%= order.subtotal?.toFixed(2) %></span>
-                  </div>
-                  <div class="summary-item">
-                    <span>Discount</span>
-                    <span class="text-success">-₹<%= order.discount %></span>
-                  </div>
-                  <div class="summary-item">
-                    <span>Shipping Charge</span>
-                    <span>₹<%= order.shippingCharge %></span>
-                  </div>
-                  <div class="summary-item total">
-                    <span>Total</span>
-                    <span>₹<%= order.total %></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+         
+                                               </div>
+                                             </div>
+         
+        
 
         <!-- Requests -->
         <% if (order.returnRequest || order.refundRequest) { %>

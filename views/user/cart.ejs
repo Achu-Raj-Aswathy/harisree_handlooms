@@ -32,7 +32,8 @@
                                              if (!product) return;
                                               const inStock = product.isAvailable;
                                             %>
-                                            <tr data-id="<%= product._id %>" class="cart-row">
+                                            <!-- <tr data-id="<%= product._id %>" class="cart-row"> -->
+                                              <tr data-id="<%= product._id %>" data-instock="<%= inStock ? 'true' : 'false' %>" class="cart-row">
                                                 <td class="product-remove">
                                                     <a href="#" class="remove-from-cart" data-id="<%= product._id %>" data-instock="<%= inStock ? 'true' : 'false' %>">
                                                         <i class="fal fa-times"></i>

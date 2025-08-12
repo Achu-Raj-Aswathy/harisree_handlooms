@@ -164,8 +164,6 @@
                        <!-- end col -->
                     </div> <!-- end row -->
 
-                   
-
                     <div class="row">
                          <div class="col">
                               <div class="card">
@@ -205,7 +203,7 @@
                                                             <% if(orders.length > 0) { %>
                                                             <% orders.forEach(order => { %>
                                                             <tr>
-                                                                 <td><%= order.orderId %></td>
+                                                                 <td><a href="/admin/order-details?id=<%= order._id %>"><%= order.orderId %></a></td>
                                                                  <td><%= order.createdAt.toLocaleDateString('en-IN') %></td>
                                                                  <td>
                                                                       <a href="/admin/user-details?id=<%= order.userId._id %>"><%= order.userId.userId %></a>
@@ -215,7 +213,13 @@
           <ul class="list-unstyled mb-0">
   <% order.items.forEach(item => { %>
     <li>
-      <%= item.productId ? item.productId.name : 'Product' %>
+      <% if (item.productId) { %>
+        <a href="/admin/product-details?id=<%= item.productId._id %>">
+          <%= item.productId.productId || 'Product' %>
+        </a>
+      <% } else { %>
+        <span>Product</span>
+      <% } %>
       x <%= item.quantity %> - ₹<%= item.subtotal ? item.subtotal.toFixed(2) : '0.00' %>
     </li>
   <% }) %>

@@ -68,6 +68,19 @@ const userSchema = mongoose.Schema(
         }
       },
     ], 
+    couponsUsed: [
+      {
+        couponId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref:"Coupons",
+          required: false,
+        },
+        number: {
+          type: Number,
+          required: false,
+        }
+      }
+    ]
   },
   { timestamps: true }
 );

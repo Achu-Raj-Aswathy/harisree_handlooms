@@ -4,127 +4,218 @@
 <meta charset="utf-8">
 <title>Invoice - <%= order.orderId %></title>
 <style>
-    body { font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333; }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header h1 { margin: 0; }
-    .details, .items, .summary { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    .details td { padding: 5px; vertical-align: top; }
-    .items th, .items td { border: 1px solid #ccc; padding: 8px; }
-    .items th { background: #f2f2f2; }
-    .summary td { padding: 5px; }
-    .right { text-align: right; }
-    
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        margin: 0;
+        padding: 20px;
+        background: #fff;
+        color: #333;
+    }
+    .invoice-box {
+        max-width: 900px;
+        margin: auto;
+        padding: 25px;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    td {
+        padding: 6px;
+        vertical-align: top;
+    }
+    .header-table td {
+        border: none;
+    }
+    .header-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #222;
+    }
+    .small-text {
+        font-size: 12px;
+        color: #555;
+    }
+    .details-table, .summary-table, .items-table {
+        margin-top: 15px;
+    }
+    .details-table td {
+        border: 1px solid #ddd;
+        font-size: 13px;
+    }
+    .items-table th, .items-table td {
+        border: 1px solid #ddd;
+        font-size: 13px;
+        text-align: center;
+    }
+    .items-table th {
+        background: #f5f5f5;
+        font-weight: bold;
+    }
+    .items-table tr:nth-child(even) {
+        background: #fafafa;
+    }
+    .right {
+        text-align: right;
+    }
+    .summary-table td {
+        border: 1px solid #ddd;
+        font-size: 13px;
+    }
+    .summary-table tr td:first-child {
+        font-weight: bold;
+        text-align: right;
+        background: #f9f9f9;
+    }
+    .summary-table tr:last-child td {
+        font-size: 15px;
+        font-weight: bold;
+        background: #eee;
+    }
+    .footer {
+        text-align: center;
+        font-size: 12px;
+        margin-top: 20px;
+        color: #555;
+    }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-    <h1>HARISREE HANDLOOMS</h1>
-    <p>Kallanchira Peruvemba Palakkad Kerala 678531</p>
-    <p>GSTIN: 32AQGPG1495F1Z4</p>
-    <p>9188019689 - 9747969689</p>
-    <p>harisreehandloom@gmail.com</p>
-</div>
+<div class="invoice-box">
 
-<!-- Invoice & Customer Details -->
-<table class="details">
-    <tr>
-        <td>
-            <strong>Invoice No:</strong> <%= order._id %><br>
-            <strong>Order ID:</strong> <%= order.orderId %><br>
-            <strong>Date:</strong> <%= new Date(order.createdAt).toLocaleDateString("en-IN") %><br>
-            <strong>Payment Method:</strong> <%= order.paymentMethod %>
-        </td>
-        <td>
-            <strong>Bill To:</strong><br>
-            <%= order.address.name %><br>
-            <%= order.address.line %><br>
-            <%= order.address.city %>, <%= order.address.state %> <br>
-            <%= order.address.country %> - <%= order.address.pincode %><br>
-            <%= order.address.phone %><br>
-            <%= order.address.email %>
-        </td>
-    </tr>
-</table>
-
-<!-- Items -->
-<table class="items">
-    <thead>
+    <!-- HEADER -->
+    <table class="header-table">
         <tr>
-            <th>#</th>
-            <th>Product</th>
-            <th>HSN</th>
-            <th>Qty</th>
-            <th>Unit Price (₹)</th>
-            <th>Subtotal (₹)</th>
+            <td>
+                <div class="header-title">HARISREE HANDLOOMS</div>
+                <div class="small-text">
+                    Kallanchira Peruvemba Palakkad Kerala 678531<br>
+                    GSTIN: 32AQGPG1495F1Z4<br>
+                    Ph: 9188019689 / 9747969689<br>
+                    Email: harisreehandloom@gmail.com
+                </div>
+            </td>
+            <td class="right">
+                <table>
+                    <tr><td><strong>Invoice No:</strong></td><td><%= order._id %></td></tr>
+                    <tr><td><strong>Order ID:</strong></td><td><%= order.orderId %></td></tr>
+                    <tr><td><strong>Date:</strong></td><td><%= new Date(order.createdAt).toLocaleDateString("en-IN") %></td></tr>
+                    <tr><td><strong>Payment Method:</strong></td><td><%= order.paymentMethod %></td></tr>
+                </table>
+            </td>
         </tr>
-    </thead>
-    <tbody>
-        <% order.items.forEach((item, index) => { %>
+    </table>
+
+    <!-- CUSTOMER DETAILS -->
+    <table class="details-table">
+        <tr>
+            <td width="50%">
+                <strong>Bill To:</strong><br>
+                <%= order.address.name %><br>
+                <%= order.address.line %><br>
+                <%= order.address.city %>, <%= order.address.state %><br>
+                <%= order.address.country %> - <%= order.address.pincode %><br>
+                <%= order.address.phone %><br>
+                <%= order.address.email %>
+            </td>
+            <td width="50%">
+                <strong>Ship To:</strong><br>
+                <%= order.address.name %><br>
+                <%= order.address.line %><br>
+                <%= order.address.city %>, <%= order.address.state %><br>
+                <%= order.address.country %> - <%= order.address.pincode %><br>
+                <%= order.address.phone %>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ITEMS -->
+    <table class="items-table">
+        <thead>
             <tr>
-                <td><%= index + 1 %></td>
-                <td><%= item.productId.name %></td>
-                <td><%= item.productId.hsnCode %></td>
-                <td class="right"><%= item.quantity %></td>
-                <td class="right"><%= item.price.toFixed(2) %></td>
-                <td class="right"><%= item.subtotal.toFixed(2) %></td>
+                <th>#</th>
+                <th>Product</th>
+                <th>HSN</th>
+                <th>Qty</th>
+                <th>Unit Price (₹)</th>
+                <th>Subtotal (₹)</th>
             </tr>
-        <% }) %>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <% order.items.forEach((item, index) => { %>
+                <tr>
+                    <td><%= index + 1 %></td>
+                    <td style="text-align:left;"><%= item.productId.name %></td>
+                    <td><%= item.productId.hsnCode %></td>
+                    <td><%= item.quantity %></td>
+                    <td class="right"><%= item.price.toFixed(2) %></td>
+                    <td class="right"><%= item.subtotal.toFixed(2) %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
 
-<!-- Summary -->
-<%
-    const gstRate = 0.05;
-    const gstAmount = order.subtotal * gstRate;
+    <!-- SUMMARY -->
+    <%
+        const gstRate = 0.05;
+        const gstAmount = order.subtotal * gstRate;
 
-    let cgst = 0, sgst = 0, igst = 0;
-    if (order.address.state.toLowerCase() === 'kerala') {
-        cgst = order.subtotal * 0.025;
-        sgst = order.subtotal * 0.025;
-    } else {
-        igst = gstAmount;
-    }
-%>
+        let cgst = 0, sgst = 0, igst = 0;
+        if (order.address.state.toLowerCase() === 'kerala') {
+            cgst = order.subtotal * 0.025;
+            sgst = order.subtotal * 0.025;
+        } else {
+            igst = gstAmount;
+        }
+    %>
 
-<table class="summary">
-    <tr>
-        <td class="right"><strong>Subtotal:</strong></td>
-        <td class="right">₹<%= order.subtotal.toFixed(2) %></td>
-    </tr>
-    <tr>
-        <td class="right"><strong>Shipping:</strong></td>
-        <td class="right">₹<%= order.shippingCharge.toFixed(2) %></td>
-    </tr>
-    <% if (cgst > 0 || sgst > 0) { %>
-    <tr>
-        <td class="right"><strong>CGST (2%):</strong></td>
-        <td class="right">₹<%= cgst.toFixed(2) %></td>
-    </tr>
-    <tr>
-        <td class="right"><strong>SGST (2%):</strong></td>
-        <td class="right">₹<%= sgst.toFixed(2) %></td>
-    </tr>
-    <% } else { %>
-    <tr>
-        <td class="right"><strong>IGST (5%):</strong></td>
-        <td class="right">₹<%= igst.toFixed(2) %></td>
-    </tr>
-    <% } %>
-    <tr>
-        <td class="right"><strong>Discount:</strong></td>
-        <td class="right">-₹<%= order.discount.toFixed(2) %></td>
-    </tr>
-    <tr>
-        <td class="right"><strong>Total:</strong></td>
-        <td class="right"><strong>₹<%= order.total.toFixed(2) %></strong></td>
-    </tr>
-</table>
+    <table class="summary-table" style="margin-top:20px; width:40%; float:right;">
+        <tr>
+            <td>Subtotal:</td>
+            <td class="right">₹<%= order.subtotal.toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Shipping:</td>
+            <td class="right">₹<%= order.shippingCharge.toFixed(2) %></td>
+        </tr>
+        <% if (cgst > 0 || sgst > 0) { %>
+        <tr>
+            <td>CGST (2%):</td>
+            <td class="right">₹<%= cgst.toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>SGST (2%):</td>
+            <td class="right">₹<%= sgst.toFixed(2) %></td>
+        </tr>
+        <% } else { %>
+        <tr>
+            <td>IGST (5%):</td>
+            <td class="right">₹<%= igst.toFixed(2) %></td>
+        </tr>
+        <% } %>
+        <tr>
+            <td>Discount:</td>
+            <td class="right">-₹<%= order.discount.toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Total:</td>
+            <td class="right">₹<%= order.total.toFixed(2) %></td>
+        </tr>
+    </table>
 
-<p style="text-align:center; font-size: 12px; margin-top: 20px;">
-    Thank you for supporting Indian handloom artisans!
-</p>
+    <div style="clear:both;"></div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Thank you for supporting Indian handloom artisans! <br>
+        <strong>HARISREE HANDLOOMS</strong>
+    </div>
+
+</div>
 
 </body>
 </html>

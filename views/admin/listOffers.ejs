@@ -124,10 +124,8 @@
                 timer: 1500
               });
 
-              // Optionally remove row/card
-              this.closest('.offer-row')?.remove();
-              // Or refresh page
-              // location.reload();
+              // refresh page
+              location.reload();
             } else {
               Swal.fire('Failed!', 'Failed to delete offer.', 'error');
             }

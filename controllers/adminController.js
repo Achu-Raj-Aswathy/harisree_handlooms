@@ -319,11 +319,58 @@ const viewListOrder = async (req, res) => {
   }
 };
 
+// const viewOrderDetails = async (req, res) => {
+//   const orderId = req.query.id;
+//   try {
+//     const order = await Orders.findById(orderId).populate("userId").populate("items.productId");
+//     res.render("admin/orderDetails", {order});
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ success: false, message: "Internal Server error" });
+//   }
+// };
 const viewOrderDetails = async (req, res) => {
   const orderId = req.query.id;
   try {
     const order = await Orders.findById(orderId).populate("userId").populate("items.productId");
-    res.render("admin/orderDetails", {order});
+
+    if (!order) {
+      return res.status(404).send("Order not found");
+    }
+
+    // Prepare DTDC tracking API params
+    let trkType = order.dtdcTrackingNumber ? "cnno" : "reference";
+    let strcnno = order.dtdcTrackingNumber || order.orderId;
+
+    let trackingDetails = [];
+
+    try {
+      const response = await axios.post(
+        "https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails",
+        { trkType, strcnno, addtnlDtl: "Y" },
+        {
+          headers: {
+            "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+
+      const trackInfo = response.data;
+
+      if (trackInfo.trackDetails && trackInfo.trackDetails.length > 0) {
+        trackingDetails = trackInfo.trackDetails.map(event => ({
+          stage: event.strAction || "Unknown",
+          date: event.strActionDate || ""
+        }));
+      }
+    } catch (err) {
+      console.error("DTDC tracking fetch error:", err.message || err);
+      // Continue without tracking info if failed
+    }
+
+    // Render page with order AND tracking details
+    res.render("admin/orderDetails", { order, trackingDetails });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal Server error" });
@@ -358,14 +405,22 @@ const viewUserDetails = async (req, res) => {
   const userId = req.query.id;
 
   try {
-    const user = await Users.findById(userId);
+    const user = await Users.findById(userId)
+    .populate("cart.productId")
+    .populate("wishlist.productId");
+
 
     if (!user) {
       return res.status(404).send("User not found");
     }
 
+    const cartItems = user.cart;      
+    const wishlistItems = user.wishlist;
+    console.log(cartItems, wishlistItems);
     // Find all orders placed by this user
     const orders = await Orders.find({ userId: user._id });
+
+    // Find the products in cart and wishlist by this user
 
     // Calculate total price
     const totalOrderPrice = orders.reduce((sum, order) => sum + order.total, 0);
@@ -373,6 +428,8 @@ const viewUserDetails = async (req, res) => {
     res.render("admin/customerDetails", {
       user,
       totalOrderPrice,
+      cartItems,
+      wishlistItems,
       orders, // optional: if you want to show individual order details
     });
   } catch (error) {
@@ -500,7 +557,7 @@ const viewReturn = async (req, res) => {
     const requestsWithOrders = returnRequests.map(req => ({
       ...req.toObject(),
       orderDetails: orderMap[req.orderId] || null
-    }));
+    })); // [{ productId: { full product doc }, quantity: X }]
 
     // 6. Render
     res.render("admin/returnView", { returnRequests: requestsWithOrders });
@@ -853,6 +910,7 @@ const addCoupon = async (req, res) => {
       startDate,
       endDate,
       status,
+      limit
     } = req.body;
     const [startDay, startMonth, startYear] = startDate.split("-");
     const [endDay, endMonth, endYear] = endDate.split("-");
@@ -867,6 +925,7 @@ const addCoupon = async (req, res) => {
       startDate: parsedStartDate,
       endDate: parsedEndDate,
       status,
+      limit
     });
 
     await coupon.save();
@@ -921,14 +980,15 @@ const editCoupon = async (req, res) => {
       startDate,
       endDate,
       status,
+      limit
     } = req.body;
     console.log(req.body);
+
     const [startDay, startMonth, startYear] = startDate.split("-");
     const [endDay, endMonth, endYear] = endDate.split("-");
 
     const parsedStartDate = new Date(`${startYear}-${startMonth}-${startDay}`);
-    const parsedEndDate = new Date(`${endYear}
-      -${endMonth}-${endDay}`);
+    const parsedEndDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
     await Coupons.findByIdAndUpdate(couponId, {
       code,
@@ -938,6 +998,7 @@ const editCoupon = async (req, res) => {
       startDate: parsedStartDate,
       endDate: parsedEndDate,
       status,
+      limit
     });
 
     return res.json({ success: true }); // 👈 go back to the list page
@@ -1598,15 +1659,110 @@ end.setHours(23, 59, 59, 999); // end of the day
   }
 };
 
+// const exportInventoryPDF = async (req, res) => {
+//   const { startDate, endDate } = req.body;
+
+//   try {
+//         const start = new Date(startDate);
+// start.setHours(0, 0, 0, 0); // start of the day
+
+// const end = new Date(endDate);
+// end.setHours(23, 59, 59, 999); // end of the day
+
+//     const products = await Products.find({
+//       createdAt: { $gte: start, $lte: end },
+//     }).sort({ createdAt: -1 });
+
+//     if (products.length === 0) {
+//       return res
+//         .status(404)
+//         .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
+//     }
+
+//     const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 40 });
+
+//     res.setHeader("Content-Type", "application/pdf");
+//     res.setHeader("Content-Disposition", `attachment; filename="inventory_${startDate}_${endDate}.pdf"`);
+
+//     doc.pipe(res);
+
+//     doc.fontSize(18).text("Inventory Report", { align: "center" }).moveDown(1.5);
+
+//     // Table headers
+//     const headers = [
+//       "Product ID", "Name", "Price", "Discount", "Stock",
+//       "Shipped", "Available", "Revenue"
+//     ];
+//     const tableTop = 100;
+//     const colSpacing = 90;
+
+//     doc.fontSize(12).font("Helvetica-Bold");
+//     let x = 40;
+//     headers.forEach(header => {
+//       doc.text(header, x, tableTop);
+//       x += colSpacing;
+//     });
+
+//     // Table rows
+//     let y = tableTop + 25;
+//     doc.font("Helvetica");
+
+//     products.forEach(product => {
+//       const shipped = product.stock - product.availableStock;
+//       const revenue = shipped * product.discount;
+
+//       const row = [
+//         product.productId || "N/A",
+//         product.name || "N/A",
+//         product.price || "N/A",
+//         product.discount || "N/A",
+//         product.stock || 0,
+//         shipped,
+//         product.availableStock || 0,
+//         revenue
+//       ];
+
+//       let x = 40;
+//       let rowHeight = 0;
+
+//   row.forEach((cell, idx) => {
+//     const textHeight = doc.heightOfString(cell.toString(), {
+//       width: colSpacing - 5,
+//     });
+//     rowHeight = Math.max(rowHeight, textHeight);
+//   });
+
+//   row.forEach((cell, idx) => {
+//     doc.text(cell.toString(), x, y, {
+//       width: colSpacing - 5,
+//       height: rowHeight,
+//     });
+//     x += colSpacing;
+//   });
+
+//   y += rowHeight + 10;
+
+//   if (y > doc.page.height - 50) {
+//     doc.addPage();
+//     y = 50;
+//   }
+// });
+
+//     doc.end();
+//   } catch (err) {
+//     console.error("PDF Export Error:", err);
+//     res.status(500).send("Error generating PDF");
+//   }
+// };
 const exportInventoryPDF = async (req, res) => {
   const { startDate, endDate } = req.body;
 
   try {
-        const start = new Date(startDate);
-start.setHours(0, 0, 0, 0); // start of the day
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0); // start of the day
 
-const end = new Date(endDate);
-end.setHours(23, 59, 59, 999); // end of the day
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // end of the day
 
     const products = await Products.find({
       createdAt: { $gte: start, $lte: end },
@@ -1618,74 +1774,114 @@ end.setHours(23, 59, 59, 999); // end of the day
         .send(`No results found for the selected date range: ${startDate} to ${endDate}`);
     }
 
-    const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 40 });
+    const doc = new PDFDocument({ size: "A4", layout: "landscape", margin: 40 });
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="inventory_${startDate}_${endDate}.pdf"`);
 
     doc.pipe(res);
 
-    doc.fontSize(18).text("Inventory Report", { align: "center" }).moveDown(1.5);
+    // ===== Header with Logo =====
+    const logoPath = path.join(__dirname, "../public/assets/images/logo-light-harisree.png"); // adjust path if needed
+    doc.image(logoPath, 40, 20, { width: 80 });
+    doc.fontSize(16).font("Helvetica-Bold").text("HARISREE HANDLOOMS", 130, 25);
+    doc.fontSize(10).font("Helvetica").text("Kallanchira Peruvemba Palakkad Kerala 678531", 130, 45);
+    doc.text("GSTIN: 32AQGPG1495F1Z4", 130, 60);
+    doc.text("9188019689 - 9747969689", 130, 75);
+    doc.text("harisreehandloom@gmail.com", 130, 90);
 
-    // Table headers
+    doc.moveDown(4);
+
+    // ===== Table Setup =====
+    const tableTop = 130;
+
+    // Define column widths matching your content (adjust as needed)
+    const colWidths = [80, 150, 70, 70, 70, 70, 90, 90];
     const headers = [
-      "Product ID", "Name", "Price", "Discount", "Stock",
-      "Shipped", "Available", "Revenue"
+      "Product ID",
+      "Name",
+      "Price",
+      "Discount",
+      "Stock",
+      "Shipped",
+      "Available",
+      "Revenue",
     ];
-    const tableTop = 100;
-    const colSpacing = 90;
 
-    doc.fontSize(12).font("Helvetica-Bold");
+    // Header row background
+    doc.rect(40, tableTop, colWidths.reduce((a, b) => a + b, 0), 20).fill("#f0f0f0").stroke();
+    doc.fillColor("black").font("Helvetica-Bold").fontSize(10);
+
     let x = 40;
-    headers.forEach(header => {
-      doc.text(header, x, tableTop);
-      x += colSpacing;
+    headers.forEach((header, i) => {
+      doc.text(header, x + 5, tableTop + 5, {
+        width: colWidths[i] - 10,
+        align: "left",
+      });
+      x += colWidths[i];
     });
 
     // Table rows
-    let y = tableTop + 25;
-    doc.font("Helvetica");
+    let y = tableTop + 20;
+    doc.font("Helvetica").fontSize(9);
 
-    products.forEach(product => {
+    products.forEach((product, idx) => {
+      const isEven = idx % 2 === 0;
+
       const shipped = product.stock - product.availableStock;
-      const revenue = shipped * product.discount;
+      const revenue = shipped * (product.discount || 0);
 
       const row = [
         product.productId || "N/A",
         product.name || "N/A",
-        product.price || "N/A",
-        product.discount || "N/A",
+        product.price != null ? `INR ${product.price.toFixed(2)}` : "N/A",
+        product.discount != null ? `INR ${product.discount.toFixed(2)}` : "N/A",
         product.stock || 0,
         shipped,
         product.availableStock || 0,
-        revenue
+        revenue ? `INR ${revenue.toFixed(2)}` : "INR 0.00",
       ];
 
-      let x = 40;
-      let rowHeight = 0;
+      // Calculate max height for this row (for multiline text)
+      let cellHeights = row.map((cell, i) =>
+        doc.heightOfString(cell.toString(), {
+          width: colWidths[i] - 10,
+          align: "left",
+          lineGap: 2,
+        })
+      );
 
-  row.forEach((cell, idx) => {
-    const textHeight = doc.heightOfString(cell.toString(), {
-      width: colSpacing - 5,
+      let rowHeight = Math.max(...cellHeights) + 10; // add some padding
+
+      // Background color for alternating rows
+      if (isEven) {
+        doc.rect(40, y, colWidths.reduce((a, b) => a + b, 0), rowHeight)
+          .fill("#f9f9f9")
+          .stroke();
+      } else {
+        doc.rect(40, y, colWidths.reduce((a, b) => a + b, 0), rowHeight).stroke();
+      }
+
+      // Print cells
+      x = 40;
+      doc.fillColor("black");
+      row.forEach((cell, i) => {
+        doc.text(cell.toString(), x + 5, y + 5, {
+          width: colWidths[i] - 10,
+          align: "left",
+          lineGap: 2,
+        });
+        x += colWidths[i];
+      });
+
+      y += rowHeight;
+
+      // Page break check
+      if (y >= doc.page.height - 100) {
+        doc.addPage();
+        y = 50;
+      }
     });
-    rowHeight = Math.max(rowHeight, textHeight);
-  });
-
-  row.forEach((cell, idx) => {
-    doc.text(cell.toString(), x, y, {
-      width: colSpacing - 5,
-      height: rowHeight,
-    });
-    x += colSpacing;
-  });
-
-  y += rowHeight + 10;
-
-  if (y > doc.page.height - 50) {
-    doc.addPage();
-    y = 50;
-  }
-});
 
     doc.end();
   } catch (err) {
@@ -1720,52 +1916,134 @@ end.setHours(23, 59, 59, 999); // end of the day
 
     doc.pipe(res);
 
-    // Title
-    doc.fontSize(18).text("Order Report", { align: "center" }).moveDown(1.5);
+       // ===== Header with Logo =====
+    const logoPath = path.join(__dirname, "../public/assets/images/logo-light-harisree.png"); // adjust path
+    doc.image(logoPath, 40, 20, { width: 80 });
+    doc.fontSize(16).font("Helvetica-Bold").text("HARISREE HANDLOOMS", 130, 25);
+    doc.fontSize(10).font("Helvetica").text("Kallanchira Peruvemba Palakkad Kerala 678531", 130, 45);
+    doc.text("GSTIN: 32AQGPG1495F1Z4", 130, 60);
+    doc.text("9188019689 - 9747969689", 130, 75);
+    doc.text("harisreehandloom@gmail.com", 130, 90);
 
-    // Table headers
-    const tableTop = 100;
-    const colWidths = [80, 90, 90, 280, 60, 80, 90]; // adjust as needed
+    doc.moveDown(4);
+
+    // ===== Table Setup =====
+    const tableTop = 130;
+    const colWidths = [80, 90, 90, 250, 90, 80, 90];
     const headers = ["Order ID", "Created", "Customer ID", "Items", "Total", "Payment", "Status"];
-    let x = doc.page.margins.left;
 
-    doc.font("Helvetica-Bold").fontSize(10);
+    // Header row background
+    doc.rect(40, tableTop, colWidths.reduce((a, b) => a + b, 0), 20).fill("#f0f0f0").stroke();
+    doc.fillColor("black").font("Helvetica-Bold").fontSize(10);
+
+    let x = 40;
     headers.forEach((header, i) => {
-      doc.text(header, x, tableTop, { width: colWidths[i], align: "left" });
+      doc.text(header, x + 5, tableTop + 5, { width: colWidths[i] - 10, align: "left" });
       x += colWidths[i];
     });
 
-    let y = tableTop + 25;
-    doc.font("Helvetica").fontSize(9);
+    // Table rows
+    let y = tableTop + 20;
+    let grandTotal = 0;
+    let totalWithoutGST = 0;
+    let totalCGST = 0;
+    let totalSGST = 0;
+    let totalIGST = 0;
 
-    orders.forEach(order => {
-      const row = [
-        order.orderId || "N/A",
-        order.createdAt.toLocaleDateString("en-IN"),
-        order.userId?.userId || "N/A",
-        order.items.map(item => `${item.productId?.name || 'Product'} x${item.quantity} - INR${item.subtotal.toFixed(2)}`).join(", "),
-        `INR${order.total.toFixed(2)}`,
-        order.paymentStatus || "N/A",
-        order.status || "N/A"
-      ];
+    orders.forEach((order, idx) => {
+  const isEven = idx % 2 === 0;
 
-      let rowX = doc.page.margins.left;
-      row.forEach((cell, i) => {
-        doc.text(cell.toString(), rowX, y, {
-          width: colWidths[i],
-          align: "left",
-          continued: false,
-          lineBreak: true
-        });
-        rowX += colWidths[i];
-      });
+  const itemsList = order.items
+    .map(
+      (item) =>
+        `${item.productId?.productId || "Product"} x${item.quantity} - INR ${item.subtotal.toFixed(2)}`
+    )
+    .join("\n");
 
-      y += 30;
-      if (y >= doc.page.height - 50) {
-        doc.addPage();
-        y = 50;
+  const row = [
+    order.orderId || "N/A",
+    order.createdAt.toLocaleDateString("en-IN"),
+    order.userId?.userId || "N/A",
+    itemsList,
+    `INR ${order.total.toFixed(2)}`,
+    order.paymentStatus || "N/A",
+    order.status || "N/A",
+  ];
+
+  let shippingCharge = order.shippingCharge || 0;
+      let baseTotal = order.total - shippingCharge;
+      if (shippingCharge === 0) {
+        // Kerala
+        let cgst = (baseTotal * 2) / 100;
+        let sgst = (baseTotal * 2) / 100;
+        totalCGST += cgst;
+        totalSGST += sgst;
+        totalWithoutGST += baseTotal;
+        grandTotal += order.total;
+      } else {
+        // Outside Kerala
+        let igst = (baseTotal * 5) / 100;
+        totalIGST += igst;
+        totalWithoutGST += baseTotal;
+        grandTotal += order.total;
       }
+
+  // Measure heights for each cell
+  let cellHeights = row.map((cell, i) =>
+    doc.heightOfString(cell.toString(), {
+      width: colWidths[i] - 10,
+      align: "left",
+      lineGap: 2,
+    })
+  );
+
+  // Pick the tallest cell as row height
+  let rowHeight = Math.max(...cellHeights) + 10; // +10 for padding
+
+  // Background color for alternating rows
+  if (isEven) {
+    doc.rect(40, y, colWidths.reduce((a, b) => a + b, 0), rowHeight)
+      .fill("#f9f9f9")
+      .stroke();
+  } else {
+    doc.rect(40, y, colWidths.reduce((a, b) => a + b, 0), rowHeight).stroke();
+  }
+
+  // Print cell content
+  let x = 40;
+  doc.fillColor("black").font("Helvetica").fontSize(9);
+  row.forEach((cell, i) => {
+    doc.text(cell.toString(), x + 5, y + 5, {
+      width: colWidths[i] - 10,
+      align: "left",
+      lineGap: 2,
     });
+    x += colWidths[i];
+  });
+
+  y += rowHeight; // move Y based on content height
+
+  // Page break check
+  if (y >= doc.page.height - 100) {
+    doc.addPage();
+    y = 50;
+  }
+});
+
+    // ===== Summary Section =====
+    y += 20;
+    doc.font("Helvetica-Bold").fontSize(11).text("Summary", 40, y);
+    y += 15;
+    doc.font("Helvetica").fontSize(10);
+    doc.text(`Total Without GST: INR ${totalWithoutGST.toFixed(2)}`, 40, y);
+    y += 15;
+    doc.text(`CGST (2%): INR ${totalCGST.toFixed(2)}`, 40, y);
+    y += 15;
+    doc.text(`SGST (2%): INR ${totalSGST.toFixed(2)}`, 40, y);
+    y += 15;
+    doc.text(`IGST (5%): INR ${totalIGST.toFixed(2)}`, 40, y);
+    y += 15;
+    doc.text(`Grand Total: INR ${grandTotal.toFixed(2)}`, 40, y);
 
     doc.end();
   } catch (err) {
