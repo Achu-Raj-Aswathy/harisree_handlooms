@@ -1458,6 +1458,31 @@ const updateAccountDetails = async (req, res) => {
   }
 };
 
+const editReview = async (req, res) => {
+  const { reviewId } = req.params;
+  const { rating, comment } = req.body;
+  console.log(reviewId, "reviewID");
+  console.log(rating, comment)
+  
+  const review = await Reviews.findOne({ _id: reviewId, userId: req.session.userId });
+  if (!review) return res.status(403).send("Unauthorized");
+
+  review.rating = rating;
+  review.review = comment;
+  await review.save();
+
+  res.redirect(`/product?id=${req.params.productId}`);
+};
+
+const deleteReview = async (req, res) => {
+  const { reviewId } = req.params;
+
+  const deleted = await Reviews.findOneAndDelete({ _id: reviewId, userId: req.session.userId });
+  if (!deleted) return res.status(403).send("Unauthorized");
+
+  res.redirect(`/product?id=${req.params.productId}`);
+};
+
 module.exports = {
   viewHomepage,
   viewSignin,
@@ -1492,6 +1517,8 @@ module.exports = {
   status,
   getApiSearch,
   addReview,
+  editReview,
+  deleteReview,
   forgotPassword,
   resetPassword,
   viewOrderDetails,

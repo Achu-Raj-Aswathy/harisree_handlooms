@@ -192,6 +192,15 @@ function updateCartTotals() {
   });
 
   document.getElementById("cart-total").textContent = total.toFixed(2);
+
+  const checkoutBtn = document.querySelector(".checkout-btn");
+  if (total <= 0) {
+    checkoutBtn.disabled = true;
+    checkoutBtn.classList.add("disabled");
+  } else {
+    checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove("disabled");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -207,6 +216,17 @@ document.addEventListener("DOMContentLoaded", function () {
   // Before form submit, re-run updateCartTotals()
   document.getElementById("checkout-form").addEventListener("submit", function (e) {
     updateCartTotals(); // ⬅️ Ensure input is set just before submit
+      const total = parseFloat(document.getElementById("cart-total").textContent);
+
+  if (total <= 0) {
+    e.preventDefault();
+    Swal.fire({
+          icon: "warning",
+          title: "Cannot Checkout",
+          text: "Your cart is empty or all items are out of stock."
+        });
+    return;
+  }
   });
 
   // Remove item from cart

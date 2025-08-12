@@ -1,6 +1,6 @@
 <%- include('./partials/header') %>
   <%- include('./partials/userHeader') %>
-    <main class="main-wrapper">
+    <div class="axil-checkout-area">
       <!-- Start Shop Area  -->
       <div class="axil-single-product-area bg-color-white">
         <div class="single-product-thumb axil-section-gap pb--20 pb_sm--0 bg-vista-white">
@@ -140,7 +140,7 @@
                     <!-- 📢 Customer Reviews -->
                     <!-- Review Form -->
                    <!-- ⭐ Submit Review Form -->
-<form id="reviewForm" action="/product/<%= product._id %>/review" method="POST" enctype="multipart/form-data">
+<form id="reviewForm" action="/product/<%= product._id %>/review" method="POST" enctype="multipart/form-data" onsubmit="return validateReviewForm()">
   <div class="form-group mt-5">
     <div class="row">
       <div class="rating-container col-6">
@@ -374,7 +374,7 @@
   </div>
 <% } %>
 
-    </main>
+          </div>
 
    <script>
   $('.recently-viwed-activation').slick({
@@ -410,7 +410,6 @@
           adaptiveHeight: true
         });
       });
-
 
     </script>
 
@@ -512,6 +511,24 @@
   });
 </script>
 <% } %>
+
+<script>
+function validateReviewForm() {
+  const ratingValue = document.getElementById("overallRating").value;
+  
+  if (!ratingValue || parseInt(ratingValue) < 1) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Rating Required',
+      text: 'Please select a rating before submitting your review.',
+      confirmButtonColor: '#d33'
+    });
+    return false; // stop form submission
+  }
+  
+  return true; // allow form submission
+}
+</script>
 
     <%- include('./partials/footer') %>
       </div>                  

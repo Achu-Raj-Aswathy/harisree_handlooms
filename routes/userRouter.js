@@ -178,6 +178,8 @@ userRouter.delete(
   userController.removeFromWishlist
 );
 
+userRouter.put("/product/:productId/review/:reviewId", isLogin, userController.editReview)
+
 // Payment Routes
 userRouter.post("/create-phonepe-order", userController.createPhonePeOrder);
 userRouter.get("/status", userController.status);

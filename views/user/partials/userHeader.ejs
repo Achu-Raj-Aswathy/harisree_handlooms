@@ -288,16 +288,7 @@
     <% } %>
   </ul>
 </div>
-        <!-- <div class="cart-footer">
-            <h3 class="cart-subtotal">
-                <span class="subtotal-title">Subtotal:</span>
-                <span class="subtotal-amount">$610.00</span>
-            </h3>
-            <div class="group-btn">
-                <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
-                <a href="/checkout" class="axil-btn btn-bg-secondary checkout-btn">Checkout</a>
-            </div>
-        </div> -->
+        
         <%
   let subtotal = 0;
   if (user && user.cart && user.cart.length > 0) {
@@ -319,7 +310,9 @@
       <a href="/cart" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
   <form id="mini-cart-checkout-form" action="/checkout" method="POST">
     <input type="hidden" name="cartData" id="miniCartDataInput">
-    <a href="#" class="axil-btn btn-bg-secondary checkout-btn w-100" id="miniCartCheckoutBtn">Checkout</a>
+    <a href="#" class="axil-btn btn-bg-secondary checkout-btn w-100" id="miniCartCheckoutBtn" <%= subtotal === 0 ? 'disabled style="pointer-events:none;opacity:0.5;"' : '' %>>
+   Checkout
+    </a>
   </form>
 </div>
 
@@ -388,6 +381,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (checkoutBtn && form && hiddenInput) {
     checkoutBtn.addEventListener("click", function (e) {
+      const subtotalText = document.querySelector(".subtotal-amount")?.textContent.replace(/[₹\s]/g, "") || "0";
+      const subtotalValue = parseFloat(subtotalText);
+
+      if (subtotalValue <= 0) {
+        e.preventDefault();
+        Swal.fire({
+          icon: "warning",
+          title: "Cannot Checkout",
+          text: "Your cart is empty or all items are out of stock."
+        });
+        return;
+      }
+
       e.preventDefault();
 
       const cartItems = [];
