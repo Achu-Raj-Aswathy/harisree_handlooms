@@ -147,6 +147,7 @@ userRouter.get("/refund-policy", userController.viewRefundPolicy);
 userRouter.get("/return-policy", userController.viewReturnPolicy);
 userRouter.get("/shipping-policy", userController.viewShippingPolicy);
 userRouter.get("/api/countries", userController.getApiCountries);
+userRouter.get("/api/states/:countryName", userController.getApiStates);
 userRouter.get("/api/search", userController.getApiSearch);
 userRouter.get("/order", userController.viewOrderDetails);
 
@@ -172,17 +173,16 @@ userRouter.post("/account-edit", isLogin, userController.updateAccountDetails);
 userRouter.post("/reset-password", isLogout, userController.resetPassword);
 
 userRouter.delete("/cart/remove", isLogin, userController.removeFromCart);
-userRouter.delete(
-  "/wishlist/remove",
-  isLogin,
-  userController.removeFromWishlist
-);
+userRouter.delete("/wishlist/remove", isLogin, userController.removeFromWishlist);
+userRouter.delete("/product/:productId/review/:reviewId/delete", isLogin, upload.array("images"), userController.deleteReview);
 
-userRouter.put("/product/:productId/review/:reviewId", isLogin, userController.editReview)
+
+userRouter.put("/product/:productId/review/:reviewId", isLogin, upload.array("images"), userController.editReview);
 
 // Payment Routes
 userRouter.post("/create-phonepe-order", userController.createPhonePeOrder);
 userRouter.get("/status", userController.status);
+userRouter.post("/create-cod-order", userController.createCodOrder);
 
 // dtdc
 // userRouter.get("/dtdc/shipping-label", isLogin, userController.downloadDTDCLabel);

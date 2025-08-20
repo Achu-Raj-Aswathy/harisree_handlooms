@@ -80,6 +80,7 @@
 
 <script>
   const userWishlistProductIds = <%- JSON.stringify(userWishlistProductIds) %>;
+  const userCartProductIds = <%- JSON.stringify(userCartProductIds) %>;
 </script>
 
 <script>
@@ -130,6 +131,46 @@ const wishlistIcon = isWishlisted
   ? `<i class="fas fa-heart text-danger"></i>`
   : `<i class="far fa-heart"></i>`;
 
+const isCarted = userCartProductIds.includes(product._id.toString());
+const cartIcon = isCarted
+  ? `<i class="fas fa-shopping-cart text-success"></i>`
+  : `<i class="fas fa-shopping-cart"></i>`;
+
+const isLargeScreen = window.innerWidth >= 1400;
+
+// Wishlist & Add to Cart HTML
+const wishlistButton = `
+  <a href="#" class="add-to-wishlist" data-id="${product._id}">
+    ${wishlistIcon}
+  </a>
+`;
+const addToCartButton = `
+  <a href="#" class="add-to-cart" data-id="${product._id}">
+    ${cartIcon}
+  </a>
+`;
+
+// Action buttons for large screens (on image hover)
+const largeScreenActions = `
+  <div class="product-hover-action">
+    <ul class="cart-action">
+      <li class="wishlist">${wishlistButton}</li>
+      <li class="select-option">
+        <a href="#" class="add-to-cart" data-id="${product._id}">Add to Cart</a>
+      </li>
+      <li class="quickview"><a href="/product?id=${product._id}"><i class="far fa-eye"></i></a></li>
+    </ul>
+  </div>
+`;
+
+// Action buttons for small/medium screens (below title)
+const smallScreenActions = `
+  <div class="below-title-actions d-flex gap-5 mt-2">
+    ${wishlistButton}
+    ${addToCartButton}
+  </div>
+`;
+
 const html = `
   <div class="${colClass} product-card ${mobileViewClass}" data-aos="fade-up" has-color-pick data-aos-duration="800">
         <div class="axil-product product-style-one d-flex flex-column flex-sm-column flex-md-column flex-lg-column flex-xl-column small-screen-card" style="gap: 10px;">
@@ -137,27 +178,16 @@ const html = `
             <a href="/product?id=${product._id}">
             <img src="${imageUrl}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" />
             </a>
-            <div class="product-hover-action">
-              <ul class="cart-action">
-                 <li class="wishlist">
-  <a href="#" class="add-to-wishlist" data-id="${product._id}">
-  ${wishlistIcon}
-</a>
-</li>
-                <li class="select-option">
-  <a href="#" class="add-to-cart" data-id="${product._id}">Add to Cart</a>
-</li>
-                <li class="quickview"><a href="/product?id=${product._id}"><i class="far fa-eye"></i></a></li>
-              </ul>
-            </div>
+            ${isLargeScreen ? largeScreenActions : ""}            
             ${discountLabel ? `<div class="label-block label-right"><div class="product-badget bg-warning">${discountLabel}</div></div>` : ""}
           </div>
           <div class="product-content text-center text-sm-start px-2">
-            <h5 class="title fw-bold text-dark">${product.name}</h5>
+            <h5 class="title fw-bold text-dark"><a href="/product?id=${product._id}">${product.name.slice(0,25)}...</a></h5>
             <div class="product-price-variant mb-1">
               ${discountAmount ? `<span class="price old-price me-2" style="text-decoration: line-through; color: #888;">₹${oldPrice}</span>` : ""}
               <span class="price current-price fw-bold" style="color: #000;">₹${finalPrice}</span>
             </div>
+            ${!isLargeScreen ? smallScreenActions : ""}
           </div>
         </div>
       </div>`;
@@ -246,7 +276,6 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
   const backendCategories = <%- JSON.stringify(categories) %>;
 </script>
-
 
 <script>
 let categoryMenuLoaded = false;
@@ -469,13 +498,16 @@ document.addEventListener('click', (e) => {
 
 .detail-mobile .thumbnail {
   width: 45% !important;
-  height: 120px !important;
+  height: 100% !important;
 }
 
 .detail-mobile .product-content {
   flex: 1;
   padding-left: 10px;
   text-align: left !important;
+}
+.detail-mobile .below-title-actions {
+  justify-content: start;
 }
 
 /* Grid View */
@@ -486,7 +518,7 @@ document.addEventListener('click', (e) => {
 
 .grid-mobile .thumbnail {
   width: 100% !important;
-  height: 180px !important;
+  height: 100% !important;
 }
 
 .grid-mobile .product-content {
@@ -502,6 +534,9 @@ document.addEventListener('click', (e) => {
   border-color: #333;
 }
 
+.grid-mobile .below-title-actions {
+  justify-content: center;
+}
 </style>
 
 <style>
@@ -521,6 +556,23 @@ document.addEventListener('click', (e) => {
   border-color: #ffc107;
   color: #000;
 }
+</style>
+
+<style>
+/* Hide cart action overlay on screens below 1400px */
+@media (max-width: 1399.98px) {
+  .product-hover-action {
+    display: none !important;
+  }
+}
+
+/* Keep showing on larger screens */
+@media (min-width: 1400px) {
+  .below-title-actions {
+    display: none !important;
+  }
+}
+
 </style>
 
 <script>

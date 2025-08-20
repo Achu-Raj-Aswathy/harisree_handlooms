@@ -33,6 +33,7 @@
                                                                  <th>Total</th>
                                                                  <th>Payment Status</th>
                                                                  <th>Order Status</th>
+                                                                 <th>Action</th>
                                                             </tr>
                                                        </thead>
                                                        <tbody>
@@ -66,6 +67,19 @@
         <td>₹<%= order.total.toFixed(2) %></td>
                                                                  <td><%= order.paymentStatus %></td>
                                                                  <td><%= order.status %></td>
+<td>
+  <form action="/admin/order-update/<%= order._id %>" method="POST" 
+        class="d-flex gap-2 order-update-form" data-id="<%= order._id %>">
+    <select name="status" class="form-select form-select-sm" required>
+      <option value="" disabled selected>Change Status</option>
+      <option value="Confirmed">Confirm Order</option>
+      <option value="Cancelled">Cancel Order</option>
+    </select>
+    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+  </form>
+</td>
+
+
                                                             </tr>
                                                             <% }) %>
                                                             <% } else { %>
@@ -216,4 +230,68 @@
     selectedStartDate = null;
     selectedEndDate = null;
   }
+</script>
+
+<script>
+  document.querySelectorAll(".order-update-form").forEach((form) => {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const status = this.querySelector("select[name='status']").value;
+      const orderId = this.dataset.id;
+
+      if (!status) {
+        Swal.fire({
+          icon: "warning",
+          title: "Please select a status!",
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: `Are you sure you want to ${status.toLowerCase()} this order?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, proceed",
+        cancelButtonText: "No, cancel",
+        confirmButtonColor: status === "Confirmed" ? "#28a745" : "#d33"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/admin/order-update/${orderId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status })
+          })
+          .then((res) => {
+            if (res.ok) {
+              Swal.fire({
+                icon: "success",
+                title: `Order ${status}`,
+                text: `The order has been ${status.toLowerCase()} successfully.`,
+                confirmButtonColor: "#3085d6"
+              }).then(() => {
+                location.reload(); // reload to update UI
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Update Failed",
+                text: "Something went wrong. Please try again.",
+                confirmButtonColor: "#d33"
+              });
+            }
+          })
+          .catch((err) => {
+            console.error("Order update error:", err);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Unable to update order status.",
+              confirmButtonColor: "#d33"
+            });
+          });
+        }
+      });
+    });
+  });
 </script>

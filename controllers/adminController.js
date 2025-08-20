@@ -319,16 +319,6 @@ const viewListOrder = async (req, res) => {
   }
 };
 
-// const viewOrderDetails = async (req, res) => {
-//   const orderId = req.query.id;
-//   try {
-//     const order = await Orders.findById(orderId).populate("userId").populate("items.productId");
-//     res.render("admin/orderDetails", {order});
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ success: false, message: "Internal Server error" });
-//   }
-// };
 const viewOrderDetails = async (req, res) => {
   const orderId = req.query.id;
   try {
@@ -1198,8 +1188,8 @@ const returnUpdate = async (req, res) => {
   to: request.userId.email,
   subject: `Your Replacement Request for order ${order.orderId} is Approved`,
   html: `
-        <h2>Replacement Request Approved</h2>
-        <p>Hi ${request.userId.name},</p>
+        <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Replacement Request Approved</h2>
+        <p>Hi <strong>${request.userId.name}</strong>,</p>
         <p>Your replacement request for <b>${request.productName}</b> has been <span style="color:green;">approved</span>.</p>
         <p>Your replacement is now on the way. You can track it using the link below:</p>
         <p><a href="${trackingLink}" style="color:blue;">Track Your Order</a></p>
@@ -1216,6 +1206,82 @@ const returnUpdate = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Update failed");
+  }
+};
+
+const orderUpdate = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { status } = req.body;
+
+    const order = await Orders.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    ).populate("userId");
+
+    if (!order) {
+      return res.status(404).send("Order not found");
+    }
+
+    let subject = "";
+    let htmlContent = "";
+
+    if (status === "Confirmed") {
+      subject = `Your Order ${order.orderId} is Confirmed`;
+      htmlContent = `
+        <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Order Confirmed</h2>
+        <p>Hi <strong>${order.userId?.name || "Customer"}</strong>,</p>
+        <p>Thank you for shopping with <b>Harisree Handlooms</b>.</p>
+        <p>Your order <b>${order.orderId}</b> has been <span style="color:green;">confirmed</span> and is being processed.</p>
+        
+        <h3>Order Details:</h3>
+        <p><b>Order ID:</b> ${order.orderId}</p>
+        <p><b>Total:</b> ₹${order.total}</p>
+        
+        <br>
+        <p>Your order will be dispatched within 8 to 10 days and should arrive within an additional 2 to 3 days.</p>
+
+        <br>
+        <p>Best regards,<br>Harisree Handlooms Team</p>
+      `;
+    } else if (status === "Cancelled") {
+      subject = `Your Order ${order.orderId} has been Cancelled`;
+      htmlContent = `
+        <h2 style="background: #d9534f; color: white; padding: 15px; margin: 0;">Order Cancelled</h2>
+        <p>Hi <strong>${order.userId?.name || "Customer"}</strong>,</p>
+        <p>We’re sorry to inform you that your order <b>${order.orderId}</b> has been <span style="color:red;">cancelled</span>.</p>
+        
+        <h3>Order Details:</h3>
+        <p><b>Order ID:</b> ${order.orderId}</p>
+        <p><b>Total:</b> ₹${order.total}</p>
+
+        <br>
+        <p>If the payment was already made, the refund will be processed within 5–7 business days.</p>
+
+        <br>
+        <p>We value your trust in <b>Harisree Handlooms</b> and hope to serve you in the future.</p>
+        
+        <br>
+        <p>Best regards,<br>Harisree Handlooms Team</p>
+      `;
+    }
+
+    // send email only if subject is set
+    if (subject && htmlContent) {
+      await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: order.address.email,
+        subject,
+        html: htmlContent
+      });
+    }
+
+    res.json({ success: true, status });
+
+  } catch (err) {
+    console.error("Order update error:", err);
+    res.status(500).json({ success: false, message: "Update failed" });
   }
 };
 
@@ -1333,7 +1399,7 @@ const editProduct = async (req, res) => {
     existingProduct.lowStockLimit = lowStockAlert;
     existingProduct.skuId = skuId;
     existingProduct.categoryId = categoryId;
-    existingProduct.specification = specification;
+    existingProduct.blouseDetails = specification;
     existingProduct.gender = gender;
     existingProduct.length = size;
     existingProduct.images = finalImages;
@@ -2586,6 +2652,7 @@ module.exports = {
   deleteOffer,
   editOffer,
   returnUpdate,
+  orderUpdate,
   editProduct,
   viewReview,
   deleteReview,

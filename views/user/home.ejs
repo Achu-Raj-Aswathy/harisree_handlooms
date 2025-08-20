@@ -12,6 +12,8 @@
   if (sliderImages.slider4) handloomImages.push(sliderImages.slider4);
 %>
 
+<% let cartView = 'Add to Cart'; %>
+
 <div class="axil-main-slider-area main-slider-style-4 position-relative" id="handloomSlider" style="background-image: url('<%= handloomImages[0] %>'); background-size: cover; background-position: center; min-height: 90vh; display: flex; align-items: center; transition: background-image 1s ease-in-out;">
   <!-- Dark Overlay -->
   <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;"></div>
@@ -115,7 +117,7 @@
                         </div>
                         <div class="product-content">
                             <div class="inner">
-                                <h5 class="title"><a href="/product?id=<%= product._id %>"><%= product.name %></a></h5>
+                                <h5 class="title"><a href="/product?id=<%= product._id %>"><%= product.name.slice(0,25) %>...</a></h5>
                                 <div class="product-price-variant">
                                     <% if (product.price) { %>
                                         <span class="price old-price">₹<%= product.price %></span>
@@ -173,7 +175,7 @@
 
         <div class="deal-card">
           <a href="/product?id=<%= product._id %>"><img src="<%= product.images[0] %>" class="deal-img" alt="<%= product.name %>" /></a>
-          <h5 class="deal-title"><%= product.name %></h5>
+          <h5 class="deal-title"><%= product.name.slice(0,25) %>...</h5>
           <p class="deal-price">
             ₹<%= product.price %>
             <% if (offer.discountPercentage) { %>
@@ -244,7 +246,7 @@
       </div>
       <div class="product-content">
         <div class="inner">
-          <h5 class="title"><a href="/product?id=<%= product._id %>"><%= product.name %></a></h5>
+          <h5 class="title"><a href="/product?id=<%= product._id %>"><%= product.name.slice(0,25) %>...</a></h5>
           <div class="product-price-variant">
             <span class="price old-price">₹<%= product.price %></span>
             <span class="price current-price">₹<%= discountedPrice %></span>
@@ -264,7 +266,7 @@
             </div>
         </div>
         <!-- End Offer Product Area  -->
-        <!-- Start Expolre Product Area  -->
+        <!-- Start Explore Product Area  -->
         <div class="axil-product-area bg-color-white section-gap-80-35">
             <div class="container">
                 <div class="section-title-border">
@@ -273,7 +275,7 @@
                 </div>
                 <div class="row">
   <% products.forEach(product => { %>
-  <div class="col-xl-3 col-lg-4 col-sm-6 col-12">
+  <div class="col-xl-3 col-lg-4 col-sm-6 col-6 ">
     <div class="axil-product product-style-eight">
       <div class="thumbnail">
         <a href="/product?id=<%= product._id %>">
@@ -283,10 +285,20 @@
           <div class="product-badget sale text-warning">Sale</div>
         </div>
         <div class="product-hover-action">
-          <ul class="cart-action">
+          <ul class="cart-action d-flex">
+            <li class="wishlist">
+  <a href="#" class="add-to-wishlist" data-id="<%= product._id %>">
+  <% if (userWishlistProductIds.includes(product._id.toString())) { %>
+    <i class="fas fa-heart text-danger"></i>
+  <% } else { %>
+    <i class="far fa-heart"></i>
+  <% } %>
+</a>
+</li>
             <li class="select-option">
   <a href="#" class="add-to-cart" data-id="<%= product._id %>">Add to Cart</a>
 </li>
+
           </ul>
         </div>
       </div>
@@ -301,7 +313,7 @@
             </ul>
           </div> -->
           <h5 class="title">
-            <a href="/product?id=<%= product._id %>"><%= product.name %></a>
+            <a href="/product?id=<%= product._id %>"><%= product.name.slice(0,25) %>...</a>
           </h5>
           <!-- <div class="product-rating">
             <span class="icon">
@@ -328,7 +340,9 @@
 
             </div>
         </div>
-        <!-- End Expolre Product Area  -->
+        <!-- End Explore Product Area  -->
+
+        <!-- Start Product Video Area  -->
        <!-- <div class="axil-product-review-area axil-section-gapBottom">
   <div class="container">
     <div class="heading-title text-center mb-5">
@@ -388,7 +402,7 @@
   </div>
 </div> -->
 
-        <!-- End Expolre Product Area  -->
+        <!-- End Product Video Area  -->
         <div class="delivery-poster-area">
             <div class="container">
                 <div class="row">
@@ -537,11 +551,9 @@
   margin-right: 5px;
 }
 
-  
-    #handloomSlider {
+#handloomSlider {
   min-height: 90vh !important;
 }
-
 
   a.axil-btn.btn-bg-primary.btn-lg {
     background-color: yellow !important;   /* 🟨 Yellow background */
@@ -579,38 +591,133 @@
     padding: 10px !important;
   }
 }
-
  
+</style>
+
+<style>
+.slick-slide {
+  display: inline-block !important;
+  float: none;
+}
+
+.slick-track {
+  display: flex !important;
+}
+.slick-slide {
+  height: auto;
+}
+
 </style>
     </main>
 
-  
-
 <script>
-  $(document).ready(function () {
-    $('.new-arrivals-product-activation').slick({
-      slidesToShow: 4,
-      slidesToScroll: 1,
-      autoplay: true,
-      autoplaySpeed: 3000, // 3 seconds
-      dots: false,
-      arrows: true,
-      responsive: [
-        {
-          breakpoint: 1200,
-          settings: { slidesToShow: 3 }
-        },
-        {
-          breakpoint: 992,
-          settings: { slidesToShow: 2 }
-        },
-        {
-          breakpoint: 576,
-          settings: { slidesToShow: 1 }
-        }
-      ]
+  // $(document).ready(function () {
+  //   $('.new-arrivals-product-activation').slick({
+  //     slidesToShow: 4,
+  //     slidesToScroll: 1,
+  //     autoplay: true,
+  //     autoplaySpeed: 3000, // 3 seconds
+  //     dots: false,
+  //     arrows: true,
+  //     responsive: [
+  //       {
+  //         breakpoint: 1200,
+  //         settings: { slidesToShow: 3 }
+  //       },
+  //       {
+  //         breakpoint: 992,
+  //         settings: { slidesToShow: 2 }
+  //       },
+  //       {
+  //         breakpoint: 576,
+  //         settings: { slidesToShow: 1 }
+  //       }
+  //     ]
+  //   });
+  // });
+ 
+//   $(window).on('load', function () {
+
+//   $('.new-arrivals-product-activation').slick({
+//   slidesToShow: 4,
+//   slidesToScroll: 1,
+//   autoplay: true,
+//   autoplaySpeed: 3000,
+//   dots: false,
+//   arrows: true,
+//   responsive: [
+//     {
+//       breakpoint: 1200, // large
+//       settings: { slidesToShow: 3 }
+//     },
+//     {
+//       breakpoint: 992,  // medium
+//       settings: { slidesToShow: 3 }
+//     },
+//     {
+//       breakpoint: 768,  // small
+//       settings: { slidesToShow: 2 }
+//     },
+//     {
+//       breakpoint: 576,  // extra small
+//       settings: { slidesToShow: 2 }
+//     }
+//   ]
+// });
+//   })
+
+function initNewArrivalsCarousel() {
+    let $carousel = $('.new-arrivals-product-activation');
+
+    if ($carousel.width() < 600) {
+        // Wait until container gets proper width
+        setTimeout(initNewArrivalsCarousel, 200);
+        return;
+    }
+
+    $carousel.slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        dots: false,
+        arrows: true,
+        lazyLoad: 'progressive',
+        responsive: [
+            { breakpoint: 1200, settings: { slidesToShow: 3 } },
+            { breakpoint: 992,  settings: { slidesToShow: 3 } },
+            { breakpoint: 768,  settings: { slidesToShow: 2 } },
+            { breakpoint: 576,  settings: { slidesToShow: 1 } }
+        ],
+        mobileFirst: false
     });
-  });
+
+    $(window).on('resize', function() {
+        $carousel.slick('setPosition');
+    });
+}
+
+$(window).on('load', initNewArrivalsCarousel);
+
+  // var $carousel = $('.new-arrivals-product-activation');
+
+  // $carousel.slick({
+  //   slidesToShow: 4,
+  //   slidesToScroll: 1,
+  //   autoplay: true,
+  //   autoplaySpeed: 3000,
+  //   dots: false,
+  //   arrows: true,
+  //   responsive: [
+  //     { breakpoint: 1200, settings: { slidesToShow: 3 } },
+  //     { breakpoint: 992, settings: { slidesToShow: 3 } },
+  //     { breakpoint: 768, settings: { slidesToShow: 2 } },
+  //     { breakpoint: 576, settings: { slidesToShow: 2 } }
+  //   ]
+  // });
+
+  // $carousel.slick('setPosition');
+
 </script>
 
 <script>
@@ -642,5 +749,32 @@
   });
 </script>
 
+<style>
+  /* Always show buttons on medium and smaller screens */
+@media (max-width: 992px) {
+  .product-hover-action {
+    opacity: 1 !important;
+    visibility: visible !important;
+    bottom: 10px !important; /* adjust position if needed */
+  }
+  
+  /* Remove hover effect so they stay visible */
+  .axil-product:hover .product-hover-action {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth < 1200) {
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.innerHTML = '<i class="fas fa-cart-plus fa-lg"></i>';
+      });
+    }
+  });
+</script>
 
 <%- include('./partials/footer') %>

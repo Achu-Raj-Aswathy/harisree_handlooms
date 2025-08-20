@@ -18,16 +18,56 @@
                   <label>Country/ Region <span>*</span></label>
                   <select id="billingCountry" name="billingCountry" required>
                     <option value="">Select Country</option>
-                    <!-- Add more countries -->
+                    <option value="India">India</option>
                   </select>
                 </div>
 
-                <div class="form-group">
-                  <label>State <span>*</span></label>
-                  <input type="text" name="billingState" id="billingState" placeholder="State"
-                    value="<%= user.address[0]?.billing?.state || '' %>" required>
-                  
-                </div>
+<div class="form-group">
+  <label>State / Union Territory <span>*</span></label>
+  <select id="billingState" name="billingState" required>
+    <option value="">Select State / UT</option>
+
+    <!-- 🟢 States -->
+    <option value="Andhra Pradesh">Andhra Pradesh</option>
+    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+    <option value="Assam">Assam</option>
+    <option value="Bihar">Bihar</option>
+    <option value="Chhattisgarh">Chhattisgarh</option>
+    <option value="Goa">Goa</option>
+    <option value="Gujarat">Gujarat</option>
+    <option value="Haryana">Haryana</option>
+    <option value="Himachal Pradesh">Himachal Pradesh</option>
+    <option value="Jharkhand">Jharkhand</option>
+    <option value="Karnataka">Karnataka</option>
+    <option value="Kerala">Kerala</option>
+    <option value="Madhya Pradesh">Madhya Pradesh</option>
+    <option value="Maharashtra">Maharashtra</option>
+    <option value="Manipur">Manipur</option>
+    <option value="Meghalaya">Meghalaya</option>
+    <option value="Mizoram">Mizoram</option>
+    <option value="Nagaland">Nagaland</option>
+    <option value="Odisha">Odisha</option>
+    <option value="Punjab">Punjab</option>
+    <option value="Rajasthan">Rajasthan</option>
+    <option value="Sikkim">Sikkim</option>
+    <option value="Tamil Nadu">Tamil Nadu</option>
+    <option value="Telangana">Telangana</option>
+    <option value="Tripura">Tripura</option>
+    <option value="Uttar Pradesh">Uttar Pradesh</option>
+    <option value="Uttarakhand">Uttarakhand</option>
+    <option value="West Bengal">West Bengal</option>
+
+    <!-- 🟣 Union Territories -->
+    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+    <option value="Chandigarh">Chandigarh</option>
+    <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+    <option value="Delhi">Delhi</option>
+    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+    <option value="Ladakh">Ladakh</option>
+    <option value="Lakshadweep">Lakshadweep</option>
+    <option value="Puducherry">Puducherry</option>
+  </select>
+</div>
 
                 <div class="form-group">
                   <label>Apartment <span>*</span></label>
@@ -193,27 +233,26 @@
                                   <input class="form-control" placeholder="Coupon code" id="couponCodeInput" />
                                   
 <!-- Coupon Apply Button -->
-<button type="button" id="applyCouponBtn" style="background-color: #f1c40f; color: black; border: none;">
+<button type="button" id="applyCouponBtn" style="background-color: #f1c40f; color: black; border: none;" class="mt-3">
   Apply
 </button>
-
-                                </div>
+  </div>
                   </div>
                 </div>
                 <!-- Coupon END -->
 <div class="order-payment-method mt-5">
 
   <!-- Cash on Delivery Option -->
-  <!-- <div class="single-payment mb-3">
+  <div class="single-payment mb-3">
     <div class="input-group justify-content-between align-items-center">
       <input type="radio" id="radioCod" name="payment" value="cod">
       <label for="radioCod">Cash on Delivery</label>
     </div>
-    <p>Pay with cash upon product delivery.</p> -->
+    <p>Pay with cash upon product delivery.</p>
 
     <!-- Cash on Delivery Checkbox -->
     <!-- <div class="mt-2 ms-3">
-  <button type="button" class="btn btn-outline-success" id="codConfirmBtn">
+  <button type="button" class="axil-btn" style="background-color: #f1c40f; color: black; border: none;" id="codConfirmBtn" >
     Confirm Cash on Delivery
   </button>
 </div> -->
@@ -225,7 +264,7 @@
     <div class="input-group justify-content-between align-items-center">
       <input type="radio" id="radioPhonepe" name="payment" value="phonepe" checked>
       <label for="radioPhonepe">PhonePe</label>
-      <img src="assets/images/others/payment.png" alt="PhonePe payment">
+      <img src="assets/images/others/payment.png" alt="PhonePe Payment">
     </div>
     <p>Pay via PhonePe; use UPI or credit card to complete your order.</p>
   </div>
@@ -242,11 +281,20 @@
                     <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
                   </div>
                 </div> -->
-             <button type="submit" class="axil-btn checkout-btn" style="background-color: #f1c40f; color: black; border: none;" >
+
+                <!-- COD Button -->
+<button type="button" id="codConfirmBtn" class="axil-btn" style="display:none; background-color: #f1c40f; color: black; border: none;">
+  Confirm Cash on Delivery
+</button>
+
+<!-- PhonePe Button -->
+<button type="submit" id="phonepeCheckoutBtn" class="axil-btn checkout-btn" style="display:none; background-color: #f1c40f; color: black; border: none;">
   Process to Checkout
 </button>
 
-                <!-- <button type="button" class="axil-btn btn-bg-primary checkout-btn">Process to Checkout</button> -->
+              <!-- <button type="submit" class="axil-btn checkout-btn" style="background-color: #f1c40f; color: black; border: none;" >
+                Process to Checkout
+              </button> -->
               </div>
             </div>
           </div>
@@ -344,46 +392,78 @@ billingStateInput.addEventListener("change", () => {
   updateTotals();
 });
 
-
     // Apply default selected coupon on load
     const selectedRadio = document.querySelector('input[name="selectedCoupon"]:checked');
     if (selectedRadio) applyCoupon(selectedRadio.value);
   });
 </script>
 
-    <script>
-      async function populateCountryDropdowns() {
-        try {
-          const response = await fetch("/api/countries");
-          const countries = await response.json();
+    <!-- <script>
+      // async function populateCountryDropdowns() {
+      //   try {
+      //     const response = await fetch("/api/countries");
+      //     const countries = await response.json();
 
-          const shippingCountrys = document.querySelectorAll("#shippingCountry");
-          const billingCountrys = document.querySelectorAll("#billingCountry");
+      //     const shippingCountrys = document.querySelectorAll("#shippingCountry");
+      //     const billingCountrys = document.querySelectorAll("#billingCountry");
 
-          countries.forEach(country => {
-            const option = document.createElement("option");
-            option.value = country;
-            option.textContent = country;
+      //     countries.forEach(country => {
+      //       const option = document.createElement("option");
+      //       option.value = country;
+      //       option.textContent = country;
 
-            shippingCountrys.forEach(select => {
-              select.appendChild(option.cloneNode(true));
-            });
+      //       shippingCountrys.forEach(select => {
+      //         select.appendChild(option.cloneNode(true));
+      //       });
 
-            billingCountrys.forEach(select => {
-              select.appendChild(option.cloneNode(true));
-            });
-          });
-        } catch (err) {
-          console.error("Error fetching country list:", err);
-        }
-      }
+      //       billingCountrys.forEach(select => {
+      //         select.appendChild(option.cloneNode(true));
+      //       });
+      //     });
+      //   } catch (err) {
+      //     console.error("Error fetching country list:", err);
+      //   }
+      // }
 
-      document.addEventListener("DOMContentLoaded", () => {
-        setTimeout(populateCountryDropdowns, 200);
+      // document.addEventListener("DOMContentLoaded", () => {
+      //   setTimeout(populateCountryDropdowns, 200);
+      // });
+      fetch("/api/countries")
+    .then(res => res.json())
+    .then(countries => {
+      const countrySelect = document.getElementById("billingCountry");
+      countries.forEach(country => {
+        const opt = document.createElement("option");
+        opt.value = country;
+        opt.textContent = country;
+        countrySelect.appendChild(opt);
       });
-    </script>
+    });
 
-    <script>
+  // When country changes, fetch states
+  document.getElementById("billingCountry").addEventListener("change", function() {
+    const countryName = this.value;
+    const stateSelect = document.getElementById("billingState");
+    stateSelect.innerHTML = '<option value="">Select State</option>';
+    stateSelect.disabled = true;
+
+    if (countryName) {
+      fetch(`/api/states/${countryName}`)
+        .then(res => res.json())
+        .then(states => {
+          states.forEach(state => {
+            const opt = document.createElement("option");
+            opt.value = state;
+            opt.textContent = state;
+            stateSelect.appendChild(opt);
+          });
+          stateSelect.disabled = false;
+        });
+    }
+  });
+    </script> -->
+
+<script>
   document.addEventListener("DOMContentLoaded", () => {
     const checkoutForm = document.getElementById("checkoutForm");
 
@@ -413,6 +493,16 @@ const address = {
   country: document.getElementById("billingCountry").value,
 };
 
+      if (!address.name || !address.phone || !address.email || !address.state || 
+          !address.city || !address.pincode || !address.line || !address.country) {
+        Swal.fire({
+          icon: "warning",
+          title: "Missing Information",
+          text: "Please fill in all required billing details before proceeding."
+        });
+        return;
+      }
+
 // Get applied values
 const subtotal = parseFloat(document.getElementById("subtotal").textContent.replace(/[^\d.]/g, "")) || 0;
 const shippingCharge = parseFloat(document.getElementById("shippingCharge").textContent.replace(/[^\d.]/g, "")) || 0;
@@ -441,170 +531,127 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
         if (result.checkoutPageUrl) {
           window.location.href = result.checkoutPageUrl;
         } else {
-          alert("❌ Payment URL not received.");
+          Swal.fire({
+            icon: "error",
+            title: "Payment Failed",
+            text: "Payment URL not received."
+          });
         }
       } catch (err) {
-        console.error("❌ Payment error:", err);
-        alert("Something went wrong.");
+        console.error("Payment error:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong",
+          text: "Please try again later."
+        });
       }
     });
   });
 </script>
 
-    <!-- <script>
-      console.log("Checkout page script loaded");
-      document.addEventListener("DOMContentLoaded", () => {
-        console.log("DOM fully loaded and parsed");
-        const checkoutBtn = document.querySelector(".checkout-btn");
-        const checkoutForm = document.getElementById("checkoutForm");
-      checkoutForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const codBtn = document.getElementById("codConfirmBtn");
 
-  const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-  const codChecked = document.getElementById("codConfirm")?.checked;
-  const cartData = <%- JSON.stringify({ items: cart, total }) %>;
+  codBtn.addEventListener("click", () => {
+    // Collect required fields
+    const name = document.getElementById("first-name").value.trim();
+    const country = document.getElementById("billingCountry").value.trim();
+    const state = document.getElementById("billingState").value.trim();
+    const addressLine = document.getElementById("billingAddressLine2").value.trim();
+    const city = document.getElementById("billingCity").value.trim();
+    const pincode = document.getElementById("billingPincode").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
 
-  if (selectedPayment === "cod") {
-    if (!codChecked) {
-      alert("Please check the box to confirm Cash on Delivery.");
+    // Simple validation
+    if (!name || !country || !state || !addressLine || !city || !pincode || !phone || !email) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Details",
+        text: "Please fill in all required billing details before confirming COD.",
+      });
       return;
     }
-    // Redirect to COD confirmation page
-    window.location.href = "/cod-confirmation";
-    return;
-  }
 
-  // If PhonePe is selected
-  try {
-    const response = await fetch("/create-phonepe-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        cartData: JSON.stringify(cartData)
-      })
+    placeCodOrder();
+  });
+
+  async function placeCodOrder() {
+      // ✅ Handle coupon same as PhonePe
+      const selectedCouponRadio = document.querySelector('input[name="selectedCoupon"]:checked');
+      let couponCode = null;
+      let couponId = null;
+
+      if (selectedCouponRadio && selectedCouponRadio.value !== "none") {
+        couponCode = selectedCouponRadio.value;
+        couponId = selectedCouponRadio.getAttribute("data-id");
+      }
+
+    try {
+      Swal.fire({
+      title: "Processing...",
+      text: "Please wait while we process your order.",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
     });
 
-    const result = await response.json();
+      const response = await fetch("/create-cod-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartData: JSON.stringify({ items: <%- JSON.stringify(cart) %> }),
+          address: {
+            name: document.getElementById("first-name").value,
+            line: document.getElementById("billingAddressLine2").value,
+            city: document.getElementById("billingCity").value,
+            state: document.getElementById("billingState").value,
+            country: document.getElementById("billingCountry").value,
+            pincode: document.getElementById("billingPincode").value,
+            phone: document.getElementById("phone").value,
+            email: document.getElementById("email").value
+          },
+          subtotal: document.getElementById("baseTotal").value,
+          shippingCharge: parseFloat(document.getElementById("shippingCharge").innerText.replace("₹", "")),
+          discount: parseFloat(document.getElementById("discount").innerText.replace("₹", "")),
+          total: parseFloat(document.getElementById("total-amount").innerText.replace("₹", "")),
+          couponCode,
+          couponId
+        }),
+      });
 
-    if (result.checkoutPageUrl) {
-      window.location.href = result.checkoutPageUrl;
-    } else {
-      alert("Payment initiation failed");
+      const data = await response.json();
+      if (data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Order Received",
+          text: "Your COD order has been placed successfully.",
+          confirmButtonText: "Go to Home"
+        }).then(() => {
+          window.location.href = "/";
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Order Failed",
+          text: data.error || "Something went wrong. Please try again.",
+        });
+      }
+    } catch (err) {
+      console.error("COD order error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong. Please try again.",
+      });
     }
-  } catch (err) {
-    console.error("PhonePe error:", err);
-    alert("Something went wrong during payment");
   }
 });
-
-    </script> -->
-
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const checkoutForm = document.getElementById("checkoutForm");
-
-    function showAlert(msg) {
-      alert(msg);
-    }
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function validatePhone(phone) {
-      return /^[6-9]\d{9}$/.test(phone);
-    }
-
-    function validatePincode(pin) {
-      return /^\d{6}$/.test(pin);
-    }
-
-    function validateForm() {
-      const name = document.getElementById("first-name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const state = document.getElementById("billingState").value.trim();
-      const city = document.getElementById("billingCity").value.trim();
-      const pincode = document.getElementById("billingPincode").value.trim();
-      const country = document.getElementById("billingCountry").value;
-
-      if (!name) return showAlert("Please enter your name.");
-      if (!country) return showAlert("Please select your country.");
-      if (!state) return showAlert("Please enter your state.");
-      if (!city) return showAlert("Please enter your city.");
-      if (!pincode || !validatePincode(pincode)) return showAlert("Enter a valid 6-digit PIN Code.");
-      if (!phone || !validatePhone(phone)) return showAlert("Enter a valid 10-digit mobile number.");
-      if (!email || !validateEmail(email)) return showAlert("Enter a valid email address.");
-
-      // If shipping checkbox is checked, validate shipping fields too
-      return true;
-    }
-
-    checkoutForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      if (!validateForm()) return;
-
-      const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
-      const codChecked = document.getElementById("codConfirm")?.checked;
-      const cartData = <%- JSON.stringify({ items: cart, total }) %>;
-
-      if (selectedPayment === "cod") {
-        if (!codChecked) {
-          alert("Please check the box to confirm Cash on Delivery.");
-          return;
-        }
-
-        window.location.href = "/cod-confirmation";
-        return;
-      }
-
-      // Collect billing address
-      const address = {
-        name: document.getElementById("first-name").value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value,
-        state: document.getElementById("billingState").value,
-        city: document.getElementById("billingCity").value,
-        pincode: document.getElementById("billingPincode").value,
-        line: document.getElementById("billingAddressLine2").value,
-      };
-
-      const shippingCharge = parseFloat(document.getElementById("shippingCharge").textContent.replace(/[^\d.]/g, "")) || 0;
-      const discount = parseFloat(document.getElementById("discount").textContent.replace(/[^\d.]/g, "")) || 0;
-      const total = parseFloat(document.getElementById("total-amount").textContent.replace(/[^\d.]/g, "")) || 0;
-
-      try {
-        const response = await fetch("/create-phonepe-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            cartData: JSON.stringify(cartData),
-            address,
-            shippingCharge,
-            discount,
-            total
-          })
-        });
-
-        const result = await response.json();
-
-        if (result.checkoutPageUrl) {
-          window.location.href = result.checkoutPageUrl;
-        } else {
-          alert("❌ Payment URL not received.");
-        }
-      } catch (err) {
-        console.error("❌ Payment error:", err);
-        alert("Something went wrong.");
-      }
-    });
-  });
 </script>
+
 <script>
   function validatePhone() {
     const phoneInput = document.getElementById("phone");
@@ -614,8 +661,9 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
     // Only allow digits
     phoneInput.value = phoneValue.replace(/[^0-9]/g, '');
 
-    if (phoneInput.value.length !== 10) {
+     if (phoneInput.value === "") {
       errorText.style.display = "block";
+      errorText.textContent = "Only numbers are allowed.";
     } else {
       errorText.style.display = "none";
     }
@@ -637,3 +685,39 @@ const total = parseFloat(document.getElementById("total-amount").textContent.rep
     }
   }
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const codRadio = document.getElementById("radioCod");
+  const phonepeRadio = document.getElementById("radioPhonepe");
+  const codBtn = document.getElementById("codConfirmBtn");
+  const phonepeBtn = document.getElementById("phonepeCheckoutBtn");
+
+  function toggleButtons() {
+    if (codRadio.checked) {
+      codBtn.style.display = "block";
+      phonepeBtn.style.display = "none";
+    } else if (phonepeRadio.checked) {
+      codBtn.style.display = "none";
+      phonepeBtn.style.display = "block";
+    }
+  }
+
+  codRadio.addEventListener("change", toggleButtons);
+  phonepeRadio.addEventListener("change", toggleButtons);
+
+  // initialize on load
+  toggleButtons();
+});
+</script>
+
+<style>
+  select {
+    position: relative !important;
+    z-index: auto !important;
+    /* appearance: auto !important; */
+}
+option {
+    position: static !important;
+}
+</style>

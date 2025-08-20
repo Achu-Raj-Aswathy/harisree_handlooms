@@ -4,13 +4,28 @@ const reviewSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",
+    required: true
   },
   productId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Products",
+    required: true
   },
-  rating: Number,
-  review: String,
+  images: [
+    {
+      type: String
+    }
+  ],
+  rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      required: true,
+  },
+  review: {
+    type: String,
+    required: false
+  },
   date: {
     type: Date,
     default: Date.now,

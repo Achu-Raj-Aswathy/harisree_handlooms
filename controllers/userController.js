@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Users = require("../models/userModel");
-const { countries } = require('countries-list');
+// const { countries } = require('countries-list');
+const { Country, State, City } = require('country-state-city');
 const UserHome = require("../models/userHomeModel");
 const Products = require("../models/productModel");
 const Offers = require("../models/offerModel")
@@ -19,6 +20,7 @@ const moment = require("moment");
 const puppeteer = require("puppeteer");
 const path = require("path");
 const ejs = require("ejs");
+const fs = require("fs");
 
 async function generateInvoicePDF(order) {
     const templatePath = path.join(__dirname, "../views/user/invoice.ejs");
@@ -162,7 +164,7 @@ const status = async (req, res) => {
   total: orderData.total,
   paymentMethod: "PhonePe",
   paymentStatus: "Paid",
-  status: "Confirmed", // ✅ corrected from "Paid"
+  status: "Pending", // ✅ corrected from "Paid"
   address: orderData.address,
   subtotal: orderData.subtotal,
 });
@@ -293,7 +295,7 @@ const pdfBuffer = await generateInvoicePDF(order);
 await transporter.sendMail({
   from: process.env.EMAIL,
   to: orderData.address.email,
-  subject: "🧺 Your Harisree Handlooms Order Confirmed: " + newOrder.orderId,
+  subject: "🧺 Your Harisree Handlooms Order Received: " + newOrder.orderId,
   html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
       <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Thank you for your order</h2>
@@ -343,8 +345,6 @@ await transporter.sendMail({
         ${orderData.address.phone}<br>
         ${orderData.address.email}
       </p>
-
-      <p>Your order will be dispatched within 8 to 10 days and should arrive within an additional 2 to 3 days.</p>
       
       <p><strong>📄 Your detailed GST invoice is attached to this email for download.</strong></p>
 
@@ -411,101 +411,6 @@ async function getDTDCToken() {
   );
   return data; // token string
 }
-
-// const trackDTDCShipment = async (req, res) => {
-//   try {
-//     const { orderNumber } = req.query;
-
-//     if (!orderNumber) {
-//       return res.status(400).json({ error: "Missing order number" });
-//     }
-
-//     // Get order from DB
-//     const order = await Orders.findOne({ orderId: orderNumber });
-//     if (!order) {
-//       return res.status(404).json({ error: "Order not found" });
-//     }
-
-//     // Decide what to track with
-//     let trkType, strcnno;
-//     if (order.dtdcTrackingNumber) {
-//       trkType = "cnno"; // AWB
-//       strcnno = order.dtdcTrackingNumber;
-//     } else {
-//       trkType = "reference"; // Customer reference
-//       strcnno = order.orderId;
-//     }
-
-//     const response = await axios.post(
-//       "https://blktracksvc.dtdc.com/dtdc-api/rest/JSONCnTrk/getTrackDetails",
-//       {
-//         trkType,
-//         strcnno,
-//         addtnlDtl: "Y"
-//       },
-//       {
-//         headers: {
-//           "X-Access-Token": process.env.DTDC_TRACK_TOKEN,
-//           "Content-Type": "application/json"
-//         }
-//       }
-//     );
-//     console.log("DTDC tracking raw response:", JSON.stringify(response.data, null, 2));
-
-//     const trackInfo = response.data;
-//     if (!trackInfo.trackDetails || !trackInfo.trackDetails.length) {
-//       return res.status(404).json({ error: "No tracking details found" });
-//     }
-
-//         function mapToUserStage(dtdcStatus) {
-//       const statusLower = dtdcStatus.toLowerCase();
-
-//       if (
-//         statusLower.includes("softdata") ||
-//         statusLower.includes("pickup awaited") ||
-//         statusLower.includes("shipment booked")
-//       ) return "Order Placed";
-
-//       if (
-//         statusLower.includes("pickup scheduled") ||
-//         statusLower.includes("pickup reassigned")
-//       ) return "Shipped";
-
-//       if (
-//         statusLower.includes("in transit") ||
-//         statusLower.includes("received at hub")
-//       ) return "In Transit";
-
-//       if (statusLower.includes("out for delivery")) return "Out for Delivery";
-
-//       if (statusLower.includes("delivered")) return "Delivered";
-
-//       return null;
-//     }
-
-//     // ✅ Filter & remove duplicates
-//     // Keep all events, fallback to raw status if no match
-// const trackingHistory = trackInfo.trackDetails.map(event => ({
-//   stage: mapToUserStage(event.strAction || "") || event.strAction || "Unknown",
-//   rawStatus: event.strAction || "Unknown",
-//   date: event.strActionDate || ""
-// }));
-
-// res.json({
-//   courier: "DTDC",
-//   orderId: order.orderId,
-//   status: trackingHistory.length
-//     ? trackingHistory[trackingHistory.length - 1].stage
-//     : "Unknown",
-//   remarks: "",
-//   trackingDetails: trackingHistory
-// });
-    
-//   } catch (err) {
-//     console.error("❌ DTDC tracking failed:", err.response?.data || err.message);
-//     res.status(500).json({ error: "Tracking failed" });
-//   }
-// };
 
 const trackDTDCShipment = async (req, res) => {
   try {
@@ -578,6 +483,172 @@ const cancelDTDCShipment = async (req, res) => {
   } catch (error) {
     console.error("Cancellation failed:", error.message);
     res.status(500).send("Cancellation failed");
+  }
+};
+
+const createCodOrder = async (req, res) => {
+  try {
+    const { cartData, address, subtotal, shippingCharge, discount, total, couponId, couponCode } = req.body;
+    const userId = req.session.user;
+
+    if (!cartData || !userId) {
+      return res.status(400).json({ success: false, error: "Missing cart data or user session" });
+    }
+
+    const { items } = JSON.parse(cartData);
+
+    const user = await Users.findById(userId);
+    if (!user || !items.length || !total) {
+      return res.status(400).json({ success: false, error: "Invalid user/cart" });
+    }
+
+    // ✅ Create order directly (COD doesn't need payment gateway)
+    const newOrder = new Orders({
+      userId,
+      items: items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+        subtotal: item.subtotal,
+      })),
+      shippingCharge,
+      discount,
+      total,
+      paymentMethod: "Cash on Delivery",
+      paymentStatus: "COD",
+      status: "Pending",   // Directly confirm order
+      address,
+      subtotal,
+    });
+
+    await newOrder.save();
+
+    // 📦 Book shipment with DTDC
+    const dtdcPayload = {
+      consignments: [{
+        customer_code: process.env.DTDC_CUSTOMER_CODE,
+        service_type_id: "B2C PRIORITY",
+        load_type: "NON-DOCUMENT",
+        description: "Order from Harisree Handlooms",
+        dimension_unit: "cm",
+        length: "30",
+        width: "25",
+        height: "10",
+        weight_unit: "kg",
+        weight: "1",
+        declared_value: newOrder.total.toString(),
+        num_pieces: newOrder.items.length.toString(),
+        origin_details: {
+          name: "Harisree Handlooms",
+          phone: "9188019689",
+          address_line_1: "Kallanchira, Peruvemba",
+          pincode: "678531",
+          city: "Palakkad",
+          state: "Kerala"
+        },
+        destination_details: {
+          name: newOrder.address.name,
+          phone: newOrder.address.phone,
+          address_line_1: newOrder.address.line,
+          pincode: newOrder.address.pincode,
+          city: newOrder.address.city,
+          state: newOrder.address.state
+        },
+        customer_reference_number: newOrder._id.toString(),
+        commodity_id: "38",
+        is_risk_surcharge_applicable: false,
+        reference_number: "7X108190186",
+      }]
+    };
+
+    try {
+      const dtdcResponse = await axios.post(
+        "https://dtdcapi.shipsy.io/api/customer/integration/consignment/softdata",
+        dtdcPayload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": process.env.DTDC_API_KEY
+          }
+        }
+      );
+      const refNo = dtdcResponse.data?.data?.[0]?.reference_number;
+      if (refNo) {
+        newOrder.dtdcTrackingNumber = refNo;
+        newOrder.shippingStatus = "Shipment Booked";
+        newOrder.shipmentBookedAt = new Date();
+        await newOrder.save();
+      }
+    } catch (err) {
+      console.error("DTDC booking failed (COD):", err.response?.data || err.message);
+    }
+
+    // 🏷️ Update coupon usage if applied
+    if (couponId) {
+      await Users.updateOne(
+        { _id: userId, "couponsUsed.couponId": couponId },
+        { $inc: { "couponsUsed.$.number": 1 } }
+      ).then(async result => {
+        if (result.matchedCount === 0) {
+          await Users.updateOne(
+            { _id: userId },
+            { $push: { couponsUsed: { couponId, number: 1 } } }
+          );
+        }
+      }).catch(err => console.error("❌ Error updating coupon usage:", err));
+    }
+
+    // 🔽 Save order reference to user & update shipping address
+    await Users.findByIdAndUpdate(userId, {
+      $push: { orders: { orderId: newOrder._id } },
+      $set: {
+        "address.0.shipping": {
+          name: address.name,
+          addressLine: address.line,
+          city: address.city,
+          state: address.state,
+          country: address.country || "India",
+          pincode: address.pincode,
+          phone: address.phone,
+        }
+      }
+    });
+
+    // 🔽 Reduce stock
+    for (const item of items) {
+      await Products.updateOne(
+        { _id: item.productId },
+        { $inc: { availableStock: -item.quantity } }
+      );
+    }
+
+    // 📄 Generate invoice PDF
+    const order = await Orders.findById(newOrder._id).populate('items.productId');
+    const pdfBuffer = await generateInvoicePDF(order);
+
+    // 📧 Send confirmation email
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: address.email,
+      subject: "🧺 Your Harisree Handlooms Order Received (COD): " + newOrder.orderId,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px;">
+          <h2 style="background: #5e9c76; color: white; padding: 15px; margin: 0;">Thank you for your order</h2>
+          <p>Hi <strong>${address.name}</strong>,</p>
+          <p>Your order <strong>${newOrder.orderId}</strong> has been received with <strong>Cash on Delivery</strong>.</p>
+          <p>We will ship it soon. Your invoice is attached.</p>
+        </div>
+      `,
+      attachments: [{
+        filename: `Invoice-${newOrder.orderId}.pdf`,
+        content: pdfBuffer
+      }]
+    });
+
+    return res.json({ success: true, orderId: newOrder._id });
+  } catch (error) {
+    console.error("❌ COD Order Error:", error.message);
+    return res.status(500).json({ success: false, error: "Failed to place COD order" });
   }
 };
 
@@ -822,12 +893,19 @@ const viewShop = async (req, res) => {
       userWishlistProductIds = user?.wishlist?.map(item => item.productId.toString()) || [];
     }
 
+    let userCartProductIds = [];
+    if (req.session.user) {
+      const user = await Users.findById(req.session.user);
+      userCartProductIds = user?.cart?.map(item => item.productId.toString()) || [];
+    }
+
     const totalPages = Math.ceil(totalProducts / limit);
 
     res.render("user/shop", {
       products,
       categories,
       userWishlistProductIds,
+      userCartProductIds,
       selectedCategory: selectedCategory || null,
       currentPage: page,
       totalPages
@@ -871,13 +949,20 @@ const viewProduct = async (req, res) => {
     const recentlyViewedIds = req.session.recentlyViewed.filter(id => id !== productId);
 const recentlyViewedProducts = await Products.find({ _id: { $in: recentlyViewedIds } }); 
 
-    res.render("user/product", {
-      product,
-      reviews,
-      avgRating,
-      recentlyViewedProducts,
-      reviewAdded     
-    });
+const fullUrl = `${req.protocol}://${req.get("host")}/product?id=${product._id}`;
+const shareMessage = `${product.name} - ${fullUrl}`;
+const encodedShareText = encodeURIComponent(shareMessage);
+
+res.render("user/product", {
+  product,
+  reviews,
+  avgRating,
+  recentlyViewedProducts,
+  reviewAdded,
+  fullUrl,
+  encodedShareText
+});
+
   } catch (error) {
     console.error(error);
     res.render("error", { error });
@@ -1076,16 +1161,57 @@ const viewShippingPolicy = async (req, res) => {
   }
 };
 
+// const getApiCountries = async (req, res) => {
+//   const countryList = Object.values(countries).map(c => c.name).sort();
+//   // Remove "India" if present and sort the rest
+//   const india = "India";
+//   const otherCountries = countryList.filter(name => name !== india).sort();
+
+//   // Put India at the top
+//   const finalList = [india, ...otherCountries];
+
+//   res.json(finalList);
+// };
+
 const getApiCountries = async (req, res) => {
-  const countryList = Object.values(countries).map(c => c.name).sort();
-  // Remove "India" if present and sort the rest
-  const india = "India";
-  const otherCountries = countryList.filter(name => name !== india).sort();
+  try {
+    const countryList = Country.getAllCountries()
+      .map(c => c.name)
+      .sort();
 
-  // Put India at the top
-  const finalList = [india, ...otherCountries];
+    // Move India to top if exists
+    const india = "India";
+    const otherCountries = countryList.filter(name => name !== india);
+    const finalList = [india, ...otherCountries];
 
-  res.json(finalList);
+    res.json(finalList);
+  } catch (error) {
+    console.error("Error fetching countries:", error);
+    res.status(500).json({ error: "Failed to fetch countries" });
+  }
+};
+
+const getApiStates = async (req, res) => {
+  try {
+    const { countryName } = req.params;
+
+    // Get country code from name
+    const country = Country.getAllCountries().find(
+      c => c.name.toLowerCase() === countryName.toLowerCase()
+    );
+
+    if (!country) {
+      return res.status(404).json({ error: "Country not found" });
+    }
+
+    // Fetch states for the given country code
+    const states = State.getStatesOfCountry(country.isoCode).map(s => s.name);
+
+    res.json(states);
+  } catch (error) {
+    console.error("Error fetching states:", error);
+    res.status(500).json({ error: "Failed to fetch states" });
+  }
 };
 
 const addToWishlist = async (req, res) => {
@@ -1261,13 +1387,18 @@ const addReview = async (req, res) => {
     const productId = req.params.id;
     const userId = req.session.user; // Or wherever you're storing logged-in user
 
+    let imagePaths = [];
+    if (req.files && req.files.length > 0) {
+      imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+    }
+
     const newReview = new Reviews({
       userId,
       productId,
       rating,
-      review: comment
+      review: comment,
+      images: imagePaths
     });
-
     await newReview.save();
     res.redirect(`/product?id=${productId}&reviewAdded=true`);
   } catch (err) {
@@ -1459,28 +1590,90 @@ const updateAccountDetails = async (req, res) => {
 };
 
 const editReview = async (req, res) => {
-  const { reviewId } = req.params;
+  const { reviewId, productId } = req.params;
   const { rating, comment } = req.body;
-  console.log(reviewId, "reviewID");
-  console.log(rating, comment)
-  
-  const review = await Reviews.findOne({ _id: reviewId, userId: req.session.userId });
-  if (!review) return res.status(403).send("Unauthorized");
+
+  console.log("Review ID:", reviewId);
+  console.log("Rating:", rating);
+  console.log("Comment:", comment);
+  console.log("Files:", req.files);
+
+  const review = await Reviews.findOne({
+    _id: reviewId,
+    userId: req.session.user
+  });
+
+  if (!review) {
+    return res.status(403).json({ success: false, message: "Unauthorized" });
+  }
 
   review.rating = rating;
   review.review = comment;
+
+  // If new images uploaded, replace old ones
+  if (req.files && req.files.length > 0) {
+    review.images = req.files.map(file => "/uploads/" + file.filename);
+  }
+if (req.files && req.files.length > 0) {
+  review.images = [...review.images, ...req.files.map(file => "/uploads/" + file.filename)];
+}
+
   await review.save();
 
-  res.redirect(`/product?id=${req.params.productId}`);
+  res.json({ success: true, message: "Review updated successfully" });
 };
 
+// const deleteReview = async (req, res) => {
+//   const { reviewId } = req.params;
+
+//   const deleted = await Reviews.findOneAndDelete({ _id: reviewId, userId: req.session.userId });
+//   if (!deleted) return res.status(403).send("Unauthorized");
+
+//   res.redirect(`/product?id=${req.params.productId}`);
+// };
+
 const deleteReview = async (req, res) => {
-  const { reviewId } = req.params;
+  try {
+    const { productId, reviewId } = req.params;
 
-  const deleted = await Reviews.findOneAndDelete({ _id: reviewId, userId: req.session.userId });
-  if (!deleted) return res.status(403).send("Unauthorized");
+    // Find review
+    const review = await Reviews.findOne({ _id: reviewId, productId });
+    if (!review) {
+      return res.status(404).json({ success: false, message: "Review not found" });
+    }
 
-  res.redirect(`/product?id=${req.params.productId}`);
+    // Optional: Check if logged-in user is the owner of the review
+    if (String(review.userId) !== String(req.session.user)) {
+      return res.status(403).json({ success: false, message: "Unauthorized" });
+    }
+
+    // Delete associated images from filesystem
+    if (review.images && review.images.length > 0) {
+      for (let img of review.images) {
+        const imgPath = img.url || img; // handle both object or string storage
+        const filePath = path.join(__dirname, "..", "public", imgPath.replace(/^\/+/, ""));
+        
+        console.log(imgPath, "imgPath");
+        console.log(filePath, "filePAth")
+
+        try {
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        } catch (unlinkErr) {
+          console.error(`Error deleting file ${filePath}:`, unlinkErr);
+        }
+      }
+    }
+
+    // Remove review from DB
+    await Reviews.deleteOne({ _id: reviewId });
+
+    res.json({ success: true, message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("Delete review error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
 module.exports = {
@@ -1508,6 +1701,7 @@ module.exports = {
   viewReturnPolicy,
   viewShippingPolicy,
   getApiCountries,
+  getApiStates,
   addToCart,
   addToWishlist,
   removeFromCart,
@@ -1526,5 +1720,6 @@ module.exports = {
   downloadDTDCLabel,
   trackDTDCShipment,
   cancelDTDCShipment,
+  createCodOrder,
 
 }
