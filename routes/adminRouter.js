@@ -55,7 +55,8 @@ adminRouter.post("/update-offer-tag", isLogin, adminController.updateOfferTaglin
 adminRouter.post("/return-update/:id", isLogin, adminController.returnUpdate)
 adminRouter.post("/order-update/:id", isLogin, adminController.orderUpdate)
 adminRouter.post("/edit-product", isLogin, upload.array("thumbnail[]", 5), adminController.editProduct);
-adminRouter.post('/delete-review/:id',isLogin,adminController.deleteReview);
+adminRouter.post('/delete-review/:id',isLogin, adminController.deleteReview);
+adminRouter.post("/update-stock/:id", isLogin, adminController.updateStock);
 
 // export pdf
 adminRouter.post("/export-users-pdf", isLogin, adminController.exportUsersPDF);

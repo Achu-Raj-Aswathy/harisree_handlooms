@@ -432,19 +432,35 @@ const viewInventory = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1; // Current page number
     const limit = 10; // Items per page
+    const search = req.query.search ? req.query.search.trim() : "";
+    const category = req.query.category || "";
 
-    const total = await Products.countDocuments(); // Total number of products
+    // Build query object
+    let query = {};
+    if (search) {
+      query.name = { $regex: search, $options: "i" }; // case-insensitive search
+    }
+    if (category) {
+      query.categoryId = category;
+    }
+
+    const total = await Products.countDocuments(query); // Total number of products
     const totalPages = Math.ceil(total / limit); // Total number of pages
 
-    const products = await Products.find()
+    const products = await Products.find(query)
       .populate("categoryId")
       .skip((page - 1) * limit)
       .limit(limit);
+
+    const categories = await Categories.find().sort({ name: 1 });
 
     res.render("admin/inventory", {
       products,
       currentPage: page,
       totalPages,
+      search,
+      category,
+      categories,
     });
   } catch (error) {
     console.log(error);
@@ -2410,6 +2426,35 @@ end.setHours(23, 59, 59, 999); // end of the day
   }
 };
 
+const updateStock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { availableStock } = req.body;
+
+    if (!availableStock || isNaN(availableStock) || availableStock < 0) {
+      return res.status(400).json({ success: false, message: "Invalid stock value" });
+    }
+
+    const product = await Products.findByIdAndUpdate(
+      id,
+      { availableStock: Number(availableStock),
+        stock: Number(availableStock)
+       },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    // redirect back to inventory page after update
+    res.json({ success: true, message: "Stock updated successfully" });
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 const createDTDCShipment = async (req, res) => {
   console.log("Creating DTDC Shipment...");
   try {
@@ -2664,6 +2709,7 @@ module.exports = {
   exportCouponsPDF,
   exportReviewsPDF,
   exportReportPDF,
+  updateStock,
   createDTDCShipment,
   downloadDTDCLabel,
   trackDTDCShipment,

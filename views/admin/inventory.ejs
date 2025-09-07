@@ -17,9 +17,28 @@
                          <div class="col-xl-12">
                               <div class="card">
                                    <div class="d-flex card-header justify-content-between align-items-center">
-                                        <div>
-                                             <h4 class="card-title">All Warehouse List</h4>
-                                        </div>
+                                     <h4 class="card-title mb-0">All Warehouse List</h4>
+                                     <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+
+    <!-- 🔍 Search -->
+    <form class="app-search d-md-block ms-2" action="/admin/inventory" method="get">
+      <div class="position-relative">
+        <input type="search" name="search" class="form-control" placeholder="Search..." autocomplete="off" value="<%= typeof search !== 'undefined' ? search : '' %>">
+        <iconify-icon icon="solar:magnifer-linear" class="search-widget-icon position-absolute top-50 end-0 translate-middle-y me-2"></iconify-icon>
+      </div>
+    </form>
+
+    <!-- ⬇️ Sort by Category -->
+    <form action="/admin/inventory" method="get" class="ms-2">
+      <select name="category" class="form-select" onchange="this.form.submit()">
+        <option value="">Sort by Category</option>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat._id %>" <%= category == cat._id ? 'selected' : '' %>><%= cat.name %></option>
+        <% }) %>
+      </select>
+    </form>
+
+  </div>
                                         <a href="#" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">Export</a>
                                    </div>
                                    <div>
@@ -37,7 +56,7 @@
                                                             <th>Shipped Stock</th>
                                                             <th>Stock Available </th>
                                                             <th>Total Revenue</th>
-                                                            <!-- <th>Action</th> -->
+                                                            <th>Update Stock</th>
                                                        </tr>
                                                   </thead>
                                                   <tbody>
@@ -60,15 +79,37 @@
                                                             %>
 
                                                             <td><%= Shippedstock %></td>
-                                                            <td><%= product.availableStock %></td>
+                                                            <td><%= product.availableStock %>
+                                                            <% if (product.availableStock <= product.lowStockLimit) { %>
+    <iconify-icon 
+      icon="mdi:arrow-down-bold" 
+      class="text-danger ms-1">
+    </iconify-icon>
+  <% } else { %>
+    <iconify-icon 
+      icon="mdi:arrow-up-bold" 
+      class="text-success ms-1">
+    </iconify-icon>
+  <% } %>
+</td>
                                                             <td><%= TotalRevenue %></td>
                                                             <td>
-                                                                 <!-- <div class="d-flex gap-2">
-                                                                      <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                      <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                                 </div> -->
-                                                            </td>
+  <div class="d-flex gap-2">
+    <input 
+      type="number" 
+      id="stock-input-<%= product._id %>" 
+      value="<%= product.availableStock %>" 
+      min="0" 
+      class="form-control form-control-sm" >
+    <button 
+      type="button" 
+      class="btn btn-sm btn-primary" 
+      onclick="confirmUpdateStock('<%= product._id %>')">
+      Update
+    </button>
+  </div>
+</td>
+
                                                        </tr>
                                                             <% }) %>
                                                                                 <% } else { %>
@@ -235,5 +276,66 @@
     });
     console.error(err);
   }
+  }
+</script>
+
+<script>
+  async function confirmUpdateStock(productId) {
+    const stockValue = document.getElementById(`stock-input-${productId}`).value;
+
+    if (stockValue === "" || isNaN(stockValue) || stockValue < 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Input",
+        text: "Please enter a valid stock number",
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "Update Stock?",
+      text: `Set available stock to ${stockValue}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, update it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await fetch(`/admin/update-stock/${productId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ availableStock: stockValue }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: data.message || "Stock updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: data.message || "Could not update stock.",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Server Error",
+        text: "Something went wrong while updating stock.",
+      });
+    }
   }
 </script>
