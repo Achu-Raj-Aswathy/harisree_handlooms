@@ -14,7 +14,7 @@
 
 <% let cartView = 'Add to Cart'; %>
 
-<div class="axil-main-slider-area main-slider-style-4 position-relative" id="handloomSlider" style="background-image: url('<%= handloomImages[0] %>'); background-size: cover; background-position: center; min-height: 90vh; display: flex; align-items: center; transition: background-image 1s ease-in-out;">
+<div class="axil-main-slider-area main-slider-style-4 position-relative" id="handloomSlider" style="background-image: url('<%= handloomImages[0] %>'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; min-height: 56.25vw; max-height: 90vh; display: flex; align-items: center; transition: background-image 1s ease-in-out;">
   <!-- Dark Overlay -->
   <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;"></div>
 
@@ -441,6 +441,88 @@
   object-fit: cover;
   border-radius: 8px;
 }
+
+/* Fix handloom images to display at 100% width with correct 16:9 aspect ratio */
+.axil-product .thumbnail img,
+.axil-product .thumbnail .main-img,
+.axil-product .thumbnail .hover-img {
+  width: 100% !important;
+  height: 56.25vw !important; /* 16:9 aspect ratio (9/16 = 0.5625) */
+  object-fit: contain !important;
+  display: block;
+}
+
+.deal-img {
+  width: 100% !important;
+  height: 56.25vw !important; /* 16:9 aspect ratio */
+  object-fit: contain !important;
+  display: block;
+}
+
+/* Ensure product images in carousels display properly */
+.slick-slide img {
+  width: 100% !important;
+  height: 56.25vw !important; /* 16:9 aspect ratio */
+  object-fit: contain !important;
+}
+
+/* Fix slider background to show full width with 16:9 aspect ratio */
+#handloomSlider {
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  min-height: 56.25vw !important; /* 16:9 aspect ratio */
+  max-height: 90vh !important;
+}
+
+/* Responsive heights for different screen sizes - maintaining 16:9 aspect ratio */
+@media (min-width: 1200px) {
+  .axil-product .thumbnail img,
+  .axil-product .thumbnail .main-img,
+  .axil-product .thumbnail .hover-img,
+  .slick-slide img {
+    height: 320px !important; /* Fixed height for large screens */
+  }
+  .deal-img {
+    height: 280px !important;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .axil-product .thumbnail img,
+  .axil-product .thumbnail .main-img,
+  .axil-product .thumbnail .hover-img,
+  .slick-slide img {
+    height: 280px !important;
+  }
+  .deal-img {
+    height: 240px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .axil-product .thumbnail img,
+  .axil-product .thumbnail .main-img,
+  .axil-product .thumbnail .hover-img,
+  .slick-slide img {
+    height: 240px !important;
+  }
+  .deal-img {
+    height: 200px !important;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .axil-product .thumbnail img,
+  .axil-product .thumbnail .main-img,
+  .axil-product .thumbnail .hover-img,
+  .slick-slide img {
+    height: 200px !important;
+  }
+  .deal-img {
+    height: 180px !important;
+  }
+}
 .product-collection-three {
   margin-bottom: 20px;
 }
@@ -485,11 +567,11 @@
 }
 
 .product-image {
-  width: 100%;
-  height: auto;               /* Auto height keeps aspect ratio */
+  width: 100% !important;
+  height: auto !important;               /* Auto height keeps aspect ratio */
   display: block;
   max-height: 300px;          /* Limit height but don't crop */
-  object-fit: contain;        /* Don't crop image */
+  object-fit: contain !important;        /* Don't crop image */
   padding: 10px;
   background: #f8f8f8;
 }
@@ -571,7 +653,9 @@
 
 @media (max-width: 576px) {
   #handloomSlider {
-    min-height: 40vh !important;
+    min-height: 56.25vw !important; /* Maintain 16:9 aspect ratio on mobile */
+    max-height: 50vh !important;
+    background-size: 100% 100% !important;
   }
 
   #handloomSlider .main-slider-content h1 {
@@ -589,6 +673,17 @@
 
   #handloomSlider .main-slider-content {
     padding: 10px !important;
+  }
+  
+  /* Ensure images display properly on mobile - maintaining 16:9 aspect ratio */
+  .axil-product .thumbnail img,
+  .axil-product .thumbnail .main-img,
+  .axil-product .thumbnail .hover-img,
+  .slick-slide img {
+    height: 160px !important;
+  }
+  .deal-img {
+    height: 140px !important;
   }
 }
  
