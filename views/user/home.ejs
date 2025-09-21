@@ -442,30 +442,6 @@
   border-radius: 8px;
 }
 
-/* Fix handloom images to display at 100% width with correct 16:9 aspect ratio */
-.axil-product .thumbnail img,
-.axil-product .thumbnail .main-img,
-.axil-product .thumbnail .hover-img {
-  width: 100% !important;
-  height: 56.25vw !important; /* 16:9 aspect ratio (9/16 = 0.5625) */
-  object-fit: contain !important;
-  display: block;
-}
-
-.deal-img {
-  width: 100% !important;
-  height: 56.25vw !important; /* 16:9 aspect ratio */
-  object-fit: contain !important;
-  display: block;
-}
-
-/* Ensure product images in carousels display properly */
-.slick-slide img {
-  width: 100% !important;
-  height: 56.25vw !important; /* 16:9 aspect ratio */
-  object-fit: contain !important;
-}
-
 /* Fix slider background to show full width with 16:9 aspect ratio */
 #handloomSlider {
   background-size: 100% 100% !important;
@@ -475,54 +451,6 @@
   max-height: 90vh !important;
 }
 
-/* Responsive heights for different screen sizes - maintaining 16:9 aspect ratio */
-@media (min-width: 1200px) {
-  .axil-product .thumbnail img,
-  .axil-product .thumbnail .main-img,
-  .axil-product .thumbnail .hover-img,
-  .slick-slide img {
-    height: 320px !important; /* Fixed height for large screens */
-  }
-  .deal-img {
-    height: 280px !important;
-  }
-}
-
-@media (min-width: 992px) and (max-width: 1199px) {
-  .axil-product .thumbnail img,
-  .axil-product .thumbnail .main-img,
-  .axil-product .thumbnail .hover-img,
-  .slick-slide img {
-    height: 280px !important;
-  }
-  .deal-img {
-    height: 240px !important;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .axil-product .thumbnail img,
-  .axil-product .thumbnail .main-img,
-  .axil-product .thumbnail .hover-img,
-  .slick-slide img {
-    height: 240px !important;
-  }
-  .deal-img {
-    height: 200px !important;
-  }
-}
-
-@media (min-width: 576px) and (max-width: 767px) {
-  .axil-product .thumbnail img,
-  .axil-product .thumbnail .main-img,
-  .axil-product .thumbnail .hover-img,
-  .slick-slide img {
-    height: 200px !important;
-  }
-  .deal-img {
-    height: 180px !important;
-  }
-}
 .product-collection-three {
   margin-bottom: 20px;
 }
@@ -675,16 +603,6 @@
     padding: 10px !important;
   }
   
-  /* Ensure images display properly on mobile - maintaining 16:9 aspect ratio */
-  .axil-product .thumbnail img,
-  .axil-product .thumbnail .main-img,
-  .axil-product .thumbnail .hover-img,
-  .slick-slide img {
-    height: 160px !important;
-  }
-  .deal-img {
-    height: 140px !important;
-  }
 }
  
 </style>
